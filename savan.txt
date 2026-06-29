@@ -287,23 +287,23 @@ CREATE POLICY "Users can update own profile"
     ON public.profiles FOR UPDATE
     USING (auth.uid() = id);
 
+-- Function to safely get user role without infinite recursion
+CREATE OR REPLACE FUNCTION public.get_user_role()
+RETURNS text
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT role FROM public.profiles WHERE id = auth.uid();
+$$;
+
 CREATE POLICY "Admins can view all profiles"
     ON public.profiles FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
-        )
-    );
+    USING ( public.get_user_role() IN ('admin', 'superadmin') );
 
 CREATE POLICY "Superadmins can update any profile"
     ON public.profiles FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid() AND role = 'superadmin'
-        )
-    );
+    USING ( public.get_user_role() = 'superadmin' );
 
 CREATE POLICY "Service role can insert profiles"
     ON public.profiles FOR INSERT

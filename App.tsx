@@ -24,7 +24,7 @@ const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(window.location.hash || '#/');
   const [session, setSession] = useState<any>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  
+
   const [niche, setNiche] = useState('General');
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -69,7 +69,7 @@ const App: React.FC = () => {
       }
     };
 
-    const interval = setInterval(runEmailWorker, 10000); 
+    const interval = setInterval(runEmailWorker, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -134,17 +134,25 @@ const App: React.FC = () => {
   }, []);
 
   const setupRealtimeListener = (userId: string) => {
-    const channel = supabase.channel(`user-messages-${userId}`)
-      .on('postgres_changes', { 
-        event: 'INSERT', 
-        schema: 'public', 
+    const channelName = `user-messages-${userId}`;
+
+    // Remove existing channel to prevent the "cannot add callbacks after subscribe" error
+    const existingChannel = supabase.getChannels().find(c => c.topic === `realtime:${channelName}`);
+    if (existingChannel) {
+      supabase.removeChannel(existingChannel);
+    }
+
+    const channel = supabase.channel(channelName)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
         table: 'messages',
         filter: `user_id=eq.${userId}`
       }, (payload: any) => {
         if (payload.new.is_admin) {
           const chatWidgetElement = document.getElementById('domintel-chat-widget');
           const isWidgetOpen = chatWidgetElement?.getAttribute('data-open') === 'true';
-          
+
           if (!isWidgetOpen) {
             setToast({
               show: true,
@@ -177,11 +185,11 @@ const App: React.FC = () => {
       contentRequirements: { links: [{ anchorText: '', landingPageUrl: '' }] }
     };
 
-    const newItem = { 
-      ...item, 
-      price: finalPrice, 
+    const newItem = {
+      ...item,
+      price: finalPrice,
       serviceType: serviceType,
-      configuration: initialConfig 
+      configuration: initialConfig
     };
 
     if (session?.user) {
@@ -200,7 +208,7 @@ const App: React.FC = () => {
         console.error("Cart save error");
       }
     }
-    
+
     setCartItems(prev => [...prev, newItem]);
     setIsCartOpen(true);
   };
@@ -208,7 +216,7 @@ const App: React.FC = () => {
   const removeFromCart = async (domain: string) => {
     const item = cartItems.find(i => i.domain === domain);
     if (session?.user && item?.db_id) {
-      try { await supabase.from('cart').delete().eq('id', item.db_id); } catch (e) {}
+      try { await supabase.from('cart').delete().eq('id', item.db_id); } catch (e) { }
     }
     setCartItems(cartItems.filter(i => i.domain !== domain));
   };
@@ -225,7 +233,7 @@ const App: React.FC = () => {
     if (hash === '#/signup') return <Signup />;
     if (hash === '#/admin') return <AdminPanel />;
     if (hash === '#/profile') return <Profile />;
-    
+
     if (hash.startsWith('#/checkout')) {
       const urlParams = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
       const orderIdParam = urlParams.get('order_id');
@@ -236,9 +244,9 @@ const App: React.FC = () => {
       return <DomainDetail domainName={hash.split('/')[2]} addToCart={addToCart} niche={niche} />;
     }
 
-    if (hash.toLowerCase().includes('domains')) 
+    if (hash.toLowerCase().includes('domains'))
       return <Marketplace niche={niche} setNiche={setNiche} onAddToCart={addToCart} />;
-    
+
     if (hash.toLowerCase().includes('services')) return <main className="pt-20"><Services isFullPage={true} /></main>;
     if (hash.toLowerCase().includes('pricing')) return <Pricing />;
     if (hash.toLowerCase().includes('contact')) return <Contact />;
@@ -257,14 +265,14 @@ const App: React.FC = () => {
       <div className="flex-1">{renderContent()}</div>
       {!['#/login', '#/signup', '#/admin'].includes(currentPath.split('?')[0]) && <Footer />}
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} items={cartItems} niche={niche} onRemove={removeFromCart} />
-      
+
       {/* Real-time Support Layer */}
       <ChatWidget />
-      <Toast 
-        isOpen={toast.show} 
-        message={toast.message} 
-        title={toast.title} 
-        onClose={() => setToast({ ...toast, show: false })} 
+      <Toast
+        isOpen={toast.show}
+        message={toast.message}
+        title={toast.title}
+        onClose={() => setToast({ ...toast, show: false })}
       />
     </div>
   );
