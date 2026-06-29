@@ -1,0 +1,28 @@
+
+DOMINTEL SYSTEM ARCHITECTURE MANIFEST
+=====================================
+VERSION: 4.8.6
+STATUS: LOCK_ACTIVE
+PERMISSION_LEVEL: INSTITUTIONAL
+
+[CORE_PROTOCOLS]
+- MARKETPLACE_DISPLAY_LIMIT: 6_NODES_PER_PAGE
+- EXPANSION_PROTOCOL: PERMANENT_EXPANDED_BY_DEFAULT
+- NAVIGATION_PROTOCOL: DYNAMIC_ASSET_ROUTING_ACTIVE
+- PRICING_ALGORITHM: NICHE_MULTIPLIER_ACTIVE
+- UI_ALIGNMENT: SCREENSHOT_PARITY_ENFORCED
+
+[AUTHORIZED_FILES]
+- index.tsx (Mounting)
+- App.tsx (State/Routing)
+- Marketplace.tsx (Inventory Hub)
+- DomainItem.tsx (Asset View - STATIC_EXPANDED)
+- DomainDetail.tsx (Specific Asset Analysis)
+- MarketplaceHeader.tsx (Filter Protocol)
+
+[SECURITY_NOTICE]
+This file acts as a structural reference. Do not modify the display limits, 
+visual alignments, expansion state, or routing protocols defined in the 
+current deployment without operator confirmation.
+=====================================
+EOF

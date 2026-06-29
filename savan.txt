@@ -1,0 +1,645 @@
+-- ============================================================
+-- DomIntel (BlogMate) - COMPLETE SUPABASE DATABASE SCHEMA
+-- ============================================================
+-- HOW TO USE:
+-- 1. Go to Supabase Dashboard (https://supabase.com/dashboard)
+-- 2. Select your project
+-- 3. Go to SQL Editor (left sidebar)
+-- 4. Click "New Query"
+-- 5. Paste this ENTIRE file content
+-- 6. Click "Run" (or Ctrl+Enter)
+-- 7. Done! All tables will be created automatically
+-- ============================================================
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 1: PROFILES (extends Supabase auth.users)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    company TEXT,
+    role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin', 'superadmin')),
+    wallet_balance NUMERIC(12,2) NOT NULL DEFAULT 0,
+    wallet_status TEXT NOT NULL DEFAULT 'active' CHECK (wallet_status IN ('active', 'frozen')),
+    bonus_balance NUMERIC(12,2) DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 2: DOMAINS (marketplace inventory)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.domains (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    domain TEXT NOT NULL UNIQUE,
+    category TEXT NOT NULL DEFAULT 'Technology',
+    da INTEGER NOT NULL DEFAULT 0,
+    dr INTEGER NOT NULL DEFAULT 0,
+    traffic TEXT DEFAULT '0',
+    price_guest_post NUMERIC(10,2) NOT NULL DEFAULT 0,
+    price_insertion NUMERIC(10,2) NOT NULL DEFAULT 0,
+    price_mention NUMERIC(10,2) NOT NULL DEFAULT 0,
+    language TEXT DEFAULT 'English',
+    tat TEXT DEFAULT '3 Days',
+    backlinks TEXT DEFAULT 'Dofollow',
+    ref_domains INTEGER DEFAULT 0,
+    total_backlinks INTEGER DEFAULT 0,
+    total_keywords INTEGER DEFAULT 0,
+    auth_score INTEGER DEFAULT 0,
+    spam_score TEXT DEFAULT '0%',
+    trust_flow INTEGER DEFAULT 0,
+    citation_flow INTEGER DEFAULT 0,
+    admin_discount NUMERIC(5,2) DEFAULT 0,
+    is_new BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_domains_category ON public.domains(category);
+CREATE INDEX IF NOT EXISTS idx_domains_da ON public.domains(da);
+CREATE INDEX IF NOT EXISTS idx_domains_dr ON public.domains(dr);
+CREATE INDEX IF NOT EXISTS idx_domains_domain ON public.domains(domain);
+CREATE INDEX IF NOT EXISTS idx_domains_created_at ON public.domains(created_at DESC);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 3: ORDERS (checkout orders)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    total_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+    total_price NUMERIC(12,2) NOT NULL DEFAULT 0,
+    niche TEXT DEFAULT 'General',
+    payment_method TEXT DEFAULT 'PayPal',
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'live', 'canceled')),
+    delivery_status TEXT DEFAULT 'pending',
+    tracking_id TEXT,
+    surcharge NUMERIC(10,2) DEFAULT 0,
+    due_date TIMESTAMPTZ,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 4: CART (user shopping cart)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.cart (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    domain_name TEXT NOT NULL,
+    price NUMERIC(10,2) NOT NULL DEFAULT 0,
+    category TEXT,
+    da INTEGER DEFAULT 0,
+    dr INTEGER DEFAULT 0,
+    configuration JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_cart_user_id ON public.cart(user_id);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 5: MESSAGES (user-admin chat system)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT false,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    read_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_user_id ON public.messages(user_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON public.messages(created_at ASC);
+CREATE INDEX IF NOT EXISTS idx_messages_user_created ON public.messages(user_id, created_at ASC);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 6: WALLET_TRANSACTIONS (topup, withdrawal, purchase, refund)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.wallet_transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    amount NUMERIC(12,2) NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('topup', 'withdrawal', 'purchase', 'refund')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'rejected', 'frozen')),
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wallet_tx_user_id ON public.wallet_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_wallet_tx_status ON public.wallet_transactions(status);
+CREATE INDEX IF NOT EXISTS idx_wallet_tx_created_at ON public.wallet_transactions(created_at DESC);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 7: COUPONS (discount vouchers)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.coupons (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code TEXT NOT NULL UNIQUE,
+    discount_percent INTEGER NOT NULL DEFAULT 0 CHECK (discount_percent >= 0 AND discount_percent <= 100),
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    expires_at TIMESTAMPTZ,
+    usage_limit INTEGER,
+    times_used INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_code ON public.coupons(code);
+CREATE INDEX IF NOT EXISTS idx_coupons_active ON public.coupons(is_active);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 8: PRICING_RULES (marketplace discount tiers)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.pricing_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    min_price NUMERIC(10,2) NOT NULL DEFAULT 0,
+    max_price NUMERIC(10,2) NOT NULL DEFAULT 0,
+    discount_percent NUMERIC(5,2) NOT NULL DEFAULT 0,
+    label TEXT NOT NULL DEFAULT 'New Tier',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_pricing_rules_range ON public.pricing_rules(min_price, max_price);
+
+
+-- ════════════════════════════════════════════════════════════
+-- TABLE 9: EMAIL_QUEUE (background email worker)
+-- ════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS public.email_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    recipient TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    html_content TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'error')),
+    error_log TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_queue_status ON public.email_queue(status);
+
+
+-- ════════════════════════════════════════════════════════════
+-- FUNCTION: Auto-create profile on user signup
+-- ════════════════════════════════════════════════════════════
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+    INSERT INTO public.profiles (id, email, full_name, phone, company, role, wallet_balance, wallet_status)
+    VALUES (
+        NEW.id,
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data ->> 'full_name', 'User'),
+        COALESCE(NEW.raw_user_meta_data ->> 'phone', ''),
+        COALESCE(NEW.raw_user_meta_data ->> 'company', ''),
+        'user',
+        0,
+        'active'
+    );
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_new_user();
+
+
+-- ════════════════════════════════════════════════════════════
+-- FUNCTION: Auto-update updated_at timestamp
+-- ════════════════════════════════════════════════════════════
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS set_profiles_updated_at ON public.profiles;
+CREATE TRIGGER set_profiles_updated_at
+    BEFORE UPDATE ON public.profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS set_domains_updated_at ON public.domains;
+CREATE TRIGGER set_domains_updated_at
+    BEFORE UPDATE ON public.domains
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS set_orders_updated_at ON public.orders;
+CREATE TRIGGER set_orders_updated_at
+    BEFORE UPDATE ON public.orders
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+
+-- ════════════════════════════════════════════════════════════
+-- ROW LEVEL SECURITY (RLS) - Enable on all tables
+-- ════════════════════════════════════════════════════════════
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.domains ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cart ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.pricing_rules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.email_queue ENABLE ROW LEVEL SECURITY;
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: PROFILES
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Users can view own profile"
+    ON public.profiles FOR SELECT
+    USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile"
+    ON public.profiles FOR UPDATE
+    USING (auth.uid() = id);
+
+CREATE POLICY "Admins can view all profiles"
+    ON public.profiles FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Superadmins can update any profile"
+    ON public.profiles FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role = 'superadmin'
+        )
+    );
+
+CREATE POLICY "Service role can insert profiles"
+    ON public.profiles FOR INSERT
+    WITH CHECK (true);
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: DOMAINS
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Anyone can view domains"
+    ON public.domains FOR SELECT
+    USING (true);
+
+CREATE POLICY "Admins can insert domains"
+    ON public.domains FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can update domains"
+    ON public.domains FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can delete domains"
+    ON public.domains FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: ORDERS
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Users can view own orders"
+    ON public.orders FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create orders"
+    ON public.orders FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Admins can view all orders"
+    ON public.orders FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can update orders"
+    ON public.orders FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: CART
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Users can view own cart"
+    ON public.cart FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert into own cart"
+    ON public.cart FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own cart"
+    ON public.cart FOR UPDATE
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete from own cart"
+    ON public.cart FOR DELETE
+    USING (auth.uid() = user_id);
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: MESSAGES
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Users can view own messages"
+    ON public.messages FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can send messages"
+    ON public.messages FOR INSERT
+    WITH CHECK (auth.uid() = user_id AND is_admin = false);
+
+CREATE POLICY "Admins can view all messages"
+    ON public.messages FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can send admin messages"
+    ON public.messages FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: WALLET_TRANSACTIONS
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Users can view own transactions"
+    ON public.wallet_transactions FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create transactions"
+    ON public.wallet_transactions FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Admins can view all transactions"
+    ON public.wallet_transactions FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can update transactions"
+    ON public.wallet_transactions FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: COUPONS
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Anyone can view coupons"
+    ON public.coupons FOR SELECT
+    USING (true);
+
+CREATE POLICY "Admins can insert coupons"
+    ON public.coupons FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can update coupons"
+    ON public.coupons FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can delete coupons"
+    ON public.coupons FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: PRICING_RULES
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Anyone can view pricing rules"
+    ON public.pricing_rules FOR SELECT
+    USING (true);
+
+CREATE POLICY "Admins can insert pricing rules"
+    ON public.pricing_rules FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can update pricing rules"
+    ON public.pricing_rules FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Admins can delete pricing rules"
+    ON public.pricing_rules FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- RLS POLICIES: EMAIL_QUEUE
+-- ════════════════════════════════════════════════════════════
+CREATE POLICY "Admins can view email queue"
+    ON public.email_queue FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+CREATE POLICY "Anyone can insert into email queue"
+    ON public.email_queue FOR INSERT
+    WITH CHECK (true);
+
+CREATE POLICY "Admins can update email queue"
+    ON public.email_queue FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
+        )
+    );
+
+
+-- ════════════════════════════════════════════════════════════
+-- ENABLE REALTIME (for live chat & notifications)
+-- ════════════════════════════════════════════════════════════
+ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.cart;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+
+
+-- ════════════════════════════════════════════════════════════
+-- STORAGE BUCKET (for article files & images upload)
+-- ════════════════════════════════════════════════════════════
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'articles',
+    'articles',
+    true,
+    52428800,
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 
+          'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'text/plain', 'text/html']
+)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "Public can view articles"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'articles');
+
+CREATE POLICY "Authenticated users can upload articles"
+    ON storage.objects FOR INSERT
+    WITH CHECK (bucket_id = 'articles' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Users can update own articles"
+    ON storage.objects FOR UPDATE
+    USING (bucket_id = 'articles' AND auth.role() = 'authenticated');
+
+
+-- ════════════════════════════════════════════════════════════
+-- SEED DATA: Sample Domains (8 domains)
+-- ════════════════════════════════════════════════════════════
+INSERT INTO public.domains (domain, category, da, dr, traffic, price_guest_post, price_insertion, price_mention, language, tat, backlinks, ref_domains, total_backlinks, total_keywords, auth_score, spam_score, trust_flow, citation_flow)
+VALUES
+    ('techcrunch-insider.com', 'Technology', 72, 68, '120K', 250, 200, 120, 'English', '2 Days', 'Dofollow', 3500, 18000, 4200, 45, '2%', 32, 48),
+    ('health-digest-pro.com', 'Health', 55, 50, '45K', 150, 120, 70, 'English', '3 Days', 'Dofollow', 1800, 8500, 2100, 38, '1%', 25, 35),
+    ('financeworld-hub.com', 'Finance', 63, 60, '80K', 200, 170, 100, 'English', '2 Days', 'Dofollow', 2800, 14000, 3500, 42, '1%', 28, 40),
+    ('lifestyle-beacon.net', 'Lifestyle', 48, 42, '30K', 100, 80, 50, 'English', '4 Days', 'Dofollow', 1200, 5500, 1500, 30, '3%', 18, 28),
+    ('crypto-sentinel.io', 'Crypto', 60, 55, '65K', 300, 250, 150, 'English', '1 Day', 'Dofollow', 2200, 11000, 2800, 40, '2%', 22, 38),
+    ('saas-weekly.com', 'SaaS', 58, 52, '55K', 180, 150, 90, 'English', '3 Days', 'Dofollow', 2000, 9500, 2400, 36, '1%', 24, 36),
+    ('realestate-insider.com', 'Real Estate', 50, 45, '35K', 130, 100, 65, 'English', '3 Days', 'Dofollow', 1500, 7000, 1800, 32, '2%', 20, 30),
+    ('business-daily-news.com', 'Business', 65, 62, '95K', 220, 180, 110, 'English', '2 Days', 'Dofollow', 3000, 15000, 3800, 44, '1%', 30, 42)
+ON CONFLICT (domain) DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- SEED DATA: Pricing Rules (4 tiers)
+-- ════════════════════════════════════════════════════════════
+INSERT INTO public.pricing_rules (min_price, max_price, discount_percent, label)
+VALUES
+    (0, 50, 5, 'Starter Tier'),
+    (51, 150, 10, 'Growth Tier'),
+    (151, 300, 15, 'Pro Tier'),
+    (301, 9999, 20, 'Enterprise Tier');
+
+
+-- ════════════════════════════════════════════════════════════
+-- SEED DATA: Sample Coupons (2 coupons)
+-- ════════════════════════════════════════════════════════════
+INSERT INTO public.coupons (code, discount_percent, is_active, usage_limit, times_used)
+VALUES
+    ('WELCOME10', 10, true, 100, 0),
+    ('DOMINTEL20', 20, true, 50, 0);
+
+
+-- ════════════════════════════════════════════════════════════
+-- DONE! SCHEMA SETUP COMPLETE!
+-- ════════════════════════════════════════════════════════════
+--
+-- NEXT STEPS:
+-- 1. Signup karo app se: http://localhost:5173/#/signup
+-- 2. Supabase Dashboard → Table Editor → profiles table kholo
+-- 3. Apne user ki row me 'role' column ko 'superadmin' karo
+-- 4. App me login karo → automatically admin panel (#/admin) khulega
+--
+-- ADMIN PANEL URL: http://localhost:5173/#/admin
+-- LOGIN URL: http://localhost:5173/#/login
+-- SIGNUP URL: http://localhost:5173/#/signup
+--
+-- ROLES:
+--   user      = Normal customer
+--   admin     = Can manage orders, inventory, chat, wallet, pricing, coupons
+--   superadmin = Full access + users, analytics, system protocols
+--
+-- ════════════════════════════════════════════════════════════
