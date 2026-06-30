@@ -277,11 +277,14 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 </button>
                 
                 <button 
-                  onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
-                  className="text-lg md:text-xl font-bold text-slate-300 uppercase tracking-tight text-left flex items-center gap-3 hover:text-blue-400 transition-colors"
+                  onClick={() => { onOpenCart(); setIsMobileMenuOpen(false); }}
+                  className="text-lg md:text-xl font-bold text-slate-300 uppercase tracking-tight text-left flex items-center justify-between hover:text-blue-400 transition-colors"
                 >
-                  <Search size={20} className="text-slate-500" />
-                  Search
+                  <div className="flex items-center gap-3">
+                    <ShoppingCart size={20} className="text-slate-500" />
+                    Cart
+                  </div>
+                  {cartCount > 0 && <span className="bg-orange-500 text-white text-xs px-2.5 py-0.5 rounded-full">{cartCount}</span>}
                 </button>
 
                 {session && (
