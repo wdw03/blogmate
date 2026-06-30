@@ -48,6 +48,18 @@ const Hero: React.FC = () => {
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="w-full mx-auto"
             >
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="flex justify-center mb-8"
+              >
+                <h6 className="inline-flex items-center bg-black text-white border-2 border-white px-6 py-2.5 rounded-full text-xs sm:text-sm font-black tracking-[0.25em] shadow-2xl hover:scale-105 transition-all">
+                  <Sparkles size={16} className="text-blue-400 animate-pulse mr-2.5" />
+                  <span>Premium Platform Intelligence</span>
+                </h6>
+              </motion.div>
+
               <h1 
                 aria-label="World's premier marketplace for high-authority premium digital assets."
                 className="text-[1.4rem] sm:text-[2.2rem] md:text-[3rem] lg:text-[3.8rem] xl:text-[4.5rem] font-black tracking-tighter leading-[1.15] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default w-full"
