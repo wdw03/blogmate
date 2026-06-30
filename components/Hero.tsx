@@ -50,7 +50,7 @@ const Hero: React.FC = () => {
             >
               <h1 
                 aria-label="World's premier marketplace for high-authority premium digital assets."
-                className="text-[1.8rem] sm:text-[2.8rem] md:text-[3.8rem] lg:text-[4.8rem] xl:text-[5.6rem] font-black tracking-tighter leading-[1.12] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default uppercase w-full"
+                className="text-[1.4rem] sm:text-[2.2rem] md:text-[3rem] lg:text-[3.8rem] xl:text-[4.5rem] font-black tracking-tighter leading-[1.15] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default uppercase w-full"
               >
                 {/* Line 1: World's premier marketplace */}
                 <motion.div 
@@ -59,7 +59,7 @@ const Hero: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.1 }}
                   className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
+                  <span className="inline-block whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
                     W<SpinningChakri color="text-amber-500 dark:text-amber-400" />RLD'S PREMIER MARKETPLACE
                   </span>
                 </motion.div>
@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.25 }}
                   className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
+                  <span className="inline-block whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
                     F<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />R HIGH-AUTH<SpinningChakri color="text-cyan-500 dark:text-teal-400" />RITY PREMIUM
                   </span>
                 </motion.div>
@@ -83,7 +83,7 @@ const Hero: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.4 }}
                   className="block w-full"
                 >
-                  <span className="inline-block relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(59,130,246,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 py-1 px-2 rounded-2xl">
+                  <span className="inline-block whitespace-nowrap relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(59,130,246,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 py-1 px-2 rounded-2xl">
                     DIGITAL ASSETS.
                   </span>
                 </motion.div>
