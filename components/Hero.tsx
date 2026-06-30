@@ -38,53 +38,53 @@ const Hero: React.FC = () => {
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-50/50 dark:from-blue-900/10 to-transparent blur-3xl -z-10"></div>
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-100/30 dark:bg-orange-900/10 rounded-full blur-[120px] -z-10"></div>
 
-      <div className="container mx-auto px-6 md:px-12 max-w-7xl relative">
+      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative">
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="w-full max-w-5xl">
+          <div className="w-full">
             
             <motion.div 
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-5xl mx-auto"
+              className="w-full mx-auto"
             >
               <h1 
                 aria-label="World's premier marketplace for high-authority premium digital assets."
-                className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[1.12] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default uppercase w-full"
+                className="text-[1.8rem] sm:text-[2.8rem] md:text-[3.8rem] lg:text-[4.8rem] xl:text-[5.6rem] font-black tracking-tighter leading-[1.12] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default uppercase w-full"
               >
-                {/* Line 1 */}
+                {/* Line 1: World's premier marketplace */}
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.1 }}
-                  className="block mb-3"
+                  className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block transition-all duration-300 hover:scale-[1.03] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
+                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
                     W<SpinningChakri color="text-amber-500 dark:text-amber-400" />RLD'S PREMIER MARKETPLACE
                   </span>
                 </motion.div>
                 
-                {/* Line 2 */}
+                {/* Line 2: for high-authority premium */}
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.25 }}
-                  className="block mb-3"
+                  className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block transition-all duration-300 hover:scale-[1.03] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
-                    F<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />R HIGH-AUTH<SpinningChakri color="text-cyan-500 dark:text-teal-400" />RITY
+                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
+                    F<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />R HIGH-AUTH<SpinningChakri color="text-cyan-500 dark:text-teal-400" />RITY PREMIUM
                   </span>
                 </motion.div>
                 
-                {/* Line 3 */}
+                {/* Line 3: digital assets. */}
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  className="block"
+                  className="block w-full"
                 >
                   <span className="inline-block relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(59,130,246,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 py-1 px-2 rounded-2xl">
-                    PREMIUM DIGITAL ASSETS.
+                    DIGITAL ASSETS.
                   </span>
                 </motion.div>
               </h1>
