@@ -143,7 +143,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
       </div>
 
       <div className="px-10 pb-10 pt-4">
-        <div className="grid grid-cols-5 gap-y-8 mb-10 border-t border-slate-50 pt-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-8 mb-10 border-t border-slate-50 pt-10">
           <DetailMetric icon={<Activity size={14} className="text-blue-500" />} label="Domain Rating" value={metrics.dr} color="text-blue-600" />
           <DetailMetric icon={<Globe size={14} className="text-emerald-500" />} label="Ref Sites" value={metrics.refDomains} color="text-slate-900" />
           <DetailMetric icon={<Shield size={14} className="text-indigo-500" />} label="Safety Score" value={metrics.authScore} color="text-slate-900" />
@@ -157,7 +157,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
           <DetailMetric label="Category" value={category} sub="SECTOR" />
         </div>
         
-        <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+        <div className="flex flex-wrap items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-slate-100">
            <FooterBtn icon={<Info size={14} />} label="View Guide" color="blue" />
            <FooterBtn icon={<Eye size={14} />} label="Live Example" color="emerald" />
            <div className="h-6 w-px bg-slate-200 mx-2"></div>

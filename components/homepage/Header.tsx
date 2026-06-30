@@ -239,97 +239,116 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
       {/* MOBILE MENU */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 z-[2500] bg-slate-950 flex flex-col p-8 pt-32"
-          >
-            <div className="flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <a 
-                  key={link.label} 
-                  href={link.href}
-                  onClick={(e) => navigateTo(e, link.href)}
-                  className="text-3xl font-black text-white uppercase tracking-tighter italic flex items-center gap-4"
-                >
-                  <span className="text-blue-600">{link.icon}</span>
-                  {link.label}
-                </a>
-              ))}
-              
-              <button 
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="text-3xl font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter italic flex items-center gap-4 text-left"
-              >
-                <span className="text-slate-500">{isDarkMode ? <Sun size={24} /> : <Moon size={24} />}</span>
-                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-              </button>
-              
-              <button 
-                onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
-                className="text-3xl font-black text-slate-300 uppercase tracking-tighter italic text-left"
-              >
-                Search
-              </button>
-
-              {session && (
+          <>
+            {/* Backdrop Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 z-[2400] bg-slate-900/60 backdrop-blur-sm lg:hidden"
+            />
+            {/* Sidebar */}
+            <motion.div 
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] sm:w-[320px] z-[2500] bg-slate-950 flex flex-col p-6 pt-24 shadow-2xl border-l border-white/10 overflow-y-auto"
+            >
+              <div className="flex flex-col space-y-5">
+                {navLinks.map((link) => (
+                  <a 
+                    key={link.label} 
+                    href={link.href}
+                    onClick={(e) => navigateTo(e, link.href)}
+                    className="text-lg md:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                  >
+                    <span className="text-blue-600">{link.icon}</span>
+                    {link.label}
+                  </a>
+                ))}
+                
                 <button 
-                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                  className="text-3xl font-black text-slate-300 uppercase tracking-tighter italic text-left flex items-center justify-between"
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="text-lg md:text-xl font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight flex items-center gap-3 text-left hover:text-white transition-colors"
                 >
-                  Notifications 
-                  {unreadCount > 0 && <span className="bg-rose-500 text-white text-sm px-3 py-1 rounded-full">{unreadCount}</span>}
+                  <span className="text-slate-500">{isDarkMode ? <Sun size={20} /> : <Moon size={20} />}</span>
+                  {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </button>
-              )}
+                
+                <button 
+                  onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
+                  className="text-lg md:text-xl font-bold text-slate-300 uppercase tracking-tight text-left flex items-center gap-3 hover:text-blue-400 transition-colors"
+                >
+                  <Search size={20} className="text-slate-500" />
+                  Search
+                </button>
 
-              {/* Notification Overlay inside Mobile Menu */}
-              {isNotificationsOpen && session && (
-                <div className="bg-slate-900 rounded-3xl p-4 overflow-hidden mb-4">
-                  <NotificationDropdown 
-                    userId={session.user.id} 
-                    onClose={() => setIsNotificationsOpen(false)} 
-                  />
-                </div>
-              )}
-              
-              <div className="h-px bg-white/10 my-4" />
-              {session ? (
-                <>
-                  <a 
-                    href="#/profile"
-                    onClick={(e) => navigateTo(e, '#/profile')}
-                    className="text-3xl font-black text-white uppercase tracking-tighter italic"
-                  >
-                    My Profile
-                  </a>
+                {session && (
                   <button 
-                    onClick={handleLogout}
-                    className="text-3xl font-black text-rose-500 uppercase tracking-tighter italic text-left"
+                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    className="text-lg md:text-xl font-bold text-slate-300 uppercase tracking-tight text-left flex items-center justify-between hover:text-blue-400 transition-colors"
                   >
-                    Logout
+                    <div className="flex items-center gap-3">
+                      <Bell size={20} className="text-slate-500" />
+                      Notifications 
+                    </div>
+                    {unreadCount > 0 && <span className="bg-rose-500 text-white text-xs px-2.5 py-0.5 rounded-full">{unreadCount}</span>}
                   </button>
-                </>
-              ) : (
-                <>
-                  <a 
-                    href="#/login"
-                    onClick={(e) => navigateTo(e, '#/login')}
-                    className="text-3xl font-black text-white uppercase tracking-tighter italic"
-                  >
-                    Login
-                  </a>
-                  <a 
-                    href="#/signup"
-                    onClick={(e) => navigateTo(e, '#/signup')}
-                    className="text-3xl font-black text-blue-500 uppercase tracking-tighter italic"
-                  >
-                    Sign Up
-                  </a>
-                </>
-              )}
-            </div>
-          </motion.div>
+                )}
+
+                {/* Notification Overlay inside Mobile Menu */}
+                {isNotificationsOpen && session && (
+                  <div className="bg-slate-900 rounded-2xl p-4 overflow-hidden mb-4 shadow-inner border border-white/5 mt-2">
+                    <NotificationDropdown 
+                      userId={session.user.id} 
+                      onClose={() => setIsNotificationsOpen(false)} 
+                    />
+                  </div>
+                )}
+                
+                <div className="h-px bg-white/10 my-2" />
+                {session ? (
+                  <>
+                    <a 
+                      href="#/profile"
+                      onClick={(e) => navigateTo(e, '#/profile')}
+                      className="text-lg md:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                    >
+                      <User size={20} className="text-slate-500" />
+                      My Profile
+                    </a>
+                    <button 
+                      onClick={handleLogout}
+                      className="text-lg md:text-xl font-bold text-rose-500 uppercase tracking-tight text-left flex items-center gap-3 hover:text-rose-400 transition-colors"
+                    >
+                      <X size={20} className="text-rose-500" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a 
+                      href="#/login"
+                      onClick={(e) => navigateTo(e, '#/login')}
+                      className="text-lg md:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                    >
+                      <User size={20} className="text-slate-500" />
+                      Login
+                    </a>
+                    <a 
+                      href="#/signup"
+                      onClick={(e) => navigateTo(e, '#/signup')}
+                      className="text-lg md:text-xl font-bold text-blue-500 uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                    >
+                      <CheckCircle size={20} className="text-blue-500" />
+                      Sign Up
+                    </a>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 

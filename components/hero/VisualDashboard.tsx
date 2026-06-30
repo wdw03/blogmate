@@ -44,7 +44,7 @@ const VisualDashboard: React.FC = () => {
       <div className="relative z-10 transform rotate-y-[-8deg] rotate-x-[4deg] hover:rotate-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]">
         
         {/* MAIN SCANNER MODULE */}
-        <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[3rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.18)] p-10 overflow-hidden relative mb-6">
+        <div className="bg-white/90 backdrop-blur-3xl border border-white/50 rounded-[3rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.18)] p-5 md:p-10 overflow-hidden relative mb-6">
           
           {/* Header Controls */}
           <div className="flex items-center justify-between mb-10">
@@ -86,10 +86,10 @@ const VisualDashboard: React.FC = () => {
                 <div className={`flex items-baseline transition-all duration-400 ease-[cubic-bezier(0.19,1,0.22,1)] ${
                   isTransitioning ? 'opacity-0 -translate-y-8 blur-md' : 'opacity-100 translate-y-0 blur-0'
                 }`}>
-                  <span className="text-6xl md:text-7xl font-black text-slate-900 tracking-[-0.06em]">
+                  <span className="text-3xl sm:text-5xl md:text-7xl font-black text-slate-900 tracking-[-0.06em]">
                     {domains[domainIndex].name}
                   </span>
-                  <span className={`text-6xl md:text-7xl font-black tracking-[-0.06em] transition-colors duration-500 ${domains[domainIndex].color}`}>
+                  <span className={`text-3xl sm:text-5xl md:text-7xl font-black tracking-[-0.06em] transition-colors duration-500 ${domains[domainIndex].color}`}>
                     {domains[domainIndex].tld}
                   </span>
                   <div className="w-1.5 h-16 bg-blue-600 rounded-full ml-4 animate-pulse"></div>
@@ -97,8 +97,8 @@ const VisualDashboard: React.FC = () => {
               </div>
               
               {/* STATUS BAR UNDER TEXT */}
-              <div className="mt-6 flex items-center space-x-4">
-                <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:space-x-4 sm:gap-0">
+                <div className="h-1.5 flex-1 w-full sm:w-auto bg-slate-100 rounded-full overflow-hidden">
                   <div 
                     className={`h-full bg-gradient-to-r from-blue-600 to-indigo-500 transition-all duration-1000 ${isTransitioning ? 'w-0' : 'w-full'}`}
                   ></div>
@@ -112,7 +112,7 @@ const VisualDashboard: React.FC = () => {
           </div>
 
           {/* ANALYTICS TILES */}
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="flex flex-col p-6 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Value</span>
                <span className={`text-3xl font-black text-slate-900 tracking-tighter transition-all duration-300 ${isTransitioning ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
@@ -136,7 +136,7 @@ const VisualDashboard: React.FC = () => {
         </div>
 
         {/* SECONDARY WIDGET LAYER */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden group">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">

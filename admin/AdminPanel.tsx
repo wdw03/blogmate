@@ -128,7 +128,15 @@ const AdminPanel: React.FC = () => {
         </button>
       </div>
 
-      <aside className={`${isMobileMenuOpen ? 'flex' : 'hidden'} lg:flex fixed lg:static inset-0 lg:w-72 bg-[#020617]/95 backdrop-blur-xl flex-col border-r border-white/10 dark:border-slate-800 z-50 shrink-0 shadow-2xl transition-all duration-300`}>
+      {/* Mobile Menu Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[40] lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      <aside className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 w-[280px] lg:w-72 bg-[#020617]/95 backdrop-blur-xl flex flex-col border-r border-white/10 dark:border-slate-800 z-[50] shrink-0 shadow-2xl transition-transform duration-300`}>
 
         <div className="p-8">
           <div className="flex items-center gap-4 mb-12">

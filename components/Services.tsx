@@ -173,7 +173,7 @@ const Services: React.FC<ServicesProps> = ({ isFullPage = false }) => {
                   <span className="text-[9px] font-mono text-slate-500">ID: DOM-INTEL-889</span>
                 </div>
 
-                <h3 className="text-5xl md:text-6xl font-black text-white leading-[0.9] mb-8 tracking-tighter">
+                <h3 className="text-3xl sm:text-5xl md:text-6xl font-black text-white leading-[0.9] mb-8 tracking-tighter">
                   Trust The <br />
                   <span className="text-blue-500 italic drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]">Infrastructure.</span>
                 </h3>
