@@ -48,40 +48,40 @@ const Hero: React.FC = () => {
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="max-w-5xl mx-auto"
             >
-              <h1 className="text-[2.6rem] sm:text-[3.8rem] md:text-[4.8rem] lg:text-[5.8rem] xl:text-[6.5rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8 transition-all duration-500 select-none cursor-default">
-                
-                {/* DOMINATE with Chakri in place of O */}
-                <motion.span 
-                  whileHover={{ scale: 1.03 }}
-                  className="inline-block transition-all duration-300 [-webkit-text-stroke:1px_rgba(37,99,235,0.2)] hover:[-webkit-text-stroke:2px_#2563eb] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 dark:hover:from-blue-400 dark:hover:via-cyan-300 dark:hover:to-purple-400"
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.08] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default uppercase">
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                  className="block mb-2"
                 >
-                  D<SpinningChakri />MINATE
-                </motion.span>{" "}
+                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(37,99,235,0.2)] hover:[-webkit-text-stroke:2px_#2563eb] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 dark:hover:from-blue-400 dark:hover:via-cyan-300 dark:hover:to-purple-400">
+                    W<SpinningChakri />RLD'S PREMIER MARKETPLACE
+                  </span>
+                </motion.div>
                 
-                <motion.span 
-                  whileHover={{ scale: 1.03 }}
-                  className="inline-block transition-all duration-300 hover:text-slate-700 dark:hover:text-slate-200"
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.25 }}
+                  className="block mb-2"
                 >
-                  SERPS WITH
-                </motion.span>{" "}
+                  <span className="inline-block transition-all duration-300 hover:scale-[1.02] hover:text-slate-700 dark:hover:text-slate-200">
+                    F<SpinningChakri />R HIGH-AUTH<SpinningChakri color="text-indigo-500 dark:text-cyan-400" />RITY
+                  </span>
+                </motion.div>
                 
-                {/* AUTHORITY with Chakri in place of O */}
-                <motion.span 
-                  whileHover={{ scale: 1.05 }}
-                  className="inline-block relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:drop-shadow-[0_0_35px_rgba(37,99,235,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa]"
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="block"
                 >
-                  AUTH<SpinningChakri color="text-indigo-500 dark:text-cyan-400" />RITY
-                </motion.span>
+                  <span className="inline-block relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(37,99,235,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa]">
+                    PREMIUM DIGITAL ASSETS.
+                  </span>
+                </motion.div>
               </h1>
-
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="text-lg md:text-2xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-3xl mx-auto uppercase tracking-widest leading-relaxed"
-              >
-                Acquire elite programmatic assets. Command the flow of institutional traffic. Outrank the algorithms.
-              </motion.p>
             </motion.div>
 
             <motion.div 
