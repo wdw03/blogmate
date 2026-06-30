@@ -1,7 +1,29 @@
-
 import React from 'react';
-import { Search, ChevronRight, TrendingUp, BarChart3, Lock } from 'lucide-react';
-import AnimatedHeadline from './hero/AnimatedHeadline';
+import { Search, ChevronRight, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const SpinningChakri: React.FC<{ color?: string }> = ({ color = "text-blue-600 dark:text-blue-400" }) => (
+  <span className="inline-flex items-center justify-center align-middle mx-1 relative">
+    <motion.span
+      animate={{ rotate: 360 }}
+      transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+      whileHover={{ scale: 1.3, rotate: 720, transition: { duration: 0.6 } }}
+      className={`inline-block ${color} drop-shadow-[0_0_15px_rgba(37,99,235,0.8)] cursor-pointer`}
+    >
+      <svg viewBox="0 0 100 100" className="w-[0.82em] h-[0.82em]">
+        {/* Outer 12-point sharp geometric Chakri / Star */}
+        <polygon 
+          points="50,0 61,32 93,25 71,50 93,75 61,68 50,100 39,68 7,75 29,50 7,25 39,32" 
+          fill="currentColor" 
+        />
+        {/* Concentric rings inside the Chakri */}
+        <circle cx="50" cy="50" r="18" className="fill-white dark:fill-slate-950 stroke-current stroke-[5]" />
+        <circle cx="50" cy="50" r="7" fill="currentColor" />
+      </svg>
+    </motion.span>
+  </span>
+);
+
 const Hero: React.FC = () => {
   const handleNav = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
@@ -18,20 +40,56 @@ const Hero: React.FC = () => {
 
       <div className="container mx-auto px-6 md:px-12 max-w-7xl relative">
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-[6rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8">
-                DOMINATE SERPS WITH{" "}
-                <span className="text-blue-600 dark:text-blue-400 italic">
-                  AUTHORITY
-                </span>
+          <div className="w-full max-w-5xl">
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-5xl mx-auto"
+            >
+              <h1 className="text-[2.6rem] sm:text-[3.8rem] md:text-[4.8rem] lg:text-[5.8rem] xl:text-[6.5rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8 transition-all duration-500 select-none cursor-default">
+                
+                {/* DOMINATE with Chakri in place of O */}
+                <motion.span 
+                  whileHover={{ scale: 1.03 }}
+                  className="inline-block transition-all duration-300 [-webkit-text-stroke:1px_rgba(37,99,235,0.2)] hover:[-webkit-text-stroke:2px_#2563eb] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 dark:hover:from-blue-400 dark:hover:via-cyan-300 dark:hover:to-purple-400"
+                >
+                  D<SpinningChakri />MINATE
+                </motion.span>{" "}
+                
+                <motion.span 
+                  whileHover={{ scale: 1.03 }}
+                  className="inline-block transition-all duration-300 hover:text-slate-700 dark:hover:text-slate-200"
+                >
+                  SERPS WITH
+                </motion.span>{" "}
+                
+                {/* AUTHORITY with Chakri in place of O */}
+                <motion.span 
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-block relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:drop-shadow-[0_0_35px_rgba(37,99,235,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa]"
+                >
+                  AUTH<SpinningChakri color="text-indigo-500 dark:text-cyan-400" />RITY
+                </motion.span>
               </h1>
-              <p className="text-lg md:text-2xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-3xl mx-auto uppercase tracking-widest leading-relaxed">
-                Acquire elite programmatic assets. Command the flow of institutional traffic. Outrank the algorithms.
-              </p>
-            </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-6 mb-16">
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="text-lg md:text-2xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-3xl mx-auto uppercase tracking-widest leading-relaxed"
+              >
+                Acquire elite programmatic assets. Command the flow of institutional traffic. Outrank the algorithms.
+              </motion.p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-6 mb-16"
+            >
               <a
                 href="#/domains"
                 onClick={(e) => handleNav(e, '#/domains')}
@@ -49,11 +107,12 @@ const Hero: React.FC = () => {
                 <span>VIEW PROTOCOLS</span>
                 <ChevronRight size={18} strokeWidth={3} />
               </a>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default Hero;
