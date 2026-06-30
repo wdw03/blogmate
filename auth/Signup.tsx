@@ -78,12 +78,12 @@ const Signup: React.FC = () => {
 
   if (success) {
     return (
-      <div className="h-screen w-screen bg-[#020617] flex items-center justify-center p-4 font-['Inter']">
-        <div className="bg-white rounded-[4rem] p-12 md:p-20 shadow-[0_40px_100px_-20px_rgba(37,99,235,0.2)] max-w-2xl w-full text-center animate-in zoom-in-95 duration-700 relative overflow-hidden">
+      <div className="min-h-[100dvh] w-full bg-[#020617] flex items-center justify-center p-4 font-['Inter']">
+        <div className="bg-white rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 md:p-14 shadow-[0_40px_100px_-20px_rgba(37,99,235,0.2)] max-w-2xl w-full text-center animate-in zoom-in-95 duration-700 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-40"></div>
           
           <div className="relative z-10 flex flex-col items-center">
-            <div className="w-24 h-24 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mb-10 shadow-2xl animate-pulse">
+            <div className="w-24 h-24 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mb-6 sm:mb-8 shadow-2xl animate-pulse">
               <Mail size={48} strokeWidth={2.5} />
             </div>
             
@@ -91,7 +91,7 @@ const Signup: React.FC = () => {
               <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em]">Email Verification Required</span>
             </div>
 
-            <h2 className="text-5xl font-black text-slate-950 mb-6 italic tracking-tighter uppercase leading-none">
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-950 mb-6 italic tracking-tighter uppercase leading-none">
               Account Created.
             </h2>
             
@@ -115,14 +115,14 @@ const Signup: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-screen bg-[#020617] flex items-center justify-center p-4 sm:p-8 overflow-hidden font-['Inter'] selection:bg-blue-600 selection:text-white">
+    <div className="min-h-[100dvh] w-full bg-[#020617] flex items-center justify-center p-3 sm:p-6 overflow-x-hidden overflow-y-auto font-['Inter'] selection:bg-blue-600 selection:text-white">
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       </div>
       
-      <div className="w-full max-w-[1100px] h-full max-h-[760px] bg-white rounded-[3.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex overflow-hidden border border-white/10 relative z-10 animate-in fade-in zoom-in-95 duration-1000">
+      <div className="w-full max-w-[1100px] min-h-0 lg:min-h-[680px] bg-white rounded-2xl sm:rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex overflow-hidden border border-white/10 relative z-10 animate-in fade-in zoom-in-95 duration-1000">
         
-        <div className="w-full lg:w-[50%] p-10 md:p-14 flex flex-col justify-between relative bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar">
+        <div className="w-full lg:w-[50%] p-5 sm:p-8 md:p-10 flex flex-col justify-between relative bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar">
           <div className="flex items-center justify-between shrink-0 mb-8">
             <button 
               onClick={() => navigateTo('#/')} 
@@ -143,12 +143,12 @@ const Signup: React.FC = () => {
           </div>
 
           <div className="max-w-md mx-auto w-full mb-8">
-            <div className="mb-10 text-center lg:text-left">
+            <div className="mb-6 sm:mb-8 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-50 border border-orange-100 mb-4">
                 <Zap size={12} className="text-orange-600" />
                 <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest">Join our Community</span>
               </div>
-              <h1 className="text-5xl font-black text-slate-950 mb-2 tracking-tighter leading-none italic uppercase">Get Started.</h1>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-950 mb-2 tracking-tighter leading-none italic uppercase">Get Started.</h1>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] pl-1">Create your domain management account</p>
             </div>
 
@@ -244,7 +244,7 @@ const Signup: React.FC = () => {
           
           <div className="relative z-10 w-full max-w-sm flex flex-col gap-10">
             <div className="bg-white rounded-[3rem] p-10 shadow-[0_50px_100px_rgba(0,0,0,0.3)] border border-white/20 animate-float">
-              <div className="flex justify-between items-start mb-10">
+              <div className="flex justify-between items-start mb-6 sm:mb-8">
                  <div>
                    <div className="flex items-center gap-2 mb-2">
                      <Shield size={14} className="text-blue-600" />

@@ -180,14 +180,14 @@ const AdminCoupons: React.FC = () => {
             <AnimatePresence>
                 {isAdding && (
                     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-xl bg-white rounded-[3.5rem] shadow-3xl overflow-hidden border border-white/20" >
-                            <div className="p-4 sm:p-6 lg:p-10 border-b border-slate-100 bg-white flex justify-between items-center">
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-[2.5rem] shadow-3xl overflow-hidden border border-white/20" >
+                            <div className="p-4 sm:p-6 lg:p-10 border-b border-slate-100 bg-white flex flex-col min-[420px]:flex-row gap-4 justify-between min-[420px]:items-center">
                                 <div className="flex items-center gap-6">
                                     <div className="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-xl rotate-3">
                                         <Ticket size={28} />
                                     </div>
                                     <div>
-                                        <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Voucher_Forge</h3>
+                                        <h3 className="text-xl sm:text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">Voucher_Forge</h3>
                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2 block">Registry Initialization Protocol</span>
                                     </div>
                                 </div>
@@ -197,25 +197,25 @@ const AdminCoupons: React.FC = () => {
                                 <div className="space-y-3">
                                     <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Voucher Identification Code</label>
                                     <div className="relative group">
-                                        <input required type="text" value={newCoupon.code} onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })} placeholder="E.G. DOMINTEL_LAUNCH" className="w-full p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black uppercase outline-none focus:border-blue-600 shadow-inner" />
+                                        <input required type="text" value={newCoupon.code} onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })} placeholder="E.G. DOMINTEL_LAUNCH" className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black uppercase outline-none focus:border-blue-600 shadow-inner" />
                                         <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500">
                                             <Terminal size={20} />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                                     <div className="space-y-3">
                                         <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Discount Unit (%)</label>
                                         <div className="relative">
-                                            <input required type="number" value={newCoupon.percent} onChange={e => setNewCoupon({ ...newCoupon, percent: e.target.value })} placeholder="20" className="w-full p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black outline-none focus:border-blue-600 shadow-inner" />
+                                            <input required type="number" value={newCoupon.percent} onChange={e => setNewCoupon({ ...newCoupon, percent: e.target.value })} placeholder="20" className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black outline-none focus:border-blue-600 shadow-inner" />
                                             <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 font-black">%</div>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
                                         <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Usage Quota (Optional)</label>
                                         <div className="relative">
-                                            <input type="number" value={newCoupon.limit} onChange={e => setNewCoupon({ ...newCoupon, limit: e.target.value })} placeholder="Unlimited" className="w-full p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black outline-none focus:border-blue-600 shadow-inner" />
+                                            <input type="number" value={newCoupon.limit} onChange={e => setNewCoupon({ ...newCoupon, limit: e.target.value })} placeholder="Unlimited" className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black outline-none focus:border-blue-600 shadow-inner" />
                                             <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300">
                                                 <Users size={20} />
                                             </div>
@@ -226,7 +226,7 @@ const AdminCoupons: React.FC = () => {
                                 <div className="space-y-3">
                                     <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Expiry Signal (Optional)</label>
                                     <div className="relative group">
-                                        <input type="date" value={newCoupon.expiry} onChange={e => setNewCoupon({ ...newCoupon, expiry: e.target.value })} className="w-full p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-[12px] font-black uppercase outline-none focus:border-blue-600 cursor-pointer" />
+                                        <input type="date" value={newCoupon.expiry} onChange={e => setNewCoupon({ ...newCoupon, expiry: e.target.value })} className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-[12px] font-black uppercase outline-none focus:border-blue-600 cursor-pointer" />
                                         <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
                                             <Calendar size={20} />
                                         </div>

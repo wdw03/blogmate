@@ -283,16 +283,16 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
         <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-8 bg-slate-950/90 backdrop-blur-md animate-in fade-in duration-300">
           <form
             onSubmit={handleSaveDomain}
-            className="w-full max-w-6xl bg-white rounded-[3.5rem] shadow-3xl border border-white/20 overflow-hidden flex flex-col h-full max-h-[94vh] animate-in zoom-in-95 duration-500"
+            className="w-full max-w-6xl bg-white rounded-2xl sm:rounded-[2.5rem] shadow-3xl border border-white/20 overflow-hidden flex flex-col h-full max-h-[94vh] animate-in zoom-in-95 duration-500"
           >
-            <header className="px-10 py-8 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-blue-500/30 transform rotate-3 italic font-black text-2xl">D</div>
+            <header className="px-4 py-4 sm:px-6 sm:py-5 lg:px-10 lg:py-8 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3 sm:gap-6">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-blue-500/30 transform rotate-3 italic font-black text-2xl">D</div>
                 <div>
-                  <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">{editingId ? 'Modify_Asset_Node' : 'Deploy_Asset_Node'}</h3>
+                  <h3 className="text-lg sm:text-2xl lg:text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">{editingId ? 'Modify_Asset_Node' : 'Deploy_Asset_Node'}</h3>
                 </div>
               </div>
-              <button type="button" onClick={() => setShowAddModal(false)} className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 hover:text-slate-950 transition-all">
+              <button type="button" onClick={() => setShowAddModal(false)} className="w-10 h-10 sm:w-14 sm:h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 hover:text-slate-950 transition-all">
                 <X size={24} />
               </button>
             </header>
@@ -320,7 +320,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               </section>
 
               {/* FORENSICS */}
-              <section className="bg-slate-950 rounded-[3.5rem] p-4 sm:p-6 lg:p-10 relative overflow-hidden border border-white/5">
+              <section className="bg-slate-950 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-10 relative overflow-hidden border border-white/5">
                 <div className="flex items-center gap-3 mb-10 ml-2">
                   <Activity size={18} className="text-blue-400" />
                   <h4 className="text-[11px] font-black text-blue-400 uppercase tracking-[0.3em]">Forensic_Metrics</h4>
@@ -349,9 +349,9 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               </section>
             </div>
 
-            <footer className="px-10 py-8 border-t border-slate-100 bg-white flex items-center justify-end gap-4 shrink-0">
-              <button type="button" onClick={() => setShowAddModal(false)} className="px-10 py-5 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest italic">Abort</button>
-              <button type="submit" disabled={isSubmitting} className="px-14 py-5 bg-slate-950 text-white rounded-2xl font-black text-[12px] uppercase tracking-[0.3em] flex items-center gap-4 active:scale-95 disabled:opacity-50">
+            <footer className="px-4 py-4 sm:px-6 sm:py-5 lg:px-10 lg:py-8 border-t border-slate-100 bg-white flex flex-col-reverse min-[420px]:flex-row items-stretch min-[420px]:items-center justify-end gap-3 shrink-0">
+              <button type="button" onClick={() => setShowAddModal(false)} className="px-5 py-3 sm:px-8 sm:py-4 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest italic">Abort</button>
+              <button type="submit" disabled={isSubmitting} className="px-6 py-3 sm:px-10 sm:py-4 bg-slate-950 text-white rounded-2xl font-black text-[12px] uppercase tracking-[0.3em] flex items-center gap-4 active:scale-95 disabled:opacity-50">
                 {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <><Database size={18} fill="currentColor" className="text-blue-400" /> {editingId ? 'Update Node' : 'Initialize Node'}</>}
               </button>
             </footer>
@@ -362,10 +362,10 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
       {/* BULK IMPORT MODAL */}
       {showBulkModal && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-8 bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-300">
-          <div className="w-full max-w-7xl bg-white rounded-[4rem] shadow-3xl border border-white/20 overflow-hidden flex flex-col h-full max-h-[96vh] animate-in zoom-in-95 duration-500">
-            <header className="px-10 py-10 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-8">
-                <div className="w-16 h-16 bg-slate-900 rounded-[1.75rem] flex items-center justify-center text-blue-400 shadow-2xl shadow-blue-500/20 transform -rotate-2">
+          <div className="w-full max-w-7xl bg-white rounded-2xl sm:rounded-[2.5rem] shadow-3xl border border-white/20 overflow-hidden flex flex-col h-full max-h-[96vh] animate-in zoom-in-95 duration-500">
+            <header className="px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-10 border-b border-slate-100 bg-white flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-slate-900 rounded-[1.75rem] flex items-center justify-center text-blue-400 shadow-2xl shadow-blue-500/20 transform -rotate-2">
                   <Terminal size={32} />
                 </div>
                 <div>
@@ -376,14 +376,14 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   </div>
                 </div>
               </div>
-              <button onClick={() => setShowBulkModal(false)} className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center text-slate-300 hover:text-rose-500 transition-all">
+              <button onClick={() => setShowBulkModal(false)} className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center text-slate-300 hover:text-rose-500 transition-all">
                 <X size={28} />
               </button>
             </header>
 
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#F8FAFC]">
               {/* Tutorial Sidebar */}
-              <aside className="w-full lg:w-[320px] border-r border-slate-200 bg-white p-8 overflow-y-auto custom-scrollbar shrink-0">
+              <aside className="w-full lg:w-[320px] border-r border-slate-200 bg-white p-4 sm:p-6 lg:p-8 overflow-y-auto custom-scrollbar shrink-0">
                 <div className="space-y-10">
                   <div>
                     <h4 className="flex items-center gap-3 text-xs font-black text-slate-950 uppercase tracking-widest mb-6">
@@ -410,11 +410,11 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
 
               <main className="flex-1 p-4 sm:p-6 lg:p-10 overflow-hidden flex flex-col">
                 {bulkData.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-20 bg-white border-2 border-dashed border-slate-200 rounded-[3rem] shadow-inner group">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-6 sm:p-10 lg:p-20 bg-white border-2 border-dashed border-slate-200 rounded-[3rem] shadow-inner group">
                     <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200 mb-8 group-hover:text-blue-500 group-hover:bg-blue-50 transition-all duration-700">
                       <Upload size={48} strokeWidth={1.5} />
                     </div>
-                    <h4 className="text-3xl font-black text-slate-950 uppercase tracking-tighter italic mb-4">Ready For Payload Injection</h4>
+                    <h4 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-950 uppercase tracking-tighter italic mb-4">Ready For Payload Injection</h4>
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.4em] mb-12 max-w-xs">Drop your formatted .CSV manifest here or click to browse</p>
 
                     <input
@@ -506,7 +506,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               <div className="flex gap-4">
                 <button
                   onClick={() => setShowBulkModal(false)}
-                  className="px-10 py-5 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest italic active:scale-95"
+                  className="px-5 py-3 sm:px-8 sm:py-4 bg-white border border-slate-200 text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest italic active:scale-95"
                 >
                   Abort_Sequence
                 </button>

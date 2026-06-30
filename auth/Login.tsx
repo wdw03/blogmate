@@ -91,17 +91,17 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#020617] flex items-center justify-center p-4 sm:p-8 overflow-hidden font-['Inter'] selection:bg-blue-600 selection:text-white">
+    <div className="min-h-[100dvh] w-full bg-[#020617] flex items-center justify-center p-3 sm:p-6 overflow-x-hidden overflow-y-auto font-['Inter'] selection:bg-blue-600 selection:text-white">
       {/* Dynamic Background */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px]"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#3b82f6_0%,transparent_50%)] opacity-10"></div>
       </div>
       
-      <div className="w-full max-w-[1000px] h-full max-h-[680px] bg-white rounded-[3.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex overflow-hidden border border-white/10 relative z-10 animate-in fade-in zoom-in-95 duration-1000">
+      <div className="w-full max-w-[1000px] min-h-0 lg:min-h-[620px] bg-white rounded-2xl sm:rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex overflow-hidden border border-white/10 relative z-10 animate-in fade-in zoom-in-95 duration-1000">
         
         {/* LEFT PANE: LOGIN FORM */}
-        <div className="w-full lg:w-[50%] p-10 md:p-16 flex flex-col justify-between relative bg-white border-r border-slate-100">
+        <div className="w-full lg:w-[50%] p-5 sm:p-8 md:p-10 flex flex-col justify-between relative bg-white border-r overflow-y-auto border-slate-100">
           <div className="flex items-center justify-between">
             <button 
               onClick={() => navigateTo('#/')} 
@@ -119,18 +119,18 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <div className="max-w-sm mx-auto w-full py-12">
-            <div className="mb-12">
+          <div className="max-w-sm mx-auto w-full py-8 sm:py-10">
+            <div className="mb-7 sm:mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-50 border border-blue-100 mb-4">
                 <Shield size={12} className="text-blue-600" />
                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Authorized Access</span>
               </div>
-              <h1 className="text-5xl font-black text-slate-950 tracking-tighter leading-none mb-4 uppercase italic">Welcome Back.</h1>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tighter leading-none mb-4 uppercase italic">Welcome Back.</h1>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] pl-1">Login to manage your domain portfolio</p>
             </div>
 
             {error && (
-              <div className="mb-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600 text-[10px] font-black uppercase tracking-tight animate-in slide-in-from-top-2">
+              <div className="mb-5 p-3 sm:p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600 text-[10px] font-black uppercase tracking-tight animate-in slide-in-from-top-2">
                 <div className="flex items-center gap-3">
                   <ShieldCheck size={16} />
                   <span>{error}</span>
@@ -139,7 +139,7 @@ const Login: React.FC = () => {
             )}
 
             {success && (
-              <div className="mb-8 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-600 text-[10px] font-black uppercase tracking-tight animate-in slide-in-from-top-2">
+              <div className="mb-5 p-3 sm:p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-600 text-[10px] font-black uppercase tracking-tight animate-in slide-in-from-top-2">
                 <div className="flex items-center gap-3">
                   <Check size={16} />
                   <span>{success}</span>
@@ -147,8 +147,8 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-8">
-              <div className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
+              <div className="space-y-4 sm:space-y-5">
                 <div className="group">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 block ml-1">Email Address</label>
                   <div className="relative border-2 border-slate-100 bg-slate-50/50 rounded-2xl focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-xl transition-all p-1">

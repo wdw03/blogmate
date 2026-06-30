@@ -230,7 +230,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
                  initial={{ opacity: 0, scale: 0.98, y: 10 }}
                  animate={{ opacity: 1, scale: 1, y: 0 }}
                  exit={{ opacity: 0, scale: 0.98, y: 10 }}
-                 className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col h-full max-h-[94vh] border border-slate-200"
+                 className="w-full max-w-6xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-full max-h-[94vh] border border-slate-200"
                >
                   <header className="px-6 py-4 border-b border-slate-100 bg-[#020617] text-white flex items-center justify-between shrink-0">
                      <div className="flex items-center gap-4">
@@ -246,7 +246,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
                   </header>
 
                   <div className="flex-1 overflow-hidden flex flex-col lg:flex-row bg-[#F8FAFC]">
-                     <aside className="w-full lg:w-[300px] bg-white border-r border-slate-200/60 p-5 space-y-6 overflow-y-auto shrink-0 custom-scrollbar">
+                     <aside className="w-full max-h-72 lg:max-h-none lg:w-[300px] bg-white border-r border-slate-200/60 p-5 space-y-6 overflow-y-auto shrink-0 custom-scrollbar">
                         <section>
                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] block mb-3 pl-1">Customer Entity</span>
                             <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-center relative overflow-hidden shadow-inner">

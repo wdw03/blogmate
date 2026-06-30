@@ -161,7 +161,7 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
                 </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-[3rem] overflow-hidden shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-sm">
                 <div className="p-4 sm:p-6 lg:p-10 border-b border-slate-100 flex items-center justify-between">
                     <div>
                         <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">Liquidity_Registry</h3>
@@ -173,14 +173,14 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
                 </div>
 
                 <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-left">
+                    <table className="w-full min-w-[700px] text-left">
                         <thead>
                             <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Operator Node</th>
-                                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Protocol_Type</th>
-                                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Amount</th>
-                                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Directive</th>
+                                <th className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Operator Node</th>
+                                <th className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Protocol_Type</th>
+                                <th className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Amount</th>
+                                <th className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                                <th className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Directive</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -194,7 +194,7 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
                                 </tr>
                             ) : filtered.map(tx => (
                                 <tr key={tx.id} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                                    <td className="px-10 py-6">
+                                    <td className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6">
                                         <div className="flex items-center gap-4">
                                             <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-white shadow-lg ${tx.profiles?.wallet_status === 'frozen' ? 'bg-rose-500' : 'bg-slate-900'}`}>{tx.profiles?.full_name?.[0] || 'U'}</div>
                                             <div>
@@ -209,22 +209,22 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-10 py-6 text-center">
+                                    <td className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-center">
                                         <div className={`inline-flex px-3 py-1 rounded-lg text-[9px] font-black uppercase border ${
                                             tx.type === 'topup' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
                                             tx.type === 'withdrawal' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-slate-100 text-slate-500'
                                         }`}>{tx.type}</div>
                                     </td>
-                                    <td className="px-10 py-6 text-center">
+                                    <td className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-center">
                                         <span className="text-base font-black text-slate-950 tabular-nums">${tx.amount.toLocaleString()}</span>
                                     </td>
-                                    <td className="px-10 py-6 text-center">
+                                    <td className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-center">
                                         <span className={`text-[9px] font-black uppercase tracking-widest ${
                                             tx.status === 'completed' ? 'text-emerald-500' : 
                                             tx.status === 'pending' ? 'text-amber-500 animate-pulse' : 'text-rose-500'
                                         }`}>{tx.status}</span>
                                     </td>
-                                    <td className="px-10 py-6 text-right">
+                                    <td className="px-5 sm:px-8 lg:px-10 py-4 sm:py-6 text-right">
                                         <div className="flex justify-end gap-2">
                                             {tx.status === 'pending' && (
                                                 <>

@@ -1,136 +1,136 @@
-import React from 'react';
-import { Search, ChevronRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, BarChart3, CheckCircle2, Globe2, Network, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const SpinningChakri: React.FC<{ color?: string }> = ({ color = "text-blue-600 dark:text-blue-400" }) => (
-  <span className="inline-flex items-center justify-center align-middle mx-1 relative">
-    <motion.span
-      animate={{ rotate: 360 }}
-      transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-      whileHover={{ scale: 1.3, rotate: 720, transition: { duration: 0.6 } }}
-      className={`inline-block ${color} drop-shadow-[0_0_15px_rgba(37,99,235,0.8)] cursor-pointer`}
-    >
-      <svg viewBox="0 0 100 100" className="w-[0.82em] h-[0.82em]">
-        {/* Outer 12-point sharp geometric Chakri / Star */}
-        <polygon
-          points="50,0 61,32 93,25 71,50 93,75 61,68 50,100 39,68 7,75 29,50 7,25 39,32"
-          fill="currentColor"
-        />
-        {/* Concentric rings inside the Chakri */}
-        <circle cx="50" cy="50" r="18" className="fill-white dark:fill-slate-950 stroke-current stroke-[5]" />
-        <circle cx="50" cy="50" r="7" fill="currentColor" />
-      </svg>
-    </motion.span>
-  </span>
-);
-
 const Hero: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+    window.location.hash = query ? '#/domains?search=' + encodeURIComponent(query) : '#/domains';
+  };
+
   const handleNav = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     window.location.hash = path;
   };
 
   return (
-    <section className="relative pt-32 sm:pt-44 pb-16 sm:pb-28 overflow-hidden bg-white dark:bg-[#020617] transition-colors duration-300">
-      {/* Dynamic Background Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:32px_32px] opacity-40"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-40"></div>
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-50/50 dark:from-blue-900/10 to-transparent blur-3xl -z-10"></div>
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-100/30 dark:bg-orange-900/10 rounded-full blur-[120px] -z-10"></div>
+    <section className="relative overflow-hidden bg-white pb-[clamp(2.5rem,4vw,4rem)] pt-[clamp(6.5rem,9vw,8rem)] transition-colors duration-300 dark:bg-[#020617]">
+      <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:30px_30px] opacity-35 dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)]" />
+      <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-blue-200/30 blur-[120px] dark:bg-blue-600/10" />
+      <div className="absolute -right-20 top-10 h-[500px] w-[500px] rounded-full bg-cyan-200/30 blur-[140px] dark:bg-cyan-500/10" />
 
-      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative">
-        <div className="flex flex-col items-center justify-center text-center min-h-[calc(100svh-8rem)] sm:min-h-0">
-          <div className="w-full">
-
-            <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full mx-auto"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="flex justify-center mb-6 sm:mb-8"
-              >
-                <h6 className="inline-flex items-center whitespace-nowrap bg-black text-white border-2 border-white px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[9.5px] xs:text-[10.5px] sm:text-sm font-black tracking-[0.12em] sm:tracking-[0.25em] shadow-2xl hover:scale-105 transition-all uppercase max-w-full">
-                  <Sparkles size={14} className="text-blue-400 animate-pulse mr-1.5 sm:mr-2.5 flex-shrink-0" />
-                  <span className="truncate">PREMIUM PLATFORM INTELLIGENCE</span>
-                </h6>
-              </motion.div>
-
-              <h1
-                aria-label="World's premier marketplace for high-authority premium digital assets."
-                className="text-[2.35rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.6rem] font-black tracking-tighter leading-[1.02] sm:leading-[1.12] text-slate-950 dark:text-white mb-8 sm:mb-12 transition-all duration-500 select-none cursor-default w-full"
-              >
-                {/* Line 1: World's premier marketplace */}
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                  className="block mb-2 md:mb-3 md:w-full"
-                >
-                  <span className="inline transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
-                    W<SpinningChakri color="text-amber-500 dark:text-amber-400" />rld's premier marketplace
-                  </span>
-                </motion.span>
-                {" "}
-                {/* Line 2: for high-authority premium */}
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.25 }}
-                  className="block mb-2 md:mb-3 md:w-full"
-                >
-                  <span className="inline transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
-                    f<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />r high-auth<SpinningChakri color="text-cyan-500 dark:text-teal-400" />rity premium
-                  </span>
-                </motion.span>
-                {" "}
-                {/* Line 3: digital assets. */}
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="block md:w-full"
-                >
-                  <span className="inline relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(59,130,246,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
-                    digital assets.
-                  </span>
-                </motion.span>
-              </h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-5 mb-10 sm:mb-16"
-            >
-              <a
-                href="#/domains"
-                onClick={(e) => handleNav(e, '#/domains')}
-                className="group w-full sm:w-auto relative flex items-center justify-center space-x-4 bg-slate-950 dark:bg-white text-white dark:text-slate-950 px-6 sm:px-12 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl hover:shadow-blue-500/20 active:scale-[0.97]"
-              >
-                <span>ACCESS TERMINAL</span>
-                <Search size={18} strokeWidth={3} className="group-hover:rotate-12 transition-transform" />
-              </a>
-
-              <a
-                href="#/services"
-                onClick={(e) => handleNav(e, '#/services')}
-                className="flex items-center justify-center space-x-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-slate-100 dark:border-slate-800 px-6 sm:px-10 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:border-slate-900 dark:hover:border-slate-500 transition-all active:scale-[0.97] shadow-sm"
-              >
-                <span>VIEW PROTOCOLS</span>
-                <ChevronRight size={18} strokeWidth={3} />
-              </a>
-            </motion.div>
+      <div className="relative mx-auto grid w-full max-w-[1450px] items-center gap-[clamp(2rem,4vw,4rem)] px-[clamp(1rem,4vw,2.5rem)] lg:grid-cols-[minmax(0,1.1fr)_minmax(330px,.72fr)] lg:gap-[clamp(2rem,4vw,4rem)]">
+        <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="order-1 min-w-0 text-center lg:text-left">
+          <div className="mb-[clamp(.75rem,1.8vw,1rem)] inline-flex max-w-full items-center gap-2 rounded-full border border-blue-200 bg-blue-50/80 px-3 py-1.5 text-[8px] min-[380px]:px-4 min-[380px]:text-[9px] font-black uppercase tracking-[0.2em] text-blue-700 shadow-sm backdrop-blur dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300">
+            <Sparkles size={14} className="shrink-0 animate-pulse" /> <span className="truncate">The smarter marketplace for digital growth</span>
           </div>
-        </div>
+
+          <h1 className="text-[clamp(1.85rem,4.4vw,3.25rem)] font-black leading-[1.02] tracking-[-0.06em] text-slate-950 dark:text-white">
+            Find powerful domains.
+            <span className="mt-2 block bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">Build lasting authority.</span>
+          </h1>
+
+
+          <div className="mx-auto mt-3 flex max-w-xl flex-wrap justify-center gap-2 lg:mx-0 lg:justify-start">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[8px] font-black uppercase tracking-wider text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"><CheckCircle2 size={13} /> Verified listings</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[8px] font-black uppercase tracking-wider text-violet-700 dark:bg-violet-500/10 dark:text-violet-300"><ShieldCheck size={13} /> Secure orders</span>
+          </div>
+
+          <form onSubmit={handleSearch} className="mx-auto mt-[clamp(.8rem,1.5vw,1.1rem)] flex max-w-xl flex-col gap-2 rounded-xl sm:rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_55px_-20px_rgba(15,23,42,.3)] transition focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10 dark:border-white/10 dark:bg-slate-900 lg:mx-0">
+            <label className="flex items-center gap-2 px-2 pt-1 text-left text-[9px] font-black uppercase tracking-[.16em] text-slate-400"><Globe2 size={13} className="text-blue-500" /> Search 2,500+ verified websites</label>
+            <div className="flex min-w-0 items-center">
+              <span className="ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"><Search size={19} /></span>
+              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} aria-label="Search domains" placeholder="Type a domain, niche, or keyword..." className="min-w-0 flex-1 bg-transparent px-2.5 py-2 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400 dark:text-white sm:text-base" />
+              <button type="submit" className="hidden shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-[9px] font-black uppercase tracking-wider text-white transition hover:bg-slate-950 sm:flex">Search domains <ArrowRight size={15} /></button>
+            </div>
+            <button type="submit" className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-[9px] font-black uppercase tracking-wider text-white transition active:scale-[.98] sm:hidden">Search domains <ArrowRight size={15} /></button>
+          </form>
+          <div className="mt-3 flex flex-col items-center gap-3 min-[400px]:flex-row lg:justify-start">
+            <a href="#/services" onClick={(e) => handleNav(e, "#/services")} className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-2.5 text-[9px] font-black uppercase tracking-[.14em] text-blue-700 shadow-sm transition hover:border-blue-600 hover:bg-blue-600 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300 min-[400px]:w-auto">
+              Explore services <Sparkles size={14} className="transition-transform group-hover:rotate-12" />
+            </a>
+            <span className="hidden text-[9px] font-bold text-slate-400 min-[400px]:inline">Strategy, audit & secure placements</span>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] sm:gap-x-5 sm:text-[11px] font-bold text-slate-500 lg:justify-start">
+            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" /> Live marketplace</span>
+            <span>2,500+ websites</span><span>40+ categories</span>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 35, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.9, delay: 0.15 }} className="order-2 relative mx-auto w-full max-w-[clamp(265px,58vw,420px)] lg:mr-0">
+          <div className="absolute -inset-5 rounded-full bg-blue-500/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-[clamp(1.35rem,3vw,2.25rem)] border border-slate-200/80 bg-slate-950 p-[clamp(.7rem,2vw,1.1rem)] shadow-[0_35px_100px_-25px_rgba(15,23,42,0.55)] sm:rounded-[2.25rem] sm:p-4">
+            <div className="mb-[clamp(.75rem,2vw,1.25rem)] flex min-w-0 items-center justify-between gap-2 border-b border-white/10 pb-[clamp(.75rem,2vw,1rem)]">
+              <div className="flex min-w-0 items-center gap-2 sm:gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white"><Network size={18} /></span><div className="min-w-0"><p className="truncate text-[9px] sm:text-[10px] font-black uppercase tracking-[0.18em] text-white">Network intelligence</p><p className="mt-0.5 truncate text-[8px] sm:text-[9px] font-bold text-slate-500">GLOBAL SIGNAL MAP / LIVE</p></div></div>
+              <div className="flex gap-1.5"><span className="h-2 w-2 rounded-full bg-rose-400" /><span className="h-2 w-2 rounded-full bg-amber-400" /><span className="h-2 w-2 rounded-full bg-emerald-400" /></div>
+            </div>
+
+            <div className="relative h-[clamp(185px,42vw,215px)] overflow-hidden rounded-2xl border border-white/10 bg-[#07111f]">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:36px_36px] opacity-35" />
+              <svg className="absolute inset-0 h-full w-full opacity-70" viewBox="0 0 500 300" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="domainLine" x1="0" x2="1"><stop stopColor="#2563eb" stopOpacity="0"/><stop offset=".5" stopColor="#38bdf8"/><stop offset="1" stopColor="#2563eb" stopOpacity="0"/></linearGradient>
+                  <filter id="signalGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                </defs>
+                <g fill="none" stroke="url(#domainLine)" strokeWidth="1.5" strokeDasharray="6 6">
+                  <path id="route-us" d="M250 105 Q165 35 80 55"/><path id="route-eu" d="M250 105 Q335 32 420 60"/><path id="route-br" d="M250 105 Q165 175 95 215"/><path id="route-au" d="M250 105 Q340 175 410 218"/>
+                </g>
+                <g fill="#67e8f9" filter="url(#signalGlow)">
+                  <circle r="4"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#route-us"/></animateMotion></circle>
+                  <circle r="3.5"><animateMotion dur="2.7s" begin="-.8s" repeatCount="indefinite"><mpath href="#route-eu"/></animateMotion></circle>
+                  <circle r="4"><animateMotion dur="3s" begin="-1.4s" repeatCount="indefinite"><mpath href="#route-br"/></animateMotion></circle>
+                  <circle r="3.5"><animateMotion dur="2.5s" begin="-.4s" repeatCount="indefinite"><mpath href="#route-au"/></animateMotion></circle>
+                </g>
+                <g fill="none" stroke="#22d3ee" strokeWidth="1">
+                  <circle cx="80" cy="55" r="7"><animate attributeName="r" values="4;14;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle>
+                  <circle cx="420" cy="60" r="7"><animate attributeName="r" values="4;14;4" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2.4s" repeatCount="indefinite"/></circle>
+                  <circle cx="95" cy="215" r="7"><animate attributeName="r" values="4;13;4" dur="2.7s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2.7s" repeatCount="indefinite"/></circle>
+                  <circle cx="410" cy="218" r="7"><animate attributeName="r" values="4;13;4" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0;1" dur="2.2s" repeatCount="indefinite"/></circle>
+                </g>
+              </svg>
+
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 35, repeat: Infinity, ease: "linear" }} className="absolute left-1/2 top-[11%] h-[clamp(4.5rem,15vw,6rem)] w-[clamp(4.5rem,15vw,6rem)] -translate-x-1/2 rounded-full border border-cyan-300/50 bg-[radial-gradient(circle_at_35%_30%,#38bdf8,#1d4ed8_48%,#07111f_72%)] shadow-[0_0_55px_rgba(14,165,233,.45)]">
+                <div className="absolute inset-[12%] rounded-full border border-white/20" />
+                <div className="absolute left-1/2 top-0 h-full w-[38%] -translate-x-1/2 rounded-[50%] border-x border-cyan-100/25" />
+                <div className="absolute left-0 top-1/2 h-[35%] w-full -translate-y-1/2 rounded-[50%] border-y border-cyan-100/25" />
+                <Globe2 className="absolute inset-0 m-auto text-white/90" size="34%" />
+              </motion.div>
+              <div className="absolute left-1/2 top-[52%] -translate-x-1/2 whitespace-nowrap rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-[8px] font-black uppercase tracking-[.18em] text-blue-200">Global domain network</div>
+
+              <DomainNode className="left-[5%] top-[11%]" domain="techflow.io" metric="DA 72" delay={0} />
+              <DomainNode className="right-[4%] top-[13%]" domain="finpeak.com" metric="DR 81" delay={0.5} />
+              <DomainNode className="left-[7%] top-[67%]" domain="healthwire.co" metric="18K traffic" delay={1} />
+              <DomainNode className="right-[5%] top-[68%]" domain="dailybyte.net" metric="DA 68" delay={1.5} />
+
+            </div>
+
+            <div className="mt-[clamp(.5rem,2vw,1rem)] overflow-hidden rounded-xl border border-white/10 bg-[#07111f] sm:rounded-2xl">
+              <img src="/assets/images/Gemini_Generated_Image_pll718pll718pll7.png" alt="DomIntel global domain intelligence network" className="block h-[clamp(3.75rem,14vw,5.5rem)] w-full object-cover object-center" loading="eager" decoding="async" />
+            </div>
+          </div>
+
+          <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity }} className="absolute -right-2 top-12 hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-slate-900 sm:block lg:-right-5">
+            <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-wider text-slate-500"><span className="h-2 w-2 rounded-full bg-emerald-500" /> System online</span>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
 };
+
+const DomainNode = ({ className, domain, metric, delay }: { className: string; domain: string; metric: string; delay: number }) => (
+  <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 3, delay, repeat: Infinity }} className={`absolute ${className}`}>
+    <div className="relative rounded-xl border border-cyan-400/20 bg-slate-950/85 px-2 py-1.5 shadow-[0_0_22px_rgba(34,211,238,.12)] backdrop-blur sm:px-2.5">
+      <span className="absolute -left-1 -top-1 h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
+      <strong className="block max-w-[90px] truncate text-[8px] font-black text-white sm:text-[9px]">{domain}</strong>
+      <span className="mt-0.5 block text-[7px] font-bold uppercase tracking-wider text-cyan-400">{metric}</span>
+    </div>
+  </motion.div>
+);
+
 
 export default Hero;

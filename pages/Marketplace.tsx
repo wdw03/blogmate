@@ -3,9 +3,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import FilterSidebar from '../components/marketplace/FilterSidebar';
 import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
 import DomainItem from '../components/marketplace/DomainItem';
-import { MozLogo, AhrefsLogo } from '../components/icons/Logos';
 import { supabase } from '../lib/supabase';
-import { Loader2, MoreHorizontal, AlertCircle, Filter } from 'lucide-react';
+import { Loader2, AlertCircle, Filter } from 'lucide-react';
 
 export interface FilterState {
   search: string;
@@ -37,7 +36,7 @@ const Marketplace: React.FC<{
   const itemsPerPage = 6;
 
   const [filters, setFilters] = useState<FilterState>({
-    search: '',
+    search: new URLSearchParams(window.location.hash.split('?')[1] || '').get('search') || '',
     offerings: [],
     da: [0, 100],
     dr: [0, 100],
@@ -134,11 +133,22 @@ const Marketplace: React.FC<{
 
   useEffect(() => { setCurrentPage(1); }, [filters, sortBy, niche]);
 
+  useEffect(() => {
+    const syncSearchFromUrl = () => {
+      const query = new URLSearchParams(window.location.hash.split('?')[1] || '').get('search') || '';
+      setFilters(prev => prev.search === query ? prev : { ...prev, search: query });
+    };
+    syncSearchFromUrl();
+    window.addEventListener('hashchange', syncSearchFromUrl);
+    return () => window.removeEventListener('hashchange', syncSearchFromUrl);
+  }, []);
+
   return (
-    <div className={`${isSection ? 'py-16' : 'pt-40 pb-32'} bg-[#f8fafc] min-h-screen relative`}>
+    <div className={`${isSection ? 'py-16 sm:py-24' : 'pt-40 pb-32'} bg-[#f8fafc] min-h-screen relative`}>
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:48px_48px] opacity-20 pointer-events-none"></div>
 
-      <div className="container mx-auto px-6 max-w-[1600px] relative">
+      <div className="container mx-auto px-4 sm:px-6 max-w-[1600px] relative">
+
         <div className="flex flex-col lg:flex-row gap-10 items-start">
           
           <button 
@@ -162,24 +172,6 @@ const Marketplace: React.FC<{
               onSearch={(val) => setFilters(prev => ({...prev, search: val}))} 
             />
             
-            <div className="hidden xl:flex items-center px-10 py-6 bg-slate-950 rounded-[2rem] shadow-xl text-white/40 font-black text-[10px] uppercase tracking-[0.2em] mb-6 border border-white/5">
-              <div className="w-[18%] text-blue-400">Website List</div>
-              <div className="w-[10%] flex flex-col items-center gap-1.5">
-                <MozLogo className="h-2.5 opacity-60 brightness-200" />
-                <span className="leading-none">Authority</span>
-              </div>
-              <div className="w-[10%] flex flex-col items-center gap-1.5">
-                <AhrefsLogo className="h-2.5 opacity-60 brightness-200" />
-                <span className="leading-none">Growth</span>
-              </div>
-              <div className="w-[8%] text-center">Type</div>
-              <div className="w-[10%] text-center">Safety</div>
-              <div className="w-[9%] text-center">Post Cost</div>
-              <div className="w-[10%] text-center">Link Cost</div>
-              <div className="w-[10%] text-center text-slate-600">Mention</div>
-              <div className="w-[15%] text-right pr-4"><MoreHorizontal size={18} className="inline opacity-20" /></div>
-            </div>
-
             <div className="mt-0">
               {loading ? (
                 <div className="space-y-4">
@@ -215,7 +207,7 @@ const Marketplace: React.FC<{
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-3 sm:gap-4">
                     {currentDomains.map((d) => (
                       <DomainItem 
                         key={d.id}
