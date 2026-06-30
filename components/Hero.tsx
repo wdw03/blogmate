@@ -17,18 +17,18 @@ const Hero: React.FC = () => {
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-100/30 dark:bg-orange-900/10 rounded-full blur-[120px] -z-10"></div>
 
       <div className="container mx-auto px-6 md:px-12 max-w-7xl relative">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-20">
-          <div className="flex-1 w-full max-w-2xl text-center lg:text-left animate-in fade-in slide-in-from-left-12 duration-1000">
-            <div className="max-w-4xl mx-auto lg:mx-0">
-              <h1 className="text-[1.8rem] sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8">
+        <div className="flex flex-col items-center justify-center text-center">
+          <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8">
                 DOMINATE SERPS WITH <span className="text-blue-600 dark:text-blue-400 italic">AUTHORITY</span>
               </h1>
-              <p className="text-lg md:text-xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-2xl mx-auto lg:mx-0 uppercase tracking-widest leading-relaxed">
+              <p className="text-lg md:text-2xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-3xl mx-auto uppercase tracking-widest leading-relaxed">
                 Acquire elite programmatic assets. Command the flow of institutional traffic. Outrank the algorithms.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-5 mb-16">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-6 mb-16">
               <a
                 href="#/domains"
                 onClick={(e) => handleNav(e, '#/domains')}
