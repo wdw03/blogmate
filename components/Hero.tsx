@@ -20,8 +20,11 @@ const Hero: React.FC = () => {
         <div className="flex flex-col items-center justify-center text-center">
           <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8">
-                DOMINATE SERPS WITH <span className="text-blue-600 dark:text-blue-400 italic">AUTHORITY</span>
+              <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-[6rem] font-black tracking-tighter leading-[0.95] text-slate-950 dark:text-white mb-8">
+                DOMINATE SERPS WITH{" "}
+                <span className="text-blue-600 dark:text-blue-400 italic">
+                  AUTHORITY
+                </span>
               </h1>
               <p className="text-lg md:text-2xl font-bold text-slate-500 dark:text-slate-400 mb-12 max-w-3xl mx-auto uppercase tracking-widest leading-relaxed">
                 Acquire elite programmatic assets. Command the flow of institutional traffic. Outrank the algorithms.
