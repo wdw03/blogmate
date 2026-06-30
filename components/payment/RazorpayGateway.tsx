@@ -6,7 +6,7 @@ import RazorpayTerminal from '../checkout/payments/RazorpayTerminal';
 interface Props {
   amount: number;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (transactionId?: string) => void;
 }
 
 const RazorpayGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
@@ -44,7 +44,7 @@ const RazorpayGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
             currency="USD" 
             onSuccess={(ref) => {
               console.log("Razorpay Success:", ref);
-              onSuccess();
+              onSuccess(ref);
             }} 
             onCancel={onBack}
           />

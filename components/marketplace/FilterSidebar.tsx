@@ -4,16 +4,17 @@ import {
   Filter, ChevronDown, Search, Zap, 
   Globe, Shield, Activity, 
   Clock, DollarSign, Link2, Languages,
-  ChevronUp, CheckCircle2, LayoutGrid
+  ChevronUp, CheckCircle2, LayoutGrid, X
 } from 'lucide-react';
 import { FilterState } from '../../pages/Marketplace';
 
 interface FilterSidebarProps {
   filters: FilterState;
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
+  onClose?: () => void;
 }
 
-const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters }) => {
+const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onClose }) => {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     'Offering': true,
     'Metrics': true,
@@ -53,7 +54,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters }) =>
   const filteredCategories = allCategories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase()));
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm h-auto lg:h-[calc(100vh-160px)] lg:max-h-[85vh] flex flex-col overflow-hidden transition-all hover:shadow-md">
+    <div className="bg-white border border-slate-200 rounded-2xl lg:rounded-[2.5rem] shadow-2xl lg:shadow-sm h-full lg:h-[calc(100vh-160px)] lg:max-h-[85vh] flex flex-col overflow-hidden transition-all hover:shadow-md">
       {/* Sidebar Header */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white shrink-0">
         <div className="flex items-center gap-3">
@@ -62,6 +63,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters }) =>
           </div>
           <h2 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.1em]">Asset Filters</h2>
         </div>
+        <div className="flex items-center gap-3">
         <button 
           onClick={() => setFilters({
             search: '', offerings: [], da: [0, 100], dr: [0, 100], traffic: [0, 1000000], categories: [], priceRange: [0, 5000], tat: [], locations: [], linkTypes: [], languages: []
@@ -70,6 +72,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters }) =>
         >
           Reset All
         </button>
+        {onClose && <button onClick={onClose} aria-label="Close asset filters" className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition hover:bg-slate-950 hover:text-white lg:hidden"><X size={17} /></button>}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto custom-sidebar-scroll divide-y divide-slate-50 pb-10">

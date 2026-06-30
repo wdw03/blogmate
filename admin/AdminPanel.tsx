@@ -5,7 +5,7 @@ import {
   TrendingUp, Globe, DollarSign, Terminal, Command,
   Activity, MoreVertical, Package, FileText, BarChart2,
   ChevronRight, LogOut, Bell, MessageSquare, Ticket, Gauge,
-  Wallet, Menu, X
+  Wallet, Menu, X, Landmark
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import DashboardHome from './DashboardHome';
@@ -19,14 +19,15 @@ import ChatHub from './ChatHub';
 import AdminCoupons from './AdminCoupons';
 import AdminPricing from './AdminPricing';
 import WalletHub from './WalletHub';
+import PaymentOperations from './PaymentOperations';
 
-export type AdminView = 'Dashboard' | 'Marketplace' | 'Users' | 'Orders' | 'Content' | 'Analytics' | 'Protocols' | 'Chat' | 'Coupons' | 'Pricing' | 'Wallet';
+export type AdminView = 'Dashboard' | 'Marketplace' | 'Users' | 'Orders' | 'Content' | 'Analytics' | 'Protocols' | 'Chat' | 'Coupons' | 'Pricing' | 'Wallet' | 'Payments';
 
 const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminView>('Dashboard');
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({ domains: [], users: [], orders: [], txCount: 0 });
+  const [data, setData] = useState({ domains: [], users: [], orders: [], txCount: 0, paymentTxCount: 0 });
   const [notificationCount, setNotificationCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -59,19 +60,21 @@ const AdminPanel: React.FC = () => {
 
   const fetchGlobalData = async () => {
     try {
-      const [doms, usrs, ords, txs] = await Promise.all([
+      const [doms, usrs, ords, txs, paytxs] = await Promise.all([
         supabase.from('domains').select('*').order('created_at', { ascending: false }),
         supabase.from('profiles').select('*').order('created_at', { ascending: false }),
         supabase.from('orders').select('*').eq('status', 'pending'),
-        supabase.from('wallet_transactions').select('*', { count: 'exact', head: true }).eq('status', 'pending')
+        supabase.from('wallet_transactions').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('payment_transactions').select('*', { count: 'exact', head: true }).in('status', ['pending', 'processing'])
       ]);
       setData({
         domains: doms.data || [],
         users: usrs.data || [],
         orders: ords.data || [],
-        txCount: txs.count || 0
+        txCount: txs.count || 0,
+        paymentTxCount: paytxs.count || 0
       });
-      setNotificationCount((ords.data?.length || 0) + (txs.count || 0));
+      setNotificationCount((ords.data?.length || 0) + (txs.count || 0) + (paytxs.count || 0));
     } catch (err) {
       console.error("Critical System Sync Error:", err);
     } finally {
@@ -101,6 +104,7 @@ const AdminPanel: React.FC = () => {
       case 'Users': return isSuperAdmin ? <UserManagement users={data.users} currentUser={profile} onRefresh={fetchGlobalData} /> : <AccessDenied />;
       case 'Orders': return <OrdersHub adminProfile={profile} />;
       case 'Wallet': return <WalletHub adminProfile={profile} onRefresh={fetchGlobalData} />;
+      case 'Payments': return <PaymentOperations adminProfile={profile} />;
       case 'Coupons': return <AdminCoupons />;
       case 'Pricing': return <AdminPricing />;
       case 'Content': return <ContentEngine />;
@@ -167,7 +171,8 @@ const AdminPanel: React.FC = () => {
             />
 
             <div className="py-4 px-5 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Monetization</div>
-            <NavBtn active={activeTab === 'Pricing'} onClick={() => { setActiveTab('Pricing'); setIsMobileMenuOpen(false); }} icon={<Gauge size={18} />} label="Pricing Matrix" />
+
+            <NavBtn active={activeTab === 'Payments'} onClick={() => { setActiveTab('Payments'); setIsMobileMenuOpen(false); }} icon={<Landmark size={18} />} label="Payment Ops" badge={data.paymentTxCount > 0 ? data.paymentTxCount : undefined} />
             <NavBtn active={activeTab === 'Coupons'} onClick={() => { setActiveTab('Coupons'); setIsMobileMenuOpen(false); }} icon={<Ticket size={18} />} label="Coupon Forge" />
 
             <div className="py-4 px-5 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Platform Core</div>

@@ -6,7 +6,7 @@ import PayPalTerminal from '../checkout/payments/PayPalTerminal';
 interface Props {
   amount: number;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (transactionId?: string) => void;
 }
 
 const PayPalGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
@@ -40,7 +40,7 @@ const PayPalGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
             currency="USD" 
             onSuccess={(ref) => {
               console.log("PayPal Success:", ref);
-              onSuccess();
+              onSuccess(ref);
             }} 
             description="DomIntel Asset Acquisition" 
           />

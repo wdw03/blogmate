@@ -20,7 +20,7 @@ interface Props {
     surcharge: number;
     totalPrice: number;
     onBack: () => void;
-    onFinalize: () => void;
+    onFinalize: (transactionId?: string) => void;
     processing: boolean;
     coupon: string;
     setCoupon: (c: string) => void;
@@ -39,6 +39,7 @@ const FinalPaymentView: React.FC<Props> = ({
 }) => {
     const [isGatewayActive, setIsGatewayActive] = useState(false);
     const [walletBalance, setWalletBalance] = useState(0);
+    const [gatewayAvailability, setGatewayAvailability] = useState<Record<string, boolean>>({ PayPal: true, Razorpay: true, Binance: true, Net30: true, Wallet: true });
 
     useEffect(() => {
         const getBalance = async () => {
@@ -51,11 +52,26 @@ const FinalPaymentView: React.FC<Props> = ({
         getBalance();
     }, []);
 
+    useEffect(() => {
+        const loadGatewaySettings = async () => {
+            const { data, error } = await supabase.from('payment_gateway_settings').select('gateway_key,is_enabled').order('sort_order');
+            if (!error && data?.length) {
+                const availability = Object.fromEntries(data.map((row: any) => [row.gateway_key, row.is_enabled]));
+                setGatewayAvailability(prev => ({ ...prev, ...availability }));
+                if (availability[selectedGateway] === false) {
+                    const firstEnabled = data.find((row: any) => row.is_enabled)?.gateway_key;
+                    if (firstEnabled) setSelectedGateway(firstEnabled);
+                }
+            }
+        };
+        loadGatewaySettings();
+    }, []);
+
     const renderActiveGateway = () => {
       switch(selectedGateway) {
         case 'PayPal': return <PayPalGateway amount={totalPrice} onBack={() => setIsGatewayActive(false)} onSuccess={onFinalize} />;
         case 'Razorpay': return <RazorpayGateway amount={totalPrice} onBack={() => setIsGatewayActive(false)} onSuccess={onFinalize} />;
-        case 'Binance': return <CryptoGateway amount={totalPrice} onBack={() => setIsGatewayActive(false)} />;
+        case 'Binance': return <CryptoGateway amount={totalPrice} onBack={() => setIsGatewayActive(false)} onSuccess={onFinalize} />;
         case 'Net30': return <Net30Gateway amount={totalPrice} onBack={() => setIsGatewayActive(false)} onSuccess={onFinalize} processing={processing} />;
         case 'Wallet': return <WalletGateway amount={totalPrice} balance={walletBalance} onBack={() => setIsGatewayActive(false)} onSuccess={onFinalize} processing={processing} />;
         default: return null;
@@ -133,11 +149,11 @@ const FinalPaymentView: React.FC<Props> = ({
                                       <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Payment Gateways</h3>
                                   </div>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                      <GatewayOption label="PayPal" icon={<Globe />} active={true} selected={selectedGateway === 'PayPal'} onClick={() => setSelectedGateway('PayPal')} />
-                                      <GatewayOption label="Razorpay" icon={<CreditCard />} active={false} selected={selectedGateway === 'Razorpay'} onClick={() => {}} status="OFFLINE" />
-                                      <GatewayOption label="Binance" icon={<Bitcoin />} active={true} selected={selectedGateway === 'Binance'} onClick={() => setSelectedGateway('Binance')} />
-                                      <GatewayOption label="Pay Later" icon={<Clock />} active={true} selected={selectedGateway === 'Net30'} onClick={() => setSelectedGateway('Net30')} />
-                                      <GatewayOption label="Wallet Hub" icon={<Wallet />} active={true} selected={selectedGateway === 'Wallet'} onClick={() => setSelectedGateway('Wallet')} isNew />
+                                      <GatewayOption label="PayPal" icon={<Globe />} active={gatewayAvailability.PayPal} selected={selectedGateway === 'PayPal'} onClick={() => setSelectedGateway('PayPal')} />
+                                      <GatewayOption label="Razorpay" icon={<CreditCard />} active={gatewayAvailability.Razorpay} selected={selectedGateway === 'Razorpay'} onClick={() => gatewayAvailability.Razorpay && setSelectedGateway('Razorpay')} status={gatewayAvailability.Razorpay ? undefined : 'OFFLINE'} />
+                                      <GatewayOption label="Binance" icon={<Bitcoin />} active={gatewayAvailability.Binance} selected={selectedGateway === 'Binance'} onClick={() => setSelectedGateway('Binance')} />
+                                      <GatewayOption label="Pay Later" icon={<Clock />} active={gatewayAvailability.Net30} selected={selectedGateway === 'Net30'} onClick={() => setSelectedGateway('Net30')} />
+                                      <GatewayOption label="Wallet Hub" icon={<Wallet />} active={gatewayAvailability.Wallet} selected={selectedGateway === 'Wallet'} onClick={() => setSelectedGateway('Wallet')} isNew />
                                   </div>
                                   
                                   <button 

@@ -6,7 +6,7 @@ interface Props {
   amount: number;
   balance: number;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (transactionId?: string) => void;
   processing: boolean;
 }
 
@@ -62,7 +62,7 @@ const WalletGateway: React.FC<Props> = ({ amount, balance, onBack, onSuccess, pr
             Cancel
           </button>
           <button 
-            onClick={onSuccess}
+            onClick={() => onSuccess('WALLET-' + Date.now())}
             disabled={processing || !canAfford}
             className="py-5 bg-slate-950 text-white rounded-[1.75rem] font-black text-[11px] uppercase tracking-[0.3em] hover:bg-blue-600 shadow-xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 italic"
           >

@@ -5,7 +5,7 @@ import { Clock, ArrowLeft, ShieldCheck, Zap, Loader2 } from 'lucide-react';
 interface Props {
   amount: number;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (transactionId?: string) => void;
   processing: boolean;
 }
 
@@ -59,7 +59,7 @@ const Net30Gateway: React.FC<Props> = ({ amount, onBack, onSuccess, processing }
             Go Back
           </button>
           <button 
-            onClick={onSuccess}
+            onClick={() => onSuccess('NET30-' + Date.now())}
             disabled={processing}
             className="py-5 bg-[#020617] text-white rounded-[1.75rem] font-black text-[11px] uppercase tracking-[0.3em] hover:bg-blue-600 shadow-xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 italic"
           >

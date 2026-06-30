@@ -136,7 +136,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
     }
   };
 
-  const handleFinalSubmission = async () => {
+  const handleFinalSubmission = async (gatewayTransactionId?: string) => {
     if (isFinalizing) return;
     
     setIsFinalizing(true);
@@ -160,7 +160,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
                 amount: pricingData.totalPrice,
                 type: 'purchase',
                 status: 'completed',
-                metadata: { source: 'checkout_purchase' }
+                metadata: { source: 'checkout_purchase', gateway_transaction_id: gatewayTransactionId || null }
             });
         }
 
@@ -232,6 +232,32 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
             }
 
             await supabase.from('cart').delete().eq('user_id', session.user.id);
+        }
+
+        try {
+            const transactionStatus = ['PayPal', 'Razorpay', 'Wallet'].includes(selectedGateway) ? 'completed' : 'pending';
+            const domainList = (orderObj?.items || []).map((item: any) => ({
+                domain: item.domain,
+                service_type: item.service_type,
+                amount: item.pricing_breakdown?.final_item_price || null
+            }));
+            const { error: paymentLogError } = await supabase.from('payment_transactions').insert({
+                order_id: finalOrderId,
+                user_id: session.user.id,
+                gateway_key: selectedGateway,
+                gateway_transaction_id: gatewayTransactionId || (selectedGateway + '-' + Date.now()),
+                status: transactionStatus,
+                amount: orderObj?.total_amount || orderObj?.total_price || pricingData.totalPrice,
+                currency: 'USD',
+                customer_name: session.user.user_metadata?.full_name || null,
+                customer_email: session.user.email || null,
+                domains: domainList,
+                gateway_payload: { reference: gatewayTransactionId || null },
+                metadata: { niche, source: 'checkout', total_assets: domainList.length }
+            });
+            if (paymentLogError) console.warn('Payment transaction registry unavailable:', paymentLogError.message);
+        } catch (paymentLogException) {
+            console.warn('Payment transaction logging failed:', paymentLogException);
         }
 
         try {

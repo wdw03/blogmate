@@ -1,13 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Bitcoin, ArrowLeft, MessageSquare, ShieldAlert } from 'lucide-react';
 
 interface Props {
   amount: number;
   onBack: () => void;
+  onSuccess: (transactionId?: string) => void;
 }
 
-const CryptoGateway: React.FC<Props> = ({ amount, onBack }) => {
+const CryptoGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
+  const [transactionId, setTransactionId] = useState('');
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex flex-col items-center text-center mb-10">
@@ -37,6 +39,7 @@ const CryptoGateway: React.FC<Props> = ({ amount, onBack }) => {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
+            <input value={transactionId} onChange={e => setTransactionId(e.target.value)} placeholder="ENTER BLOCKCHAIN TRANSACTION ID" className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-[10px] font-bold uppercase tracking-wider text-white outline-none placeholder:text-slate-600 focus:border-blue-500" />
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
               className="w-full py-6 bg-blue-600 text-white rounded-2xl font-black uppercase text-[12px] tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-blue-500 transition-all shadow-xl"

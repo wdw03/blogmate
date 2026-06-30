@@ -134,6 +134,18 @@ const Marketplace: React.FC<{
   useEffect(() => { setCurrentPage(1); }, [filters, sortBy, niche]);
 
   useEffect(() => {
+    if (!isMobileFiltersOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setIsMobileFiltersOpen(false); };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isMobileFiltersOpen]);
+
+  useEffect(() => {
     const syncSearchFromUrl = () => {
       const query = new URLSearchParams(window.location.hash.split('?')[1] || '').get('search') || '';
       setFilters(prev => prev.search === query ? prev : { ...prev, search: query });
@@ -159,8 +171,11 @@ const Marketplace: React.FC<{
             {isMobileFiltersOpen ? 'Hide Filters' : 'Show Asset Filters'}
           </button>
 
-          <aside className={`w-full lg:w-[320px] shrink-0 lg:sticky top-[120px] z-[400] transition-all duration-300 ${isMobileFiltersOpen ? 'block' : 'hidden lg:block'}`}>
-            <FilterSidebar filters={filters} setFilters={setFilters} />
+{isMobileFiltersOpen && (
+            <button aria-label="Close filters" onClick={() => setIsMobileFiltersOpen(false)} className="fixed inset-0 z-[2100] bg-slate-950/55 backdrop-blur-sm lg:hidden" />
+          )}
+          <aside className={`fixed inset-y-0 left-0 z-[2200] w-[min(88vw,360px)] shrink-0 transform p-2 transition-transform duration-300 ease-out lg:sticky lg:top-[120px] lg:z-[400] lg:block lg:w-[320px] lg:translate-x-0 lg:p-0 ${isMobileFiltersOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <FilterSidebar filters={filters} setFilters={setFilters} onClose={() => setIsMobileFiltersOpen(false)} />
           </aside>
 
           <main className="flex-1 min-w-0 w-full">
