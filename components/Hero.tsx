@@ -2,8 +2,6 @@
 import React from 'react';
 import { Search, ChevronRight, TrendingUp, BarChart3, Lock } from 'lucide-react';
 import AnimatedHeadline from './hero/AnimatedHeadline';
-import VisualDashboard from './hero/VisualDashboard';
-
 const Hero: React.FC = () => {
   const handleNav = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
@@ -49,38 +47,10 @@ const Hero: React.FC = () => {
                 <ChevronRight size={18} strokeWidth={3} />
               </a>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
-              <HeroMetric icon={<TrendingUp size={16} />} label="Asset Flow" value="$24.8M+" color="text-blue-600" />
-              <HeroMetric icon={<BarChart3 size={16} />} label="Avg Authority" value="DA 68.2" color="text-emerald-600" />
-              <div className="p-6 rounded-[2.5rem] bg-slate-950 text-white hidden sm:block border border-white/10 shadow-xl">
-                <div className="flex items-center space-x-2 text-orange-400 mb-2">
-                  <Lock size={16} fill="currentColor" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.3em]">SECURE_NODE</span>
-                </div>
-                <div className="text-2xl font-black tracking-tighter italic">v4.8.2</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 w-full relative">
-            <VisualDashboard />
           </div>
         </div>
       </div>
     </section>
   );
 };
-
-const HeroMetric = ({ icon, label, value, color }: { icon: any, label: string, value: string, color: string }) => (
-  <div className="p-6 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md dark:shadow-none transition-all">
-    <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-2">{label}</div>
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400">
-        {icon}
-      </div>
-      <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">{value}</div>
-    </div>
-  </div>);
-
 export default Hero;
