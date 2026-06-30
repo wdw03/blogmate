@@ -12,9 +12,9 @@ const SpinningChakri: React.FC<{ color?: string }> = ({ color = "text-blue-600 d
     >
       <svg viewBox="0 0 100 100" className="w-[0.82em] h-[0.82em]">
         {/* Outer 12-point sharp geometric Chakri / Star */}
-        <polygon 
-          points="50,0 61,32 93,25 71,50 93,75 61,68 50,100 39,68 7,75 29,50 7,25 39,32" 
-          fill="currentColor" 
+        <polygon
+          points="50,0 61,32 93,25 71,50 93,75 61,68 50,100 39,68 7,75 29,50 7,25 39,32"
+          fill="currentColor"
         />
         {/* Concentric rings inside the Chakri */}
         <circle cx="50" cy="50" r="18" className="fill-white dark:fill-slate-950 stroke-current stroke-[5]" />
@@ -41,8 +41,8 @@ const Hero: React.FC = () => {
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="w-full">
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
@@ -54,18 +54,18 @@ const Hero: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 className="flex justify-center mb-8"
               >
-                <h6 className="inline-flex items-center bg-black text-white border-2 border-white px-6 py-2.5 rounded-full text-xs sm:text-sm font-black tracking-[0.25em] shadow-2xl hover:scale-105 transition-all">
+                <h6 className="inline-flex items-center bg-black text-white border-2 border-white px-6 py-2.5 rounded-full text-xs sm:text-sm font-black tracking-[0.25em] shadow-2xl hover:scale-105 transition-all uppercase">
                   <Sparkles size={16} className="text-blue-400 animate-pulse mr-2.5" />
-                  <span>Premium Platform Intelligence</span>
+                  <span>PREMIUM PLATFORM INTELLIGENCE</span>
                 </h6>
               </motion.div>
 
-              <h1 
+              <h1
                 aria-label="World's premier marketplace for high-authority premium digital assets."
                 className="text-[1.4rem] sm:text-[2.2rem] md:text-[3rem] lg:text-[3.8rem] xl:text-[4.5rem] font-black tracking-tighter leading-[1.15] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default w-full"
               >
                 {/* Line 1: World's premier marketplace */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.1 }}
@@ -75,9 +75,9 @@ const Hero: React.FC = () => {
                     W<SpinningChakri color="text-amber-500 dark:text-amber-400" />rld's premier marketplace
                   </span>
                 </motion.div>
-                
+
                 {/* Line 2: for high-authority premium */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.25 }}
@@ -87,9 +87,9 @@ const Hero: React.FC = () => {
                     f<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />r high-auth<SpinningChakri color="text-cyan-500 dark:text-teal-400" />rity premium
                   </span>
                 </motion.div>
-                
+
                 {/* Line 3: digital assets. */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -102,7 +102,7 @@ const Hero: React.FC = () => {
               </h1>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
