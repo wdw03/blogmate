@@ -54,15 +54,15 @@ const Hero: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 className="flex justify-center mb-8"
               >
-                <h6 className="inline-flex items-center bg-black text-white border-2 border-white px-6 py-2.5 rounded-full text-xs sm:text-sm font-black tracking-[0.25em] shadow-2xl hover:scale-105 transition-all uppercase">
-                  <Sparkles size={16} className="text-blue-400 animate-pulse mr-2.5" />
-                  <span>PREMIUM PLATFORM INTELLIGENCE</span>
+                <h6 className="inline-flex items-center whitespace-nowrap bg-black text-white border-2 border-white px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[9.5px] xs:text-[10.5px] sm:text-sm font-black tracking-[0.12em] sm:tracking-[0.25em] shadow-2xl hover:scale-105 transition-all uppercase max-w-full">
+                  <Sparkles size={14} className="text-blue-400 animate-pulse mr-1.5 sm:mr-2.5 flex-shrink-0" />
+                  <span className="truncate">PREMIUM PLATFORM INTELLIGENCE</span>
                 </h6>
               </motion.div>
 
               <h1
                 aria-label="World's premier marketplace for high-authority premium digital assets."
-                className="text-[1.4rem] sm:text-[2.2rem] md:text-[3rem] lg:text-[3.8rem] xl:text-[4.5rem] font-black tracking-tighter leading-[1.15] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default w-full"
+                className="text-[1.85rem] xs:text-[2.15rem] sm:text-[2.6rem] md:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.6rem] font-black tracking-tighter leading-[1.12] text-slate-950 dark:text-white mb-14 transition-all duration-500 select-none cursor-default w-full"
               >
                 {/* Line 1: World's premier marketplace */}
                 <motion.div
@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.1 }}
                   className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
+                  <span className="inline-block whitespace-normal md:whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-1 px-2 rounded-2xl">
                     W<SpinningChakri color="text-amber-500 dark:text-amber-400" />rld's premier marketplace
                   </span>
                 </motion.div>
@@ -83,7 +83,7 @@ const Hero: React.FC = () => {
                   transition={{ duration: 0.8, delay: 0.25 }}
                   className="block mb-2 sm:mb-4 w-full"
                 >
-                  <span className="inline-block whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
+                  <span className="inline-block whitespace-normal md:whitespace-nowrap transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-1 px-2 rounded-2xl">
                     f<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />r high-auth<SpinningChakri color="text-cyan-500 dark:text-teal-400" />rity premium
                   </span>
                 </motion.div>
