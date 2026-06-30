@@ -53,7 +53,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters }) =>
   const filteredCategories = allCategories.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase()));
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm h-[calc(100vh-160px)] flex flex-col overflow-hidden transition-all hover:shadow-md">
+    <div className="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm h-auto lg:h-[calc(100vh-160px)] lg:max-h-[85vh] flex flex-col overflow-hidden transition-all hover:shadow-md">
       {/* Sidebar Header */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white shrink-0">
         <div className="flex items-center gap-3">

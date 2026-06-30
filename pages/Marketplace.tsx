@@ -5,7 +5,7 @@ import MarketplaceHeader from '../components/marketplace/MarketplaceHeader';
 import DomainItem from '../components/marketplace/DomainItem';
 import { MozLogo, AhrefsLogo } from '../components/icons/Logos';
 import { supabase } from '../lib/supabase';
-import { Loader2, MoreHorizontal, AlertCircle } from 'lucide-react';
+import { Loader2, MoreHorizontal, AlertCircle, Filter } from 'lucide-react';
 
 export interface FilterState {
   search: string;
@@ -33,6 +33,7 @@ const Marketplace: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<'newest' | 'top' | null>(null);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const itemsPerPage = 6;
 
   const [filters, setFilters] = useState<FilterState>({
@@ -139,11 +140,20 @@ const Marketplace: React.FC<{
 
       <div className="container mx-auto px-6 max-w-[1600px] relative">
         <div className="flex flex-col lg:flex-row gap-10 items-start">
-          <aside className="w-full lg:w-[320px] shrink-0 sticky top-[120px] z-[400]">
+          
+          <button 
+            onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+            className="lg:hidden w-full bg-slate-900 text-white rounded-2xl py-4 font-black flex items-center justify-center gap-2 shadow-xl hover:bg-blue-600 transition-colors"
+          >
+            <Filter size={18} />
+            {isMobileFiltersOpen ? 'Hide Filters' : 'Show Asset Filters'}
+          </button>
+
+          <aside className={`w-full lg:w-[320px] shrink-0 lg:sticky top-[120px] z-[400] transition-all duration-300 ${isMobileFiltersOpen ? 'block' : 'hidden lg:block'}`}>
             <FilterSidebar filters={filters} setFilters={setFilters} />
           </aside>
 
-          <main className="flex-1 min-w-0">
+          <main className="flex-1 min-w-0 w-full">
             <MarketplaceHeader 
               niche={niche} 
               setNiche={setNiche} 
@@ -172,9 +182,22 @@ const Marketplace: React.FC<{
 
             <div className="mt-0">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-60 bg-white rounded-[3rem] border border-slate-200 shadow-sm">
-                  <Loader2 className="animate-spin text-blue-600" size={48} />
-                  <span className="mt-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] animate-pulse">Loading Websites...</span>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-[2.5rem] border border-slate-200 dark:border-slate-800 p-8 flex items-center animate-pulse">
+                      <div className="w-[18%] pr-6 border-r border-slate-100 dark:border-slate-800">
+                         <div className="h-5 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg mb-3"></div>
+                         <div className="h-2 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+                      </div>
+                      <div className="w-[10%] text-center px-4"><div className="h-10 w-full bg-slate-200 dark:bg-slate-800 rounded-xl mx-auto"></div></div>
+                      <div className="w-[10%] text-center px-4"><div className="h-10 w-full bg-slate-200 dark:bg-slate-800 rounded-xl mx-auto"></div></div>
+                      <div className="w-[8%] text-center px-4"><div className="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg mx-auto"></div></div>
+                      <div className="w-[10%] text-center px-4"><div className="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg mx-auto"></div></div>
+                      <div className="w-[8%] text-center px-4"><div className="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg mx-auto"></div></div>
+                      <div className="w-[12%] text-center px-4"><div className="h-12 w-full bg-slate-200 dark:bg-slate-800 rounded-xl mx-auto"></div></div>
+                      <div className="w-[15%] text-right pl-4"><div className="h-12 w-full bg-blue-100 dark:bg-blue-900/30 rounded-2xl mx-auto"></div></div>
+                    </div>
+                  ))}
                 </div>
               ) : error ? (
                 <div className="flex flex-col items-center py-40 text-rose-500 font-black uppercase bg-white rounded-[3rem] border border-rose-100 shadow-xl">{error}</div>

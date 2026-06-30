@@ -258,7 +258,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fffcfd]">
+    <div className="min-h-screen flex flex-col bg-[#fffcfd] dark:bg-[#020617] text-slate-900 dark:text-slate-100 transition-colors duration-300">
       {!['#/login', '#/signup', '#/admin'].includes(currentPath.split('?')[0]) && (
         <Header cartCount={cartItems.length} onOpenCart={() => setIsCartOpen(true)} />
       )}

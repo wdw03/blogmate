@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   ShoppingCart, Menu, X, User, Bell, 
   ChevronRight, Search, Zap, Globe, 
-  CheckCircle, CreditCard, Info
+  CheckCircle, CreditCard, Info, Sun, Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
@@ -19,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('Marketplace');
   const [session, setSession] = useState<any>(null);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -52,6 +53,14 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const fetchUnreadCount = async (userId: string) => {
     const { count } = await supabase
@@ -127,6 +136,12 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
             <div className="flex items-center space-x-2 md:space-x-4">
               <div className="hidden lg:flex items-center space-x-1 pr-2 border-r border-white/10">
                 <button 
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all" 
+                >
+                  {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button 
                   onClick={() => setIsSearchOpen(true)}
                   className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all" 
                 >
@@ -152,9 +167,25 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                   )}
                 </div>
 
+              </div>
+
+              {/* Cart is now outside the hidden block so it shows on mobile */}
+              <button 
+                onClick={onOpenCart}
+                className="flex lg:hidden p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all relative" 
+              >
+                <ShoppingCart size={18} />
+                {cartCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-orange-500 text-white text-[8px] font-black px-1 rounded-full min-w-[14px]">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              <div className="hidden lg:flex items-center">
                 <button 
                   onClick={onOpenCart}
-                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all relative" 
+                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all relative ml-2" 
                 >
                   <ShoppingCart size={18} />
                   {cartCount > 0 && (
@@ -226,6 +257,42 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                   {link.label}
                 </a>
               ))}
+              
+              <button 
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="text-3xl font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter italic flex items-center gap-4 text-left"
+              >
+                <span className="text-slate-500">{isDarkMode ? <Sun size={24} /> : <Moon size={24} />}</span>
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </button>
+              
+              <button 
+                onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
+                className="text-3xl font-black text-slate-300 uppercase tracking-tighter italic text-left"
+              >
+                Search
+              </button>
+
+              {session && (
+                <button 
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  className="text-3xl font-black text-slate-300 uppercase tracking-tighter italic text-left flex items-center justify-between"
+                >
+                  Notifications 
+                  {unreadCount > 0 && <span className="bg-rose-500 text-white text-sm px-3 py-1 rounded-full">{unreadCount}</span>}
+                </button>
+              )}
+
+              {/* Notification Overlay inside Mobile Menu */}
+              {isNotificationsOpen && session && (
+                <div className="bg-slate-900 rounded-3xl p-4 overflow-hidden mb-4">
+                  <NotificationDropdown 
+                    userId={session.user.id} 
+                    onClose={() => setIsNotificationsOpen(false)} 
+                  />
+                </div>
+              )}
+              
               <div className="h-px bg-white/10 my-4" />
               {session ? (
                 <>

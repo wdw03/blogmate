@@ -19,43 +19,43 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, items, niche, 
       {isOpen && (
         <>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[2000]" />
-          <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[2001] flex flex-col border-l border-slate-100" >
+          <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="fixed inset-y-0 right-0 w-full max-w-md bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] z-[2001] flex flex-col border-l border-slate-100 dark:border-slate-800" >
             
-            <div className="flex items-center justify-between p-8 border-b border-slate-100 bg-white shrink-0">
+            <div className="flex items-center justify-between p-8 border-b border-slate-100 dark:border-slate-800 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-slate-950 rounded-2xl flex items-center justify-center text-white shadow-lg">
                   <ShoppingBag size={22} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">Your Cart</h2>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{niche} Order</p>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none uppercase">Your Cart</h2>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1.5">{niche} Order</p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-3 bg-slate-50 text-slate-400 hover:text-slate-950 rounded-2xl transition-all"><X size={20} /></button>
+              <button onClick={onClose} className="p-3 bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 rounded-2xl transition-all"><X size={20} /></button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
               {items.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 text-center space-y-8">
-                    <ShoppingCart size={56} className="text-slate-200" />
-                    <h3 className="text-2xl font-black text-slate-900 uppercase">Cart is Empty</h3>
-                    <button onClick={onClose} className="bg-slate-950 text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">Explore Sites</button>
+                    <ShoppingCart size={56} className="text-slate-200 dark:text-slate-800" />
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 uppercase">Cart is Empty</h3>
+                    <button onClick={onClose} className="bg-slate-950 dark:bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl dark:shadow-blue-500/20 hover:-translate-y-1 transition-all">Explore Sites</button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.domain} className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
+                    <div key={item.domain} className="bg-white/50 dark:bg-slate-900/50 p-5 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:border-blue-500/50 hover:shadow-lg dark:hover:shadow-blue-500/10 transition-all">
                        <div className="flex justify-between items-start">
                           <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center font-black text-blue-400 text-lg">{item.domain[0].toUpperCase()}</div>
+                              <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center font-black text-blue-400 text-lg shadow-lg">{item.domain[0].toUpperCase()}</div>
                               <div>
-                                  <h4 className="font-black text-slate-900 text-sm tracking-tight uppercase">{item.domain}</h4>
-                                  <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">{item.serviceType}</p>
+                                  <h4 className="font-black text-slate-900 dark:text-slate-100 text-sm tracking-tight uppercase">{item.domain}</h4>
+                                  <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase mt-0.5">{item.serviceType}</p>
                               </div>
                           </div>
-                          <button onClick={() => onRemove(item.domain)} className="text-slate-300 hover:text-rose-500 p-2"><Trash2 size={18} /></button>
+                          <button onClick={() => onRemove(item.domain)} className="text-slate-300 dark:text-slate-600 hover:text-rose-500 p-2"><Trash2 size={18} /></button>
                        </div>
-                       <div className="flex justify-between items-end mt-5 pt-4 border-t border-slate-50">
+                       <div className="flex justify-between items-end mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
                           <div className="flex items-center gap-1.5 text-[8px] text-emerald-600 font-black uppercase tracking-widest"><ShieldCheck size={10} fill="currentColor" /> Verified Site</div>
                           <div className="font-mono font-black text-slate-900 text-xl">${(item.price || 0).toFixed(0)}</div>
                        </div>

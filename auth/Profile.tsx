@@ -351,6 +351,7 @@ const Profile: React.FC = () => {
                   price={(item.pricing_breakdown?.final_item_price || item.final_price || item.price || 0).toLocaleString()}
                   date={new Date(o.created_at).toLocaleDateString()}
                   metrics={{ da: item.metrics?.da || '---' }}
+                  status={o.status || 'pending'}
                 />
               )))}
               <div 
@@ -514,27 +515,47 @@ const StatBlock = ({ label, value, color }: { label: string, value: string, colo
   </div>
 );
 
-const HistoryCard = ({ domain, category, price, date, metrics }: any) => (
-  <div className="group bg-white border border-slate-100 p-8 rounded-[3rem] shadow-sm hover:shadow-xl transition-all hover:-translate-y-1">
+const HistoryCard = ({ domain, category, price, date, metrics, status = 'pending' }: any) => {
+  const steps = ['Pending', 'Processing', 'Completed'];
+  const currentStep = status === 'completed' ? 2 : status === 'processing' ? 1 : 0;
+  
+  return (
+  <div className="group bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-8 rounded-[3rem] shadow-sm hover:shadow-xl dark:shadow-blue-500/5 transition-all hover:-translate-y-2">
     <div className="flex justify-between items-start mb-8">
       <div>
-        <h3 className="text-xl font-black text-slate-950 tracking-tighter uppercase italic">{domain}</h3>
-        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">{category}</p>
+        <h3 className="text-xl font-black text-slate-950 dark:text-slate-100 tracking-tighter uppercase italic">{domain}</h3>
+        <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">{category}</p>
       </div>
-      <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-xl text-[10px] font-black">DA {metrics.da}</div>
+      <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-xl text-[10px] font-black">DA {metrics.da}</div>
     </div>
-    <div className="flex items-end justify-between pt-6 border-t border-slate-50">
+    
+    <div className="flex items-end justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
        <div>
-         <span className="text-[9px] font-black text-slate-300 uppercase block mb-1">Value</span>
-         <span className="text-2xl font-black text-slate-900 tracking-tighter">${price}</span>
+         <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase block mb-1">Value</span>
+         <span className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tighter">${price}</span>
        </div>
        <div className="text-right">
-         <span className="text-[9px] font-black text-slate-300 uppercase block mb-1">Auth_Date</span>
-         <span className="text-[11px] font-bold text-slate-600 uppercase">{date}</span>
+         <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase block mb-1">Auth_Date</span>
+         <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase">{date}</span>
+       </div>
+    </div>
+    
+    <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+       <div className="flex items-center justify-between relative px-2">
+          <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-1 bg-slate-100 dark:bg-slate-800 rounded-full z-0"></div>
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 h-1 bg-blue-500 rounded-full z-0 transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.5)]" style={{ width: `calc(${(currentStep / 2) * 100}% - 2rem)` }}></div>
+          
+          {steps.map((step, idx) => (
+             <div key={step} className={`relative z-10 flex flex-col items-center gap-2 ${idx <= currentStep ? 'text-blue-500' : 'text-slate-300 dark:text-slate-600'}`}>
+                <div className={`w-4 h-4 rounded-full border-2 transition-colors duration-500 ${idx <= currentStep ? 'bg-blue-500 border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}`}></div>
+                <span className="text-[8px] font-black uppercase tracking-widest">{step}</span>
+             </div>
+          ))}
        </div>
     </div>
   </div>
-);
+  );
+};
 
 const NotificationItem = ({ title, msg, time, type }: any) => (
     <div className="bg-white border border-slate-100 p-8 rounded-[2.5rem] flex items-start gap-6 hover:shadow-md transition-all group">

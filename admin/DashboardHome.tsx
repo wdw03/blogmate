@@ -1,9 +1,20 @@
 
 import React from 'react';
 import { Globe, Users, DollarSign, TrendingUp, Activity, Database, Shield, MoreVertical } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const mockData = [
+  { name: 'Jan', revenue: 4000, orders: 24 },
+  { name: 'Feb', revenue: 3000, orders: 13 },
+  { name: 'Mar', revenue: 2000, orders: 98 },
+  { name: 'Apr', revenue: 2780, orders: 39 },
+  { name: 'May', revenue: 1890, orders: 48 },
+  { name: 'Jun', revenue: 2390, orders: 38 },
+  { name: 'Jul', revenue: 3490, orders: 43 },
+];
 
 const DashboardHome = ({ stats }: any) => (
-  <div className="space-y-10">
+  <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
        <StatCard label="Live Inventory" value={stats.domains} icon={<Globe className="text-blue-500" />} change="+12% weekly" />
        <StatCard label="Operator Nodes" value={stats.users} icon={<Users className="text-emerald-500" />} change="+4 nodes" />
@@ -12,21 +23,35 @@ const DashboardHome = ({ stats }: any) => (
     </div>
     
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2 bg-white border border-slate-200 rounded-[2.5rem] p-10 shadow-sm">
+      <div className="lg:col-span-2 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-10 shadow-sm transition-colors">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">System_Activity</h3>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Real-time Node Telemetry</span>
+            <h3 className="text-xl font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight italic">System_Activity</h3>
+            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Revenue & Order Volume (30D)</span>
           </div>
-          <button className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-slate-900 transition-all border border-slate-100">
+          <button className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-all border border-slate-100 dark:border-slate-700">
             <MoreVertical size={18} />
           </button>
         </div>
-        <div className="h-64 flex items-center justify-center bg-slate-50/50 rounded-3xl border border-dashed border-slate-200 text-center">
-            <div>
-              <Activity className="mx-auto text-slate-200 mb-4" size={48} />
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">No Active Telemetry</p>
-            </div>
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={mockData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#0f172a', border: 'none', borderRadius: '12px', color: '#fff' }}
+                itemStyle={{ color: '#e2e8f0' }}
+              />
+              <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
       
@@ -51,21 +76,20 @@ const DashboardHome = ({ stats }: any) => (
 );
 
 const StatCard = ({ label, value, icon, change }: any) => (
-  <div className="bg-white border border-slate-200 p-10 rounded-[3.5rem] shadow-sm flex items-center justify-between group hover:border-blue-500 transition-all duration-700">
+  <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-10 rounded-[3.5rem] shadow-sm flex items-center justify-between group hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-500">
      <div>
-        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] mb-3 block">{label}</span>
-        <span className="text-4xl font-black text-slate-900 tracking-tighter block mb-2">{value}</span>
+        <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.4em] mb-3 block">{label}</span>
+        <span className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tighter block mb-2">{value}</span>
         <div className="flex items-center gap-1.5">
            <TrendingUp size={10} className="text-emerald-500" />
            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">{change}</span>
         </div>
      </div>
-     <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center border border-slate-100 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-xl">
-        {icon}
+     <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-slate-100 dark:border-slate-700">
+       {icon}
      </div>
   </div>
 );
-
 const SecurityLogItem = ({ msg, time }: any) => (
   <div className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0 last:pb-0">
      <div className="flex items-center gap-4">
