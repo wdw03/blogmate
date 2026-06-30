@@ -31,7 +31,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section className="relative pt-44 pb-32 overflow-hidden bg-white dark:bg-[#020617] transition-colors duration-300">
+    <section className="relative pt-32 sm:pt-44 pb-16 sm:pb-28 overflow-hidden bg-white dark:bg-[#020617] transition-colors duration-300">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:32px_32px] opacity-40"></div>
       <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-40"></div>
@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-100/30 dark:bg-orange-900/10 rounded-full blur-[120px] -z-10"></div>
 
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative">
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="flex flex-col items-center justify-center text-center min-h-[calc(100svh-8rem)] sm:min-h-0">
           <div className="w-full">
 
             <motion.div
@@ -52,7 +52,7 @@ const Hero: React.FC = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="flex justify-center mb-8"
+                className="flex justify-center mb-6 sm:mb-8"
               >
                 <h6 className="inline-flex items-center whitespace-nowrap bg-black text-white border-2 border-white px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[9.5px] xs:text-[10.5px] sm:text-sm font-black tracking-[0.12em] sm:tracking-[0.25em] shadow-2xl hover:scale-105 transition-all uppercase max-w-full">
                   <Sparkles size={14} className="text-blue-400 animate-pulse mr-1.5 sm:mr-2.5 flex-shrink-0" />
@@ -62,14 +62,14 @@ const Hero: React.FC = () => {
 
               <h1
                 aria-label="World's premier marketplace for high-authority premium digital assets."
-                className="text-[2.1rem] xs:text-[2.4rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.6rem] font-black tracking-tighter leading-[1.05] sm:leading-[1.12] text-slate-950 dark:text-white mb-12 sm:mb-14 transition-all duration-500 select-none cursor-default w-full"
+                className="text-[2.35rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.6rem] font-black tracking-tighter leading-[1.02] sm:leading-[1.12] text-slate-950 dark:text-white mb-8 sm:mb-12 transition-all duration-500 select-none cursor-default w-full"
               >
                 {/* Line 1: World's premier marketplace */}
                 <motion.span
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.1 }}
-                  className="inline md:block md:mb-3 md:w-full"
+                  className="block mb-2 md:mb-3 md:w-full"
                 >
                   <span className="inline transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(245,158,11,0.3)] hover:[-webkit-text-stroke:2px_#f59e0b] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-500 hover:via-orange-600 hover:to-red-500 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
                     W<SpinningChakri color="text-amber-500 dark:text-amber-400" />rld's premier marketplace
@@ -81,7 +81,7 @@ const Hero: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.25 }}
-                  className="inline md:block md:mb-3 md:w-full"
+                  className="block mb-2 md:mb-3 md:w-full"
                 >
                   <span className="inline transition-all duration-300 hover:scale-[1.02] [-webkit-text-stroke:1px_rgba(16,185,129,0.3)] hover:[-webkit-text-stroke:2px_#10b981] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
                     f<SpinningChakri color="text-emerald-500 dark:text-emerald-400" />r high-auth<SpinningChakri color="text-cyan-500 dark:text-teal-400" />rity premium
@@ -93,7 +93,7 @@ const Hero: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  className="inline md:block md:w-full"
+                  className="block md:w-full"
                 >
                   <span className="inline relative text-blue-600 dark:text-blue-400 italic transition-all duration-500 hover:scale-[1.04] hover:drop-shadow-[0_0_35px_rgba(59,130,246,0.9)] [-webkit-text-stroke:1px_rgba(59,130,246,0.3)] hover:[-webkit-text-stroke:2px_#60a5fa] hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:via-indigo-500 hover:to-purple-600 py-0 sm:py-1 px-1 sm:px-2 rounded-2xl md:whitespace-nowrap">
                     digital assets.
@@ -106,12 +106,12 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-6 mb-16"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-5 mb-10 sm:mb-16"
             >
               <a
                 href="#/domains"
                 onClick={(e) => handleNav(e, '#/domains')}
-                className="group w-full sm:w-auto relative flex items-center justify-center space-x-4 bg-slate-950 dark:bg-white text-white dark:text-slate-950 px-6 sm:px-12 py-6 rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl hover:shadow-blue-500/20 active:scale-[0.97]"
+                className="group w-full sm:w-auto relative flex items-center justify-center space-x-4 bg-slate-950 dark:bg-white text-white dark:text-slate-950 px-6 sm:px-12 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl hover:shadow-blue-500/20 active:scale-[0.97]"
               >
                 <span>ACCESS TERMINAL</span>
                 <Search size={18} strokeWidth={3} className="group-hover:rotate-12 transition-transform" />
@@ -120,7 +120,7 @@ const Hero: React.FC = () => {
               <a
                 href="#/services"
                 onClick={(e) => handleNav(e, '#/services')}
-                className="flex items-center justify-center space-x-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-slate-100 dark:border-slate-800 px-6 sm:px-10 py-6 rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:border-slate-900 dark:hover:border-slate-500 transition-all active:scale-[0.97] shadow-sm"
+                className="flex items-center justify-center space-x-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-slate-100 dark:border-slate-800 px-6 sm:px-10 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] font-black text-[13px] tracking-[0.2em] hover:border-slate-900 dark:hover:border-slate-500 transition-all active:scale-[0.97] shadow-sm"
               >
                 <span>VIEW PROTOCOLS</span>
                 <ChevronRight size={18} strokeWidth={3} />

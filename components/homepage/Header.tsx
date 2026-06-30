@@ -91,12 +91,12 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-[2000] transition-all duration-700 ${isScrolled ? 'pt-2' : 'pt-6'}`}>
-        <div className="container mx-auto px-4 md:px-6 max-w-[1500px]">
-          <div className={`relative flex items-center justify-between transition-all duration-500 rounded-[2.5rem] border px-4 md:px-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] ${
+      <header className={`fixed top-0 left-0 right-0 z-[2000] transition-all duration-700 ${isScrolled ? 'pt-2' : 'pt-3 sm:pt-6'}`}>
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 max-w-[1500px]">
+          <div className={`relative flex items-center justify-between transition-all duration-500 rounded-2xl sm:rounded-[2.5rem] border px-3 sm:px-4 md:px-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] ${
             isScrolled 
               ? 'bg-slate-950/80 backdrop-blur-2xl border-white/10 py-2.5' 
-              : 'bg-slate-900/60 backdrop-blur-3xl border-white/5 py-4'
+              : 'bg-slate-950/80 sm:bg-slate-900/60 backdrop-blur-3xl border-white/10 py-2.5 sm:py-4'
           }`}>
             
             <div className="flex items-center space-x-8">
@@ -105,12 +105,12 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 onClick={(e) => navigateTo(e, '#/')}
                 className="flex items-center space-x-3 group cursor-pointer shrink-0"
               >
-                <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic shadow-2xl transition-all group-hover:scale-105 group-hover:rotate-6">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-black text-xl italic shadow-2xl transition-all group-hover:scale-105 group-hover:rotate-6">
                   D
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-lg font-black text-white uppercase leading-none tracking-tight">DOMINTEL</span>
-                  <span className="text-[9px] font-bold text-blue-400 tracking-widest uppercase mt-0.5 opacity-80">Marketplace</span>
+                  <span className="text-sm sm:text-lg font-black text-white uppercase leading-none tracking-tight">DOMINTEL</span>
+                  <span className="hidden sm:block text-[9px] font-bold text-blue-400 tracking-widest uppercase mt-0.5 opacity-80">Marketplace</span>
                 </div>
               </a>
 
@@ -201,7 +201,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                   <a 
                     href="#/profile"
                     onClick={(e) => navigateTo(e, '#/profile')}
-                    className="flex items-center mr-2 px-3 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-xl cursor-pointer hover:bg-blue-600/20 transition-all max-w-[200px]"
+                    className="hidden sm:flex items-center mr-1 lg:mr-2 px-3 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-xl cursor-pointer hover:bg-blue-600/20 transition-all max-w-[200px]"
                   >
                     <div className="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center text-white mr-2 shrink-0">
                       <User size={14} fill="currentColor" />

@@ -297,7 +297,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               </button>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-10 space-y-12 bg-[#F8FAFC]/50 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 space-y-12 bg-[#F8FAFC]/50 custom-scrollbar">
               {/* IDENTITY */}
               <section>
                 <div className="flex items-center gap-3 mb-8 ml-2">
@@ -320,7 +320,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               </section>
 
               {/* FORENSICS */}
-              <section className="bg-slate-950 rounded-[3.5rem] p-10 relative overflow-hidden border border-white/5">
+              <section className="bg-slate-950 rounded-[3.5rem] p-4 sm:p-6 lg:p-10 relative overflow-hidden border border-white/5">
                 <div className="flex items-center gap-3 mb-10 ml-2">
                   <Activity size={18} className="text-blue-400" />
                   <h4 className="text-[11px] font-black text-blue-400 uppercase tracking-[0.3em]">Forensic_Metrics</h4>
@@ -369,7 +369,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   <Terminal size={32} />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-black text-slate-950 uppercase tracking-tighter italic leading-none">Bulk_Injection_Terminal</h3>
+                  <h3 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tighter italic leading-none">Bulk_Injection_Terminal</h3>
                   <div className="flex items-center gap-3 mt-3">
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                     <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Mass Registry Synchronization Node</span>
@@ -408,7 +408,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                 </div>
               </aside>
 
-              <main className="flex-1 p-10 overflow-hidden flex flex-col">
+              <main className="flex-1 p-4 sm:p-6 lg:p-10 overflow-hidden flex flex-col">
                 {bulkData.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-center p-20 bg-white border-2 border-dashed border-slate-200 rounded-[3rem] shadow-inner group">
                     <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200 mb-8 group-hover:text-blue-500 group-hover:bg-blue-50 transition-all duration-700">

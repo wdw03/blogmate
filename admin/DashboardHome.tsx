@@ -14,8 +14,9 @@ const mockData = [
 ];
 
 const DashboardHome = ({ stats }: any) => (
-  <div className="space-y-6 sm:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+  <div className="space-y-5 sm:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="mb-1 sm:mb-2"><p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.25em] mb-2">Live overview</p><h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tracking-tight">Good to see you, operator.</h2><p className="text-sm text-slate-500 mt-1">Your marketplace pulse, all in one place.</p></div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
        <StatCard label="Live Inventory" value={stats.domains} icon={<Globe className="text-blue-500" />} change="+12% weekly" />
        <StatCard label="Operator Nodes" value={stats.users} icon={<Users className="text-emerald-500" />} change="+4 nodes" />
        <StatCard label="Gross Valuation" value="$2.4M" icon={<DollarSign className="text-amber-500" />} change="Institutional" />
@@ -23,7 +24,7 @@ const DashboardHome = ({ stats }: any) => (
     </div>
     
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-      <div className="lg:col-span-2 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 shadow-sm transition-colors min-w-0">
+      <div className="lg:col-span-2 bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-8 md:p-10 shadow-sm transition-colors min-w-0">
         <div className="flex justify-between items-center mb-6 sm:mb-10">
           <div>
             <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight italic">System_Activity</h3>
@@ -33,7 +34,7 @@ const DashboardHome = ({ stats }: any) => (
             <MoreVertical size={18} />
           </button>
         </div>
-        <div className="h-56 sm:h-72 w-full min-w-0">
+        <div className="h-52 sm:h-72 w-full min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={mockData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <defs>
@@ -55,7 +56,7 @@ const DashboardHome = ({ stats }: any) => (
         </div>
       </div>
       
-      <div className="bg-[#020617] rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 shadow-2xl relative overflow-hidden group">
+      <div className="bg-[#020617] rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 shadow-2xl relative overflow-hidden group">
         <div className="relative z-10 flex flex-col h-full">
            <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight mb-6 sm:mb-8 flex items-center gap-2.5">
              <Shield className="text-blue-500" size={18} /> Security_Log
@@ -76,23 +77,23 @@ const DashboardHome = ({ stats }: any) => (
 );
 
 const StatCard = ({ label, value, icon, change }: any) => (
-  <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[3.5rem] shadow-sm flex items-center justify-between group hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-500 min-w-0">
+  <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8 md:p-10 rounded-2xl sm:rounded-[3.5rem] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/50 transition-all duration-500 min-w-0">
      <div className="min-w-0 pr-2">
-        <span className="text-[8px] sm:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-2 sm:mb-3 block truncate">{label}</span>
-        <span className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tighter block mb-2">{value}</span>
+        <span className="text-[7px] sm:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-2 sm:mb-3 block truncate">{label}</span>
+        <span className="text-xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tighter block mb-2">{value}</span>
         <div className="flex items-center gap-1.5">
            <TrendingUp size={10} className="text-emerald-500 flex-shrink-0" />
            <span className="text-[8px] sm:text-[9px] font-black text-emerald-500 uppercase tracking-widest truncate">{change}</span>
         </div>
      </div>
-     <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-slate-100 dark:border-slate-700 flex-shrink-0">
+     <div className="order-first sm:order-last w-10 h-10 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-slate-100 dark:border-slate-700 flex-shrink-0">
        {icon}
      </div>
   </div>
 );
 const SecurityLogItem = ({ msg, time }: any) => (
-  <div className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0 last:pb-0">
-     <div className="flex items-center gap-4">
+  <div className="flex items-start justify-between gap-4 border-b border-white/5 pb-4 last:border-0 last:pb-0">
+     <div className="flex items-start gap-3 sm:gap-4">
         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
         <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">{msg}</span>
      </div>

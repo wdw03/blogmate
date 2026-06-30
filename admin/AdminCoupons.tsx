@@ -163,7 +163,7 @@ const AdminCoupons: React.FC = () => {
                                 <div className="flex items-center justify-between pt-6 border-t border-slate-100">
                                     <div>
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Node Discount</div>
-                                        <div className="text-4xl font-black text-slate-950 tracking-tighter font-mono leading-none">-{c.discount_percent}%</div>
+                                        <div className="text-2xl sm:text-4xl font-black text-slate-950 tracking-tighter font-mono leading-none">-{c.discount_percent}%</div>
                                     </div>
                                     <div className="text-right">
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Expiry_SIG</div>
@@ -181,7 +181,7 @@ const AdminCoupons: React.FC = () => {
                 {isAdding && (
                     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-xl bg-white rounded-[3.5rem] shadow-3xl overflow-hidden border border-white/20" >
-                            <div className="p-10 border-b border-slate-100 bg-white flex justify-between items-center">
+                            <div className="p-4 sm:p-6 lg:p-10 border-b border-slate-100 bg-white flex justify-between items-center">
                                 <div className="flex items-center gap-6">
                                     <div className="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-xl rotate-3">
                                         <Ticket size={28} />
@@ -193,7 +193,7 @@ const AdminCoupons: React.FC = () => {
                                 </div>
                                 <button onClick={() => setIsAdding(false)} className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 hover:text-slate-950 transition-all"><X size={24} /></button>
                             </div>
-                            <form onSubmit={handleCreate} className="p-10 space-y-8 bg-[#F8FAFC]/50">
+                            <form onSubmit={handleCreate} className="p-4 sm:p-6 lg:p-10 space-y-8 bg-[#F8FAFC]/50">
                                 <div className="space-y-3">
                                     <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Voucher Identification Code</label>
                                     <div className="relative group">

@@ -5,11 +5,11 @@ import { ArrowRight, Calendar, User } from 'lucide-react';
 
 const BlogSection: React.FC = () => {
   return (
-    <section className="py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <section className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Intelligence & Insights</h2>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-4">Intelligence & Insights</h2>
             <p className="text-slate-600 dark:text-slate-400">
               Stay ahead of the curve with our expert analysis on domain trends, SEO strategies, and marketplace security.
             </p>
@@ -23,13 +23,13 @@ const BlogSection: React.FC = () => {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
           {BLOG_POSTS.map((post) => (
             <article 
               key={post.id} 
               className="flex flex-col bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl dark:hover:shadow-blue-500/10 transition-all group"
             >
-              <div className="relative h-56 overflow-hidden">
+              <div className="relative h-48 sm:h-56 overflow-hidden">
                 <img 
                   src={post.image} 
                   alt={post.title} 
@@ -40,7 +40,7 @@ const BlogSection: React.FC = () => {
                 </div>
               </div>
               
-              <div className="p-8 flex flex-col flex-1">
+              <div className="p-5 sm:p-8 flex flex-col flex-1">
                 <div className="flex items-center space-x-4 text-slate-400 dark:text-slate-500 text-xs mb-4">
                   <div className="flex items-center space-x-1">
                     <Calendar size={14} />

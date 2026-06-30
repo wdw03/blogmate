@@ -115,14 +115,14 @@ const AdminPanel: React.FC = () => {
     <div className="min-h-screen bg-[#f1f5f9] dark:bg-slate-950 flex flex-col lg:flex-row overflow-hidden font-['Inter'] transition-colors duration-300">
       
       {/* Mobile Top Header */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-[#020617] text-white shrink-0 z-50 shadow-md">
+      <div className="lg:hidden sticky top-0 flex h-16 items-center justify-between px-4 bg-[#020617] text-white shrink-0 z-[60] border-b border-white/10 shadow-lg">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm italic">D</div>
           <span className="font-black tracking-tighter uppercase leading-none">DomIntel</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+          className="p-2.5 bg-white/10 rounded-xl hover:bg-white/20 transition-colors"
         >
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -136,10 +136,10 @@ const AdminPanel: React.FC = () => {
         />
       )}
 
-      <aside className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 w-[280px] lg:w-72 bg-[#020617]/95 backdrop-blur-xl flex flex-col border-r border-white/10 dark:border-slate-800 z-[50] shrink-0 shadow-2xl transition-transform duration-300`}>
+      <aside className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static top-16 bottom-0 lg:inset-y-0 left-0 w-[min(86vw,300px)] lg:w-72 bg-[#020617]/95 backdrop-blur-xl flex flex-col border-r border-white/10 dark:border-slate-800 z-[50] shrink-0 shadow-2xl transition-transform duration-300`}>
 
-        <div className="p-8">
-          <div className="flex items-center gap-4 mb-12">
+        <div className="p-4 sm:p-6 lg:p-8 flex flex-col min-h-0 flex-1">
+          <div className="hidden lg:flex items-center gap-4 mb-10">
             <div className="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic transform rotate-3 shadow-2xl shadow-blue-500/20">D</div>
             <div className="flex flex-col">
               <span className="text-white font-black text-lg tracking-tighter uppercase leading-none">DomIntel</span>
@@ -147,7 +147,7 @@ const AdminPanel: React.FC = () => {
             </div>
           </div>
 
-          <nav className="space-y-1.5 overflow-y-auto custom-scrollbar flex-1 pb-10">
+          <nav className="space-y-1 overflow-y-auto custom-scrollbar flex-1 pb-5 pr-1">
             <NavBtn active={activeTab === 'Dashboard'} onClick={() => { setActiveTab('Dashboard'); setIsMobileMenuOpen(false); }} icon={<LayoutDashboard size={18} />} label="Dashboard" />
 
             <div className="py-4 px-5 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Marketplace Ops</div>
@@ -179,7 +179,7 @@ const AdminPanel: React.FC = () => {
           </nav>
         </div>
 
-        <div className="mt-auto p-8 bg-white/5 border-t border-white/5 backdrop-blur-md">
+        <div className="mt-auto p-4 sm:p-6 lg:p-8 bg-white/5 border-t border-white/5 backdrop-blur-md">
           <div className="flex items-center gap-4 group">
             <div className="relative">
               <div className="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center text-blue-400 border border-white/10 shadow-xl">
@@ -198,8 +198,8 @@ const AdminPanel: React.FC = () => {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-[100dvh] lg:h-screen custom-scrollbar bg-[#f8fafc] dark:bg-slate-950 min-w-0 w-full">
-        <header className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-10 py-3.5 sm:py-6 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sticky top-0 z-[100] shadow-sm transition-colors duration-300">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto relative min-h-[calc(100dvh-4rem)] lg:min-h-[100dvh] lg:h-screen custom-scrollbar bg-[#f8fafc] dark:bg-slate-950 min-w-0 w-full">
+        <header className="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-10 py-3 sm:py-5 flex items-center justify-between gap-3 sticky top-0 z-[30] shadow-sm transition-colors duration-300">
           <div className="flex items-center gap-4 sm:gap-6">
             <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-slate-100 uppercase tracking-tighter italic transition-colors duration-300">{activeTab}</h1>
             <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl">
@@ -215,7 +215,7 @@ const AdminPanel: React.FC = () => {
               {notificationCount > 0 && <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[8px] font-black rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900 animate-bounce">{notificationCount}</div>}
 
               {/* Dropdown UI */}
-              <div className="absolute right-0 top-full mt-4 w-72 sm:w-80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 p-5 sm:p-6 z-[200]">
+              <div className="absolute right-0 top-full mt-3 w-[min(19rem,calc(100vw-2rem))] sm:w-80 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 p-5 sm:p-6 z-[200]">
                 <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">System Alerts</h4>
                 {notificationCount === 0 ? (
                   <div className="text-center py-6">
@@ -247,7 +247,7 @@ const AdminPanel: React.FC = () => {
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-80px)] h-auto animate-in fade-in slide-in-from-bottom-2 duration-500 p-3.5 sm:p-6 md:p-10">
+        <div className="min-h-[calc(100vh-80px)] h-auto animate-in fade-in slide-in-from-bottom-2 duration-500 p-3 sm:p-6 md:p-10 pb-8">
           {renderView()}
         </div>
       </main>
@@ -264,7 +264,7 @@ const AdminPanel: React.FC = () => {
 const NavBtn = ({ active, onClick, icon, label, badge }: any) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all group ${active ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-slate-500 hover:text-white hover:bg-white/5'
+    className={`w-full flex items-center gap-3.5 px-4 sm:px-5 lg:px-6 py-3 rounded-xl lg:rounded-2xl transition-all group ${active ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-slate-500 hover:text-white hover:bg-white/5'
       }`}
   >
     <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:translate-x-1'}`}>{icon}</div>
@@ -277,9 +277,9 @@ const NavBtn = ({ active, onClick, icon, label, badge }: any) => (
 );
 
 const AccessDenied = () => (
-  <div className="p-20 text-center flex flex-col items-center">
+  <div className="px-5 py-20 text-center flex flex-col items-center">
     <Terminal size={48} className="text-rose-500 mb-6" />
-    <h2 className="text-3xl font-black text-rose-500 uppercase tracking-tighter">ACCESS_DENIED_BY_ROOT</h2>
+    <h2 className="text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-tighter break-words">ACCESS_DENIED_BY_ROOT</h2>
     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">Required Clearance: SUPERADMIN_ROOT</p>
   </div>
 );

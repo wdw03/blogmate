@@ -64,7 +64,7 @@ const Services: React.FC<ServicesProps> = ({ isFullPage = false }) => {
   return (
     <section
       id="services-section"
-      className={`relative overflow-hidden ${isFullPage ? 'py-32' : 'py-24'} bg-[#fffcfd] transition-all duration-1000`}
+      className={`relative overflow-hidden ${isFullPage ? 'py-24 sm:py-32' : 'py-16 sm:py-24'} bg-[#fffcfd] dark:bg-[#020617] transition-all duration-1000`}
     >
       {/* Precision Technical Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -72,34 +72,34 @@ const Services: React.FC<ServicesProps> = ({ isFullPage = false }) => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-rose-50/50 to-transparent blur-3xl"></div>
       </div>
 
-      <div className="container mx-auto px-6 max-w-7xl relative">
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl relative">
 
         {/* KINETIC HEADER */}
-        <div className="flex flex-col items-center text-center mb-24 relative">
-          <div className="inline-flex items-center space-x-3 bg-slate-900 px-4 py-2 rounded-2xl mb-8 shadow-xl border border-white/10">
+        <div className="flex flex-col items-center text-center mb-14 sm:mb-24 relative">
+          <div className="inline-flex items-center space-x-3 bg-slate-900 px-4 py-2 rounded-2xl mb-6 sm:mb-8 shadow-xl border border-white/10">
             <Sparkles size={14} className="text-blue-400 animate-pulse" />
-            <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">Proprietary Hub Services</span>
+            <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-[0.22em] sm:tracking-[0.4em]">Proprietary Hub Services</span>
           </div>
 
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.9] tracking-[-0.05em] mb-8">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-[-0.05em] mb-8">
             <span className="text-rose-400 dark:text-rose-500 opacity-60 dark:opacity-80 text-2xl md:text-3xl block mb-4 uppercase tracking-[0.2em] font-black">All Systems Verified</span>
             Everything for <br />
             <span className="gradient-text italic px-2">Digital Growth.</span>
           </h2>
 
-          <p className="text-slate-500 font-bold max-w-xl text-lg opacity-80 mb-10">
+          <p className="text-slate-500 font-bold max-w-xl text-base sm:text-lg opacity-80 mb-10">
             Institutional marketplace protocols for high-liquidity asset scaling.
           </p>
 
-          <div className="w-px h-24 bg-gradient-to-b from-rose-400 via-blue-400 to-transparent opacity-40"></div>
+          <div className="w-px h-14 sm:h-24 bg-gradient-to-b from-rose-400 via-blue-400 to-transparent opacity-40"></div>
         </div>
 
         {/* COMPACT CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-44">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-24 sm:mb-44">
           {services.map((service, idx) => (
             <div
               key={idx}
-              className={`group relative p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border ${service.borderColor} dark:border-slate-800 ${service.hoverBorder} rounded-[2.5rem] hover:bg-white dark:hover:bg-slate-800 hover:shadow-[0_50px_90px_-20px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_50px_90px_-20px_rgba(0,0,0,0.5)] hover:-translate-y-3 transition-all duration-500 overflow-hidden cursor-pointer`}
+              className={`group relative p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border ${service.borderColor} dark:border-slate-800 ${service.hoverBorder} rounded-3xl sm:rounded-[2.5rem] hover:bg-white dark:hover:bg-slate-800 hover:shadow-[0_50px_90px_-20px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_50px_90px_-20px_rgba(0,0,0,0.5)] hover:-translate-y-3 transition-all duration-500 overflow-hidden cursor-pointer`}
             >
               <div className={`absolute -top-10 -right-10 w-40 h-40 bg-${service.color}-500/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700`}></div>
 
@@ -221,7 +221,7 @@ const Services: React.FC<ServicesProps> = ({ isFullPage = false }) => {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="group relative bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-7 rounded-[2.5rem] hover:bg-white/[0.07] hover:border-white/20 transition-all duration-700 overflow-hidden flex flex-col justify-between h-[220px]"
+                  className="group relative bg-white/[0.03] backdrop-blur-3xl border border-white/10 p-7 rounded-3xl sm:rounded-[2.5rem] hover:bg-white/[0.07] hover:border-white/20 transition-all duration-700 overflow-hidden flex flex-col justify-between h-[220px]"
                 >
                   {/* Grid Highlight */}
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-white/5 to-transparent rounded-bl-full pointer-events-none"></div>

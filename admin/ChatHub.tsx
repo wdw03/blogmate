@@ -196,7 +196,7 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
                             <button className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-xl transition-all"><MoreVertical size={18}/></button>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto p-10 space-y-8 custom-scrollbar bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-90">
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 space-y-8 custom-scrollbar bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-90">
                             {messages.map((m) => (
                                 <div key={m.id} className={`flex ${m.is_admin ? 'justify-end' : 'justify-start'} animate-in fade-up duration-500`}>
                                     <div className={`max-w-[70%] flex gap-4 ${m.is_admin ? 'flex-row-reverse' : 'flex-row'}`}>

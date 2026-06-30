@@ -185,7 +185,7 @@ const AdminPricing: React.FC = () => {
                 </div>
 
                 <div className="lg:col-span-4">
-                    <div className="sticky top-32 bg-slate-950 p-10 rounded-[3.5rem] text-white overflow-hidden shadow-3xl border border-white/5">
+                    <div className="sticky top-32 bg-slate-950 p-4 sm:p-6 lg:p-10 rounded-[3.5rem] text-white overflow-hidden shadow-3xl border border-white/5">
                         <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] bg-[size:24px:24px] opacity-10"></div>
                         <h4 className="text-lg font-black uppercase tracking-widest mb-6 flex items-center gap-4 relative z-10">
                             <ShieldCheck className="text-blue-500" size={24} /> 

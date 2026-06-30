@@ -162,7 +162,7 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
             </div>
 
             <div className="bg-white border border-slate-200 rounded-[3rem] overflow-hidden shadow-sm">
-                <div className="p-10 border-b border-slate-100 flex items-center justify-between">
+                <div className="p-4 sm:p-6 lg:p-10 border-b border-slate-100 flex items-center justify-between">
                     <div>
                         <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">Liquidity_Registry</h3>
                         <div className="flex items-center gap-2 mt-1">
