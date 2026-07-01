@@ -60,7 +60,7 @@ const ConfirmationSuccess: React.FC<Props> = ({ orderId, totalPrice }) => {
         const html = `
             <html>
             <head>
-                <title>DOMINTEL_INVOICE_${registryId}</title>
+                <title>BLOGMET_INVOICE_${registryId}</title>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
                 <style>
@@ -73,9 +73,9 @@ const ConfirmationSuccess: React.FC<Props> = ({ orderId, totalPrice }) => {
                 <div class="invoice-container">
                     <header class="flex justify-between items-start mb-16">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-slate-950 rounded-2xl flex items-center justify-center text-white font-black text-2xl italic shadow-2xl">D</div>
+                            <div class="w-14 h-14 bg-slate-950 rounded-2xl flex items-center justify-center text-white font-black text-2xl italic shadow-2xl">B</div>
                             <div>
-                                <h1 class="text-3xl font-black uppercase tracking-tighter italic leading-none">DomIntel</h1>
+                                <h1 class="text-3xl font-black uppercase tracking-tighter italic leading-none">BlogMet</h1>
                                 <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mt-2">Intelligence Network</p>
                             </div>
                         </div>

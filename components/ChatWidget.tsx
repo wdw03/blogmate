@@ -179,7 +179,7 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div id="domintel-chat-widget" data-open={isOpen} className="relative z-[3000]">
+    <div id="blogmet-chat-widget" data-open={isOpen} className="relative z-[3000]">
       <motion.button 
         onClick={() => setIsOpen(true)} 
         initial={{ scale: 0 }} 

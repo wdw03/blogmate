@@ -231,7 +231,7 @@ const Signup: React.FC = () => {
           <div className="flex items-center justify-between shrink-0 text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] border-t border-slate-100 pt-6">
             <div className="flex items-center gap-3">
               <Globe size={14} strokeWidth={3} className="text-blue-500" />
-              <span>DomIntel Network: Global</span>
+              <span>BlogMet Network: Global</span>
             </div>
             <div className="font-mono">{sysTime}</div>
           </div>

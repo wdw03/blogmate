@@ -84,9 +84,9 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
   };
 
   const navLinks = [
-    { label: 'Domains', href: '#/domains', icon: <Globe size={14} /> },
-    { label: 'Pricing', href: '#/pricing', icon: <Zap size={14} /> },
-    { label: 'Contact', href: '#/contact', icon: <User size={14} /> },
+    { label: 'Domains', href: '#/domains', icon: <img src="/assets/images/dmoainsicons.png" alt="Domains" className="w-6 h-6 object-contain" /> },
+    { label: 'Pricing', href: '#/pricing', icon: <img src="/assets/images/pricing.png" alt="Pricing" className="w-6 h-6 object-contain" /> },
+    { label: 'Contact', href: '#/contact', icon: <img src="/assets/images/concact.png" alt="Contact" className="w-6 h-6 object-contain" /> },
   ];
 
   return (
@@ -106,11 +106,11 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 className="flex items-center space-x-3 group cursor-pointer shrink-0"
               >
                 <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic shadow-2xl transition-all group-hover:scale-105 group-hover:rotate-6">
-                  D
+                  B
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-lg font-black text-white uppercase leading-none tracking-tight">DOMINTEL</span>
-                  <span className="text-[9px] font-bold text-blue-400 tracking-widest uppercase mt-0.5 opacity-80">Marketplace</span>
+                  <span className="text-lg font-black text-white uppercase leading-none tracking-tight">BLOGMET</span>
+                  <span className="text-[9px] font-bold text-blue-400 tracking-widest uppercase mt-0.5 opacity-80">GP Marketplace</span>
                 </div>
               </a>
 
@@ -120,10 +120,10 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                     key={link.label} 
                     href={link.href}
                     onClick={(e) => navigateTo(e, link.href)}
-                    className={`relative flex items-center space-x-2 px-4 py-2 text-[12px] font-bold transition-all rounded-xl ${
+                    className={`relative flex items-center space-x-3 px-5 py-2.5 text-[13px] font-bold transition-all rounded-xl hover:scale-105 hover:shadow-lg ${
                       window.location.hash.includes(link.label.toLowerCase())
                         ? 'text-slate-900 bg-white shadow-xl' 
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                        : 'text-slate-400 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     {link.icon}
@@ -134,29 +134,34 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
             </div>
 
             <div className="flex items-center space-x-2 md:space-x-4">
-              <div className="hidden lg:flex items-center space-x-1 pr-2 border-r border-white/10">
+              <div className="hidden lg:flex items-center space-x-3 pr-5 border-r border-white/10">
                 <button 
                   onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all" 
+                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-lg" 
+                  title={isDarkMode ? "Switch to Light Theme" : "Switch to Dark Theme"}
                 >
-                  {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                  <img 
+                    src={isDarkMode ? "/assets/images/darktheme.png" : "/assets/images/sunlightwhite.png"} 
+                    alt="Theme" 
+                    className="w-7 h-7 object-contain" 
+                  />
                 </button>
                 <button 
                   onClick={() => setIsSearchOpen(true)}
-                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all" 
+                  className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-lg" 
                 >
-                  <Search size={18} />
+                  <img src="/assets/images/searchicons.png" alt="Search" className="w-7 h-7 object-contain" />
                 </button>
                 
                 {/* Notification Dropdown Trigger */}
                 <div className="relative" ref={notificationRef}>
                   <button 
                     onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                    className={`p-2.5 rounded-xl transition-all relative ${isNotificationsOpen ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                    className={`p-2.5 rounded-xl transition-all relative hover:scale-105 active:scale-95 shadow-sm hover:shadow-lg ${isNotificationsOpen ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                   >
-                    <Bell size={18} />
+                    <img src="/assets/images/notifications.png" alt="Notifications" className="w-7 h-7 object-contain" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 border-2 border-slate-900 rounded-full"></span>
+                      <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 border-2 border-slate-900 rounded-full animate-ping"></span>
                     )}
                   </button>
                   {isNotificationsOpen && (
@@ -211,18 +216,18 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                     </span>
                   </a>
                 ) : (
-                  <div className="hidden md:flex items-center space-x-2">
+                  <div className="hidden md:flex items-center space-x-5 lg:space-x-7 ml-4">
                     <button 
                       onClick={(e) => navigateTo(e, '#/login')}
-                      className="px-4 py-2.5 rounded-xl text-slate-400 text-[12px] font-bold hover:text-white hover:bg-white/5 transition-all"
+                      className="transition-all hover:scale-105 active:scale-95 rounded-xl hover:shadow-2xl hover:shadow-blue-500/30 p-1"
                     >
-                      Login
+                      <img src="/assets/images/loginbutn.png" alt="Login" className="h-11 md:h-13 lg:h-14 w-auto object-contain" />
                     </button>
                     <button 
                       onClick={(e) => navigateTo(e, '#/signup')}
-                      className="bg-white text-slate-900 px-6 py-2.5 rounded-2xl text-[12px] font-black uppercase tracking-tight shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+                      className="transition-all hover:scale-105 active:scale-95 rounded-xl hover:shadow-2xl hover:shadow-blue-500/30 p-1"
                     >
-                      Sign Up
+                      <img src="/assets/images/signup.png" alt="Sign Up" className="h-11 md:h-13 lg:h-14 w-auto object-contain" />
                     </button>
                   </div>
                 )}
@@ -330,24 +335,22 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                     </button>
                   </>
                 ) : (
-                  <>
+                  <div className="flex flex-col gap-3 mt-4">
                     <a 
                       href="#/login"
                       onClick={(e) => navigateTo(e, '#/login')}
-                      className="text-lg md:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                      className="transition-all hover:scale-102 active:scale-95 rounded-xl hover:shadow-xl p-1 flex justify-center"
                     >
-                      <User size={20} className="text-slate-500" />
-                      Login
+                      <img src="/assets/images/loginbutn.png" alt="Login" className="h-11 w-auto object-contain" />
                     </a>
                     <a 
                       href="#/signup"
                       onClick={(e) => navigateTo(e, '#/signup')}
-                      className="text-lg md:text-xl font-bold text-blue-500 uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
+                      className="transition-all hover:scale-102 active:scale-95 rounded-xl hover:shadow-xl p-1 flex justify-center"
                     >
-                      <CheckCircle size={20} className="text-blue-500" />
-                      Sign Up
+                      <img src="/assets/images/signup.png" alt="Sign Up" className="h-11 w-auto object-contain" />
                     </a>
-                  </>
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -362,7 +365,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
           <div className="w-full max-w-2xl relative z-10 animate-in zoom-in-95 fade-in">
             <div className="bg-slate-950 rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden p-6 md:p-8">
               <div className="relative">
-                <Search size={24} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" />
+                <img src="/assets/images/searchicons.png" alt="Search" className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 object-contain" />
                 <input 
                   ref={searchInputRef}
                   type="text" 

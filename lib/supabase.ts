@@ -12,6 +12,6 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true
   },
   global: {
-    headers: { 'x-application-name': 'domintel' }
+    headers: { 'x-application-name': 'blogmet' }
   }
 });

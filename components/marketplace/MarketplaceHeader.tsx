@@ -1,6 +1,7 @@
 
-import React from 'react';
-import { Search, Globe, Flower2, Dices, SlidersHorizontal, Sparkles, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Globe, ArrowRight } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 interface MarketplaceHeaderProps {
   niche?: string;
@@ -17,10 +18,38 @@ const MarketplaceHeader: React.FC<MarketplaceHeaderProps> = ({
   setSortBy, 
   onSearch 
 }) => {
+  const [domainCount, setDomainCount] = useState<number | null>(null);
+  const [searchVal, setSearchVal] = useState('');
+
+  useEffect(() => {
+    const fetchDomainCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('domains')
+          .select('*', { count: 'exact', head: true });
+        if (!error && count !== null) {
+          setDomainCount(count);
+        }
+      } catch (err) {
+        console.error('Error fetching domain count:', err);
+      }
+    };
+    fetchDomainCount();
+  }, []);
+
   const niches = [
-    { id: 'General', icon: <Globe size={14} />, label: 'GENERAL', color: 'blue' },
-    { id: 'CBD', icon: <Flower2 size={14} />, label: 'CBD', color: 'emerald' },
-    { id: 'Casino', icon: <Dices size={14} />, label: 'CASINO', color: 'rose' }
+    { 
+      id: 'General', 
+      icon: <img src="/assets/images/17940458.png" alt="General" className="w-[clamp(1rem,1.4vw,1.35rem)] h-[clamp(1rem,1.4vw,1.35rem)] object-contain" />, 
+      label: 'GENERAL', 
+      color: 'blue' 
+    },
+    { 
+      id: 'Grey Niche', 
+      icon: <img src="/assets/images/17095398.png" alt="Grey Niche" className="w-[clamp(1rem,1.4vw,1.35rem)] h-[clamp(1rem,1.4vw,1.35rem)] object-contain" />, 
+      label: 'GREY NICHE', 
+      color: 'rose' 
+    }
   ];
 
   const handleSortToggle = (type: 'newest' | 'top') => {
@@ -33,15 +62,15 @@ const MarketplaceHeader: React.FC<MarketplaceHeaderProps> = ({
 
   return (
     <div className="flex flex-col xl:flex-row items-center justify-between gap-6 p-4 sm:p-6 mb-8 bg-white border border-slate-200 rounded-[2rem] sm:rounded-[3rem] shadow-sm transition-all w-full min-w-0">
-      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-8 w-full xl:w-auto">
-        <div className="flex flex-wrap items-center justify-center p-1.5 bg-slate-100/50 border border-slate-200 rounded-2xl shadow-inner w-full sm:w-auto gap-1">
+      <div className="flex flex-row flex-wrap items-center justify-center xl:justify-start gap-3 sm:gap-4 w-full xl:w-auto">
+        <div className="flex flex-row flex-wrap items-center justify-center p-1.5 bg-slate-100/50 border border-slate-200 rounded-2xl shadow-inner gap-1.5">
            {niches.map(n => (
              <button 
               key={n.id}
               onClick={() => setNiche?.(n.id)}
-              className={`flex items-center justify-center gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all flex-1 sm:flex-initial ${
+              className={`flex items-center justify-center gap-2 px-[clamp(0.75rem,1.5vw,1.75rem)] py-[clamp(0.5rem,1vw,0.85rem)] rounded-xl text-[clamp(0.65rem,1.1vw,0.85rem)] font-black uppercase tracking-widest transition-all ${
                 niche === n.id 
-                  ? `bg-white text-blue-600 shadow-xl border border-slate-100 scale-105` 
+                  ? `bg-white text-blue-600 shadow-xl border border-slate-100 scale-105 z-10` 
                   : 'text-slate-400 hover:text-slate-600'
               }`}
              >
@@ -51,47 +80,43 @@ const MarketplaceHeader: React.FC<MarketplaceHeaderProps> = ({
            ))}
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
-          <button 
-            onClick={() => handleSortToggle('newest')}
-            className={`flex items-center justify-center gap-2 px-4 sm:px-8 py-3 sm:py-3.5 rounded-full border-2 transition-all shadow-sm flex-1 sm:flex-initial ${
-              sortBy === 'newest' 
-                ? 'bg-orange-500 border-orange-500 text-white shadow-orange-500/20 scale-105' 
-                : 'border-orange-500/20 text-orange-600 bg-white hover:bg-orange-50 hover:shadow-orange-500/10'
-            } text-[10px] sm:text-[11px] font-black uppercase tracking-widest`}
-          >
-            <Sparkles size={14} className={sortBy === 'newest' ? 'animate-pulse' : ''} /> 
-            NEWLY_ADDED
-          </button>
-          
-          <button 
-            onClick={() => handleSortToggle('top')}
-            className={`flex items-center justify-center gap-2 px-4 sm:px-8 py-3 sm:py-3.5 rounded-full border-2 transition-all shadow-sm flex-1 sm:flex-initial ${
-              sortBy === 'top' 
-                ? 'bg-indigo-600 border-indigo-600 text-white shadow-indigo-600/20 scale-105' 
-                : 'border-indigo-500/20 text-indigo-600 bg-white hover:bg-indigo-50 hover:shadow-indigo-500/10'
-            } text-[10px] sm:text-[11px] font-black uppercase tracking-widest`}
-          >
-            <Zap size={14} fill={sortBy === 'top' ? "currentColor" : "none"} /> 
-            TOP_SELLING
-          </button>
-        </div>
+        <button 
+          onClick={() => handleSortToggle('top')}
+          className={`flex items-center justify-center gap-2 px-[clamp(1rem,2vw,2rem)] py-[clamp(0.6rem,1.1vw,0.95rem)] rounded-full border-2 transition-all shadow-sm ${
+            sortBy === 'top' 
+              ? 'bg-indigo-600 border-indigo-600 text-white shadow-indigo-600/20 scale-105' 
+              : 'border-indigo-500/20 text-indigo-600 bg-white hover:bg-indigo-50 hover:shadow-indigo-500/10'
+          } text-[clamp(0.65rem,1.1vw,0.85rem)] font-black uppercase tracking-widest`}
+        >
+          <img src="/assets/images/2534215.png" alt="Top Selling" className="w-[clamp(1rem,1.4vw,1.35rem)] h-[clamp(1rem,1.4vw,1.35rem)] object-contain" />
+          TOP_SELLING
+        </button>
       </div>
 
-      <div className="relative w-full xl:w-[480px] group">
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
-           <Search size={22} strokeWidth={3} />
+      <form onSubmit={(e) => { e.preventDefault(); onSearch?.(searchVal); }} className="w-full xl:w-[520px] flex flex-col gap-2 rounded-xl sm:rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_55px_-20px_rgba(15,23,42,.2)] transition focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10 dark:border-white/10 dark:bg-slate-900">
+        <label className="flex items-center gap-2 px-2 pt-1 text-left text-[9px] font-black uppercase tracking-[.16em] text-slate-400">
+          <Globe size={13} className="text-blue-500" /> Search {domainCount !== null ? `${domainCount}` : '...'} verified websites
+        </label>
+        <div className="flex min-w-0 items-center gap-3 py-1.5 px-1">
+          <span className="ml-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 shadow-inner">
+            <img src="/assets/images/searchicons.png" alt="Search" className="w-7 h-7 object-contain" />
+          </span>
+          <input 
+            type="text" 
+            value={searchVal}
+            onChange={(e) => { setSearchVal(e.target.value); onSearch?.(e.target.value); }}
+            aria-label="Search domains"
+            placeholder="SEARCH ASSET INVENTORY..." 
+            className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base sm:text-lg font-bold text-slate-900 outline-none placeholder:text-slate-400 dark:text-white"
+          />
+          <button type="submit" className="hidden shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-[9px] font-black uppercase tracking-wider text-white transition hover:bg-slate-950 sm:flex">
+            Search domains <ArrowRight size={15} />
+          </button>
         </div>
-        <input 
-          type="text" 
-          onChange={(e) => onSearch?.(e.target.value)}
-          placeholder="SEARCH ASSET INVENTORY..." 
-          className="w-full bg-slate-50 border-2 border-slate-100 rounded-[2rem] pl-16 pr-16 py-5 text-[14px] font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all shadow-inner"
-        />
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-all">
-           <SlidersHorizontal size={20} />
-        </div>
-      </div>
+        <button type="submit" className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-[9px] font-black uppercase tracking-wider text-white transition active:scale-[.98] sm:hidden">
+          Search domains <ArrowRight size={15} />
+        </button>
+      </form>
     </div>
   );
 };

@@ -121,8 +121,8 @@ const AdminPanel: React.FC = () => {
       {/* Mobile Top Header */}
       <div className="lg:hidden sticky top-0 flex h-16 items-center justify-between px-4 bg-[#020617] text-white shrink-0 z-[60] border-b border-white/10 shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm italic">D</div>
-          <span className="font-black tracking-tighter uppercase leading-none">DomIntel</span>
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm italic">B</div>
+          <span className="font-black tracking-tighter uppercase leading-none">BlogMet</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -144,9 +144,9 @@ const AdminPanel: React.FC = () => {
 
         <div className="p-4 sm:p-6 lg:p-8 flex flex-col min-h-0 flex-1">
           <div className="hidden lg:flex items-center gap-4 mb-10">
-            <div className="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic transform rotate-3 shadow-2xl shadow-blue-500/20">D</div>
+            <div className="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic transform rotate-3 shadow-2xl shadow-blue-500/20">B</div>
             <div className="flex flex-col">
-              <span className="text-white font-black text-lg tracking-tighter uppercase leading-none">DomIntel</span>
+              <span className="text-white font-black text-lg tracking-tighter uppercase leading-none">BlogMet</span>
               <span className="text-[8px] font-black text-blue-500 uppercase tracking-[0.3em] mt-1.5 opacity-80">Command_Node</span>
             </div>
           </div>

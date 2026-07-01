@@ -37,9 +37,9 @@ const Header: React.FC = () => {
         {/* Logo */}
         <a href="#" className="flex items-center space-x-2 group">
           <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl transition-transform group-hover:scale-110">
-            D
+            B
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">DomIntel</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">BlogMet</span>
         </a>
 
         {/* Desktop Navigation */}

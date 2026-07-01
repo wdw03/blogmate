@@ -25,9 +25,9 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-8">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl italic transform rotate-3 shadow-2xl shadow-blue-500/20">D</div>
+                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl italic transform rotate-3 shadow-2xl shadow-blue-500/20">B</div>
                 <div className="flex flex-col">
-                  <span className="text-slate-900 dark:text-white font-black text-2xl tracking-tighter uppercase leading-none">DomIntel</span>
+                  <span className="text-slate-900 dark:text-white font-black text-2xl tracking-tighter uppercase leading-none">BlogMet</span>
                   <span className="text-[9px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-[0.3em] mt-1.5">Command_Node</span>
                 </div>
               </div>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center space-x-3 p-3 bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-xl group hover:border-slate-300 dark:hover:border-white/10 transition-colors cursor-pointer shadow-sm dark:shadow-none">
                   <Mail size={16} className="text-slate-500 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-white transition-colors" />
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-white transition-colors">sys.admin@domintel.io</span>
+                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-white transition-colors">sys.admin@blogmet.io</span>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-xl group hover:border-slate-300 dark:hover:border-white/10 transition-colors cursor-pointer shadow-sm dark:shadow-none">
                   <MapPin size={16} className="text-slate-500 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-white transition-colors" />
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
         {/* System Footer Bar: High Density */}
         <div className="pt-8 border-t border-slate-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
           <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
-            <span>&copy; {new Date().getFullYear()} DomIntel Corp</span>
+            <span>&copy; {new Date().getFullYear()} BlogMet Corp</span>
             <span className="w-1 h-1 bg-blue-600 rounded-full mx-2"></span>
             <span>All Systems Operational</span>
           </div>

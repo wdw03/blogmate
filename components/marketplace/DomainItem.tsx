@@ -25,7 +25,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
   metrics, niche = 'General', onAddToCart
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const multiplier = niche === 'Casino' ? 3 : (niche === 'CBD' ? 1.5 : 1);
+  const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
 
   const getPrice = (priceObj: any) => {
     if (!priceObj || priceObj.discounted === undefined) return { original: 0, discounted: 0, percent: 0, hasDiscount: false };

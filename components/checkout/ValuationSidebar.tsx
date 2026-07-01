@@ -3,7 +3,7 @@ import React from 'react';
 import { Command, History, ShieldCheck } from 'lucide-react';
 
 const ValuationSidebar = ({ items, niche, writingFee, net30Surcharge, coupon, setCoupon, couponDiscount, useBonus, setUseBonus, finalValuation, isPayLater }: any) => {
-  const multiplier = niche === 'Casino' ? 3 : (niche === 'CBD' ? 1.5 : 1);
+  const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
   
   return (
     <div className="bg-white border border-slate-200 rounded-[3rem] p-10 shadow-xl sticky top-32">

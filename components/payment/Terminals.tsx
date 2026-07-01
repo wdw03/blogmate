@@ -28,7 +28,7 @@ export const PayPalTerminal: React.FC<TerminalProps> = ({ amount, onSuccess }) =
                 createOrder: (data: any, actions: any) => actions.order.create({
                     purchase_units: [{
                         amount: { currency_code: 'USD', value: amount.toFixed(2) },
-                        description: "DomIntel Asset Settlement"
+                        description: "BlogMet Asset Settlement"
                     }]
                 }),
                 onApprove: async (data: any, actions: any) => {
@@ -81,7 +81,7 @@ export const RazorpayTerminal: React.FC<TerminalProps> = ({ amount, onSuccess, o
             key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_RweAWH6eAOvhti",
             amount: Math.round(amount * 100),
             currency: "USD",
-            name: "DomIntel Deployment",
+            name: "BlogMet Deployment",
             description: "Secure Asset Settlement",
             handler: (response: any) => {
                 setLoading(false);

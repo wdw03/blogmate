@@ -53,7 +53,7 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
   const goBack = () => window.location.hash = '#/domains';
 
   const getPricingInfo = (basePrice: number) => {
-    const multiplier = niche === 'Casino' ? 3 : (niche === 'CBD' ? 1.5 : 1);
+    const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
     const rule = pricingRules.find(r => basePrice >= r.min_price && basePrice <= r.max_price);
     
     const original = Math.round(basePrice * multiplier);

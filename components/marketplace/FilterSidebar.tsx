@@ -189,7 +189,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
         >
           <div className="space-y-5">
             <div className="relative group">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={12} />
+              <img src="/assets/images/searchicons.png" alt="Search" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 object-contain" />
               <input 
                 type="text" 
                 placeholder="Search Category" 

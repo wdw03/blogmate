@@ -25,7 +25,10 @@ const Marketplace: React.FC<{
   onAddToCart?: (item: any) => void;
   niche?: string;
   setNiche?: (n: string) => void;
-}> = ({ isSection = false, onAddToCart, niche = 'General', setNiche }) => {
+}> = ({ isSection = false, onAddToCart, niche: propNiche, setNiche: propSetNiche }) => {
+  const [localNiche, setLocalNiche] = useState('General');
+  const niche = propNiche !== undefined ? propNiche : localNiche;
+  const setNiche = propSetNiche !== undefined ? propSetNiche : setLocalNiche;
   const [domains, setDomains] = useState<any[]>([]);
   const [pricingRules, setPricingRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +100,7 @@ const Marketplace: React.FC<{
       const matchesTraffic = trafficNum >= filters.traffic[0] && trafficNum <= filters.traffic[1];
       const matchesCategory = filters.categories.length === 0 || filters.categories.includes(d.category);
       
-      const multiplier = niche === 'Casino' ? 3 : (niche === 'CBD' ? 1.5 : 1);
+      const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
       const pricing = getPricingInfo(d.price_guest_post);
       const activePrice = pricing.discounted * multiplier;
       
@@ -156,7 +159,7 @@ const Marketplace: React.FC<{
   }, []);
 
   return (
-    <div className={`${isSection ? 'py-16 sm:py-24' : 'pt-40 pb-32'} bg-[#f8fafc] min-h-screen relative`}>
+    <div className={`${isSection ? 'pt-4 sm:pt-6 pb-16 sm:pb-24' : 'pt-40 pb-32'} bg-[#f8fafc] min-h-screen relative`}>
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:48px_48px] opacity-20 pointer-events-none"></div>
 
       <div className="container mx-auto px-4 sm:px-6 max-w-[1600px] relative">

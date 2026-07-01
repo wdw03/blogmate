@@ -22,7 +22,7 @@ const RazorpayTerminal: React.FC<RazorpayTerminalProps> = ({ amount, currency, o
             key: RAZORPAY_KEY,
             amount: Math.round(amount * 100),
             currency: currency === 'INR' ? 'INR' : 'USD',
-            name: "DomIntel Deployment",
+            name: "BlogMet Deployment",
             description: "Secure Asset Settlement",
             handler: (response: any) => {
                 setLoading(false);

@@ -74,25 +74,7 @@ const Services: React.FC<ServicesProps> = ({ isFullPage = false }) => {
 
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl relative">
 
-        {/* KINETIC HEADER */}
-        <div className="flex flex-col items-center text-center mb-14 sm:mb-24 relative">
-          <div className="inline-flex items-center space-x-3 bg-slate-900 px-4 py-2 rounded-2xl mb-6 sm:mb-8 shadow-xl border border-white/10">
-            <Sparkles size={14} className="text-blue-400 animate-pulse" />
-            <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-[0.22em] sm:tracking-[0.4em]">Proprietary Hub Services</span>
-          </div>
 
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-[-0.05em] mb-8">
-            <span className="text-rose-400 dark:text-rose-500 opacity-60 dark:opacity-80 text-2xl md:text-3xl block mb-4 uppercase tracking-[0.2em] font-black">All Systems Verified</span>
-            Everything for <br />
-            <span className="gradient-text italic px-2">Digital Growth.</span>
-          </h2>
-
-          <p className="text-slate-500 font-bold max-w-xl text-base sm:text-lg opacity-80 mb-10">
-            Institutional marketplace protocols for high-liquidity asset scaling.
-          </p>
-
-          <div className="w-px h-14 sm:h-24 bg-gradient-to-b from-rose-400 via-blue-400 to-transparent opacity-40"></div>
-        </div>
 
         {/* COMPACT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-24 sm:mb-44">

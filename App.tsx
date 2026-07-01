@@ -150,7 +150,7 @@ const App: React.FC = () => {
         filter: `user_id=eq.${userId}`
       }, (payload: any) => {
         if (payload.new.is_admin) {
-          const chatWidgetElement = document.getElementById('domintel-chat-widget');
+          const chatWidgetElement = document.getElementById('blogmet-chat-widget');
           const isWidgetOpen = chatWidgetElement?.getAttribute('data-open') === 'true';
 
           if (!isWidgetOpen) {
@@ -252,7 +252,7 @@ const App: React.FC = () => {
     if (hash.toLowerCase().includes('contact')) return <Contact />;
 
     if (hash === '#/' || hash === '' || hash === '#') {
-      return <main><Hero /><div id="home-marketplace"><Marketplace isSection={true} niche={niche} onAddToCart={addToCart} /></div><Services /><BlogSection /></main>;
+      return <main><Hero /><div id="home-marketplace"><Marketplace isSection={true} niche={niche} setNiche={setNiche} onAddToCart={addToCart} /></div><Services /><BlogSection /></main>;
     }
     return <main className="pt-56 pb-20 text-center min-h-screen text-slate-900 font-bold uppercase italic tracking-widest">Protocol_Unknown: Page Not Found</main>;
   };

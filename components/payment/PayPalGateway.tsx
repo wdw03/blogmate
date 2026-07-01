@@ -42,7 +42,7 @@ const PayPalGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
               console.log("PayPal Success:", ref);
               onSuccess(ref);
             }} 
-            description="DomIntel Asset Acquisition" 
+            description="BlogMet Asset Acquisition" 
           />
         </div>
 

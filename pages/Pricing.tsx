@@ -248,7 +248,7 @@ const Pricing: React.FC = () => {
            <div className="relative z-10">
              <h2 className="text-3xl md:text-4xl font-black text-white mb-6 tracking-tighter">Ready to Scale Your Digital Portfolio?</h2>
              <p className="text-blue-100 text-base font-medium max-w-xl mx-auto mb-10 opacity-80">
-               Join 5,000+ institutional investors who rely on DomIntel's proprietary forensics to secure high-value digital assets.
+               Join 5,000+ institutional investors who rely on BlogMet's proprietary forensics to secure high-value digital assets.
              </p>
              <div className="flex flex-wrap justify-center gap-4">
                 <button 

@@ -197,7 +197,7 @@ const AdminCoupons: React.FC = () => {
                                 <div className="space-y-3">
                                     <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Voucher Identification Code</label>
                                     <div className="relative group">
-                                        <input required type="text" value={newCoupon.code} onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })} placeholder="E.G. DOMINTEL_LAUNCH" className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black uppercase outline-none focus:border-blue-600 shadow-inner" />
+                                        <input required type="text" value={newCoupon.code} onChange={e => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })} placeholder="E.G. BLOGMET_LAUNCH" className="w-full p-4 sm:p-6 bg-white border-2 border-slate-100 rounded-[1.75rem] text-sm font-black uppercase outline-none focus:border-blue-600 shadow-inner" />
                                         <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500">
                                             <Terminal size={20} />
                                         </div>

@@ -92,9 +92,9 @@ const AdminPanel: React.FC = () => {
       <aside className="w-72 bg-[#020617] flex flex-col border-r border-white/5 relative z-50">
         <div className="p-8">
            <div className="flex items-center gap-4 mb-12">
-              <div className="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl shadow-blue-500/20 italic transform rotate-3">D</div>
+              <div className="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl shadow-blue-500/20 italic transform rotate-3">B</div>
               <div className="flex flex-col">
-                <span className="text-white font-black text-lg tracking-tighter uppercase leading-none">DomIntel</span>
+                <span className="text-white font-black text-lg tracking-tighter uppercase leading-none">BlogMet</span>
                 <span className="text-[8px] font-black text-blue-500 uppercase tracking-[0.3em] mt-1.5 opacity-80">Command_Node_v4.8</span>
               </div>
            </div>
