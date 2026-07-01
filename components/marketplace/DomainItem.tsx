@@ -110,14 +110,14 @@ const DomainItem: React.FC<DomainItemProps> = ({
   );
 };
 
-const Summary = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: any }) => (
+const Summary: React.FC<{ icon: React.ReactNode; label: string; value: any }> = ({ icon, label, value }) => (
   <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/40">
     <span className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider text-slate-400"><span className="text-blue-500">{icon}</span>{label}</span>
     <strong className="mt-1.5 block truncate text-sm font-black text-slate-900 dark:text-white">{value}</strong>
   </div>
 );
 
-const Price = ({ label, price }: { label: string; price: { original: number; discounted: number; percent: number; hasDiscount: boolean } }) => (
+const Price: React.FC<{ label: string; price: { original: number; discounted: number; percent: number; hasDiscount: boolean } }> = ({ label, price }) => (
   <div className="min-w-0 rounded-xl bg-blue-50/70 p-2.5 text-center dark:bg-blue-500/5 sm:p-3">
     <span className="block truncate text-[7px] font-black uppercase tracking-wider text-slate-400 sm:text-[8px]">{label}</span>
     {price.hasDiscount && <span className="mt-1 block text-[8px] font-bold text-slate-400 line-through">${price.original}</span>}
@@ -126,7 +126,7 @@ const Price = ({ label, price }: { label: string; price: { original: number; dis
   </div>
 );
 
-const Detail = ({ icon, label, value, hint }: { icon: React.ReactNode; label: string; value: any; hint: string }) => (
+const Detail: React.FC<{ icon: React.ReactNode; label: string; value: any; hint?: string }> = ({ icon, label, value, hint }) => (
   <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
     <span className="flex items-center gap-1.5 text-[7px] font-black uppercase tracking-wider text-slate-400"><span className="text-blue-500">{icon}</span>{label}</span>
     <strong className="mt-2 block truncate text-sm font-black text-slate-900 dark:text-white">{value}</strong>

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Bitcoin, Building2, CheckCircle2, Clock3, CreditCard, Database,
   Globe2, Loader2, RefreshCw, Search, ShieldCheck, ToggleLeft,
-  ToggleRight, Wallet
+  ToggleRight, Wallet, Settings, X, Save
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -22,6 +22,36 @@ const PaymentOperations: React.FC<{ adminProfile: any }> = ({ adminProfile }) =>
   const [schemaMissing, setSchemaMissing] = useState(false);
   const [activeGateway, setActiveGateway] = useState('All');
   const [search, setSearch] = useState('');
+  const [editingConfigKey, setEditingConfigKey] = useState<string | null>(null);
+  const [configData, setConfigData] = useState<any>({});
+
+  const openConfigModal = (key: string, existingConfig: any) => {
+    setEditingConfigKey(key);
+    setConfigData({
+      wallet_address: existingConfig?.wallet_address || (key === 'Binance' ? '0x7287c9d0eb221354f1249de7632d4f557c4d30f8' : ''),
+      binance_uid: existingConfig?.binance_uid || (key === 'Binance' ? '88492011' : ''),
+      network: existingConfig?.network || (key === 'Binance' ? 'BEP-20 (BSC / Binance Smart Chain)' : ''),
+      ...existingConfig
+    });
+  };
+
+  const saveGatewayConfig = async () => {
+    if (!editingConfigKey) return;
+    setSavingKey(editingConfigKey);
+    const { error } = await supabase.from('payment_gateway_settings').update({
+      config: configData,
+      updated_by: adminProfile?.id,
+      updated_at: new Date().toISOString()
+    }).eq('gateway_key', editingConfigKey);
+
+    if (error) {
+      alert(`Config update failed: ${error.message}`);
+    } else {
+      setSettings(prev => prev.map(row => row.gateway_key === editingConfigKey ? { ...row, config: configData } : row));
+      setEditingConfigKey(null);
+    }
+    setSavingKey(null);
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -103,7 +133,12 @@ const PaymentOperations: React.FC<{ adminProfile: any }> = ({ adminProfile }) =>
               </div>
               <h3 className="mt-4 text-sm font-black text-slate-900">{method.name}</h3>
               <p className="mt-1 min-h-8 text-[10px] leading-4 text-slate-400">{method.description}</p>
-              <span className={`mt-3 inline-flex rounded-full px-2 py-1 text-[8px] font-black uppercase ${enabled ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>{enabled ? 'Enabled' : 'Disabled'}</span>
+              <div className="mt-3 flex items-center justify-between">
+                <span className={`inline-flex rounded-full px-2 py-1 text-[8px] font-black uppercase ${enabled ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>{enabled ? 'Enabled' : 'Disabled'}</span>
+                <button onClick={() => openConfigModal(method.key, row?.config || {})} className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-[9px] font-black uppercase text-slate-700 hover:bg-slate-200 transition">
+                  <Settings size={12} /> Config
+                </button>
+              </div>
             </div>
           );
         })}
@@ -131,13 +166,58 @@ const PaymentOperations: React.FC<{ adminProfile: any }> = ({ adminProfile }) =>
           </div>
         )}
       </div>
+
+      {editingConfigKey && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-950 uppercase">Configure {editingConfigKey}</h3>
+                <p className="text-xs text-slate-500">Update payment addresses and settlement credentials</p>
+              </div>
+              <button onClick={() => setEditingConfigKey(null)} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"><X size={18} /></button>
+            </div>
+
+            {editingConfigKey === 'Binance' ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-black uppercase text-slate-600 mb-1">USDT Wallet Address (BEP-20 / TRC-20)</label>
+                  <input value={configData.wallet_address || ''} onChange={e => setConfigData({ ...configData, wallet_address: e.target.value })} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 font-mono text-xs text-slate-900 outline-none focus:border-blue-600" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase text-slate-600 mb-1">Binance Pay UID</label>
+                  <input value={configData.binance_uid || ''} onChange={e => setConfigData({ ...configData, binance_uid: e.target.value })} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 font-mono text-xs text-slate-900 outline-none focus:border-blue-600" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase text-slate-600 mb-1">Network Name</label>
+                  <input value={configData.network || ''} onChange={e => setConfigData({ ...configData, network: e.target.value })} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-900 outline-none focus:border-blue-600" />
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-black uppercase text-slate-600 mb-1">Merchant / Account ID / API Key</label>
+                  <input value={configData.account_id || ''} onChange={e => setConfigData({ ...configData, account_id: e.target.value })} placeholder="Enter account email or merchant key" className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-900 outline-none focus:border-blue-600" />
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+              <button onClick={() => setEditingConfigKey(null)} className="rounded-xl px-4 py-2.5 text-xs font-black uppercase text-slate-500 hover:bg-slate-50">Cancel</button>
+              <button onClick={saveGatewayConfig} disabled={!!savingKey} className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-black uppercase text-white hover:bg-blue-700 shadow-md">
+                {savingKey ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />} Save Credentials
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 const Stat = ({ label, value, icon, wide }: any) => <div className={`rounded-2xl border border-slate-200 bg-white p-4 ${wide ? 'col-span-2 sm:col-span-1' : ''}`}><span className="flex items-center gap-2 text-[8px] font-black uppercase tracking-wider text-slate-400"><span className="text-blue-500">{icon}</span>{label}</span><strong className="mt-2 block truncate text-xl font-black text-slate-950">{value}</strong></div>;
 
-const TransactionRow = ({ tx, onStatus }: { tx: any; onStatus: (id: string, status: string) => void }) => {
+const TransactionRow: React.FC<{ tx: any; onStatus: (id: string, status: string) => any }> = ({ tx, onStatus }) => {
   const [open, setOpen] = useState(false);
   return (
     <article className="p-4 sm:p-5">

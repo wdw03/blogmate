@@ -6,6 +6,9 @@ import {
     ChevronRight, Lock, Activity, AlertCircle, Wallet,
     TrendingUp
 } from 'lucide-react';
+import paypalLogo from '../../assets/images/paypal-mark-color_new.svg';
+import razorpayLogo from '../../assets/images/razorpay.svg';
+import binanceLogo from '../../assets/images/bianncelogo.png';
 import PayPalGateway from './PayPalGateway';
 import RazorpayGateway from './RazorpayGateway';
 import CryptoGateway from './CryptoGateway';
