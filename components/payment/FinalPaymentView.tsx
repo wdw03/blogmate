@@ -152,9 +152,9 @@ const FinalPaymentView: React.FC<Props> = ({
                                         <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Payment Gateways</h3>
                                     </div>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                        <GatewayOption label="PayPal" icon={<Globe />} active={gatewayAvailability.PayPal} selected={selectedGateway === 'PayPal'} onClick={() => gatewayAvailability.PayPal && setSelectedGateway('PayPal')} status={gatewayAvailability.PayPal ? undefined : 'OFFLINE'} />
-                                        <GatewayOption label="Razorpay" icon={<CreditCard />} active={gatewayAvailability.Razorpay} selected={selectedGateway === 'Razorpay'} onClick={() => gatewayAvailability.Razorpay && setSelectedGateway('Razorpay')} status={gatewayAvailability.Razorpay ? undefined : 'OFFLINE'} />
-                                        <GatewayOption label="Binance" icon={<Bitcoin />} active={gatewayAvailability.Binance} selected={selectedGateway === 'Binance'} onClick={() => gatewayAvailability.Binance && setSelectedGateway('Binance')} status={gatewayAvailability.Binance ? undefined : 'OFFLINE'} />
+                                        <GatewayOption label="PayPal" icon={<Globe />} imgSrc={paypalLogo} active={gatewayAvailability.PayPal} selected={selectedGateway === 'PayPal'} onClick={() => gatewayAvailability.PayPal && setSelectedGateway('PayPal')} status={gatewayAvailability.PayPal ? undefined : 'OFFLINE'} />
+                                        <GatewayOption label="Razorpay" icon={<CreditCard />} imgSrc={razorpayLogo} active={gatewayAvailability.Razorpay} selected={selectedGateway === 'Razorpay'} onClick={() => gatewayAvailability.Razorpay && setSelectedGateway('Razorpay')} status={gatewayAvailability.Razorpay ? undefined : 'OFFLINE'} />
+                                        <GatewayOption label="Binance" icon={<Bitcoin />} imgSrc={binanceLogo} active={gatewayAvailability.Binance} selected={selectedGateway === 'Binance'} onClick={() => gatewayAvailability.Binance && setSelectedGateway('Binance')} status={gatewayAvailability.Binance ? undefined : 'OFFLINE'} />
                                         <GatewayOption label="Pay Later" icon={<Clock />} active={gatewayAvailability.Net30} selected={selectedGateway === 'Net30'} onClick={() => gatewayAvailability.Net30 && setSelectedGateway('Net30')} status={gatewayAvailability.Net30 ? undefined : 'OFFLINE'} />
                                         <GatewayOption label="Wallet Hub" icon={<Wallet />} active={gatewayAvailability.Wallet} selected={selectedGateway === 'Wallet'} onClick={() => gatewayAvailability.Wallet && setSelectedGateway('Wallet')} status={gatewayAvailability.Wallet ? undefined : 'OFFLINE'} isNew />
                                     </div>
@@ -240,7 +240,7 @@ const FinalPaymentView: React.FC<Props> = ({
     );
 };
 
-const GatewayOption = ({ label, icon, active, selected, onClick, status, isNew }: any) => (
+const GatewayOption = ({ label, icon, imgSrc, active, selected, onClick, status, isNew }: any) => (
     <button
         disabled={!active}
         onClick={onClick}
@@ -261,9 +261,13 @@ const GatewayOption = ({ label, icon, active, selected, onClick, status, isNew }
             </div>
         )}
 
-        <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center transition-all duration-500 ${active ? (selected ? 'bg-slate-950 text-blue-400 shadow-xl' : 'bg-white text-slate-400') : 'bg-slate-200'
+        <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center p-3 transition-all duration-500 ${active ? (selected ? 'bg-slate-950 text-blue-400 shadow-xl' : 'bg-white text-slate-400') : 'bg-slate-200'
             }`}>
-            {React.cloneElement(icon as any, { size: 36, strokeWidth: 1.5 })}
+            {imgSrc ? (
+                <img src={imgSrc} alt={label} className="w-12 h-12 object-contain" />
+            ) : (
+                React.cloneElement(icon as any, { size: 36, strokeWidth: 1.5 })
+            )}
         </div>
 
         <div className="flex flex-col items-center">

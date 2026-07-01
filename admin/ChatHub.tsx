@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-    Search, User, Send, Bot, ShieldCheck, Loader2, 
+import {
+    Search, User, Send, Bot, ShieldCheck, Loader2,
     MoreVertical, CheckCheck, Clock, Zap, MessageSquare,
     Filter, Radio, Activity, ExternalLink, ArrowRight, RefreshCcw
 } from 'lucide-react';
@@ -19,21 +19,17 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
     const [loading, setLoading] = useState(true);
     const [isSending, setIsSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    
+
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const isSuperAdmin = adminProfile?.role === 'superadmin';
 
-    // Ultra Strict Privacy Masking
-    const maskEmail = (email: string) => {
-        if (!email || isSuperAdmin) return email;
-        return '[ACCESS_RESTRICTED]';
-    };
+    const maskEmail = (email?: string) => email || 'No Email';
 
-    const maskName = (name: string, id: string) => {
-        if (isSuperAdmin || name === 'GUEST USER') return name;
-        // Completely anonymous for normal admins
-        return `NODE_${id.slice(-4).toUpperCase()}`;
+    const maskName = (name?: string, id?: string) => {
+        if (name && name !== 'GUEST USER') return name;
+        if (id) return `User (${id.slice(-4).toUpperCase()})`;
+        return 'Customer';
     };
 
     const fetchConversations = async () => {
@@ -80,9 +76,9 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
         loadMessages();
 
         const channel = supabase.channel(`admin-chat-sync-${selectedUserId}`)
-            .on('postgres_changes', { 
-                event: 'INSERT', 
-                schema: 'public', 
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
                 table: 'messages',
                 filter: `user_id=eq.${selectedUserId}`
             }, (payload) => {
@@ -106,7 +102,7 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputValue.trim() || isSending || !selectedUserId) return;
-        
+
         setIsSending(true);
         const text = inputValue;
         setInputValue('');
@@ -140,8 +136,8 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
                     </div>
                     <div className="relative group">
                         <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500" />
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             placeholder="Filter Nodes..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
@@ -153,15 +149,15 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {loading ? (
                         <div className="p-20 text-center"><Loader2 className="animate-spin mx-auto text-blue-500" /></div>
-                    ) : conversations.filter(c => (isSuperAdmin ? c.full_name : `NODE_${c.id.slice(-4).toUpperCase()}`).toLowerCase().includes(searchTerm.toLowerCase())).map((conv) => (
-                        <button 
+                    ) : conversations.filter(c => (c.full_name || c.email || `User ${c.id.slice(-4)}`).toLowerCase().includes(searchTerm.toLowerCase())).map((conv) => (
+                        <button
                             key={conv.id}
                             onClick={() => setSelectedUserId(conv.id)}
                             className={`w-full p-4 sm:p-6 flex items-start gap-4 transition-all border-b border-slate-50 group hover:bg-white ${selectedUserId === conv.id ? 'bg-white' : ''}`}
                         >
                             <div className="relative">
                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-sm border border-slate-100 transition-all ${selectedUserId === conv.id ? 'bg-blue-600 text-white shadow-blue-500/20 rotate-3' : 'bg-white text-slate-400 group-hover:bg-slate-50'}`}>
-                                    {isSuperAdmin ? (conv.full_name?.[0] || 'U') : 'N'}
+                                    {(conv.full_name?.[0] || conv.email?.[0] || 'U').toUpperCase()}
                                 </div>
                                 {conv.online && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-4 border-slate-50 animate-pulse"></div>}
                             </div>
@@ -193,23 +189,23 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
                                     </div>
                                 </div>
                             </div>
-                            <button className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-xl transition-all"><MoreVertical size={18}/></button>
+                            <button className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-xl transition-all"><MoreVertical size={18} /></button>
                         </header>
 
-                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 space-y-8 custom-scrollbar bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-90">
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 space-y-6 custom-scrollbar bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:32px_32px] opacity-90">
                             {messages.map((m) => (
-                                <div key={m.id} className={`flex ${m.is_admin ? 'justify-end' : 'justify-start'} animate-in fade-up duration-500`}>
-                                    <div className={`max-w-[88%] sm:max-w-[78%] md:max-w-[70%] flex gap-4 ${m.is_admin ? 'flex-row-reverse' : 'flex-row'}`}>
-                                        <div className={`p-5 rounded-[1.75rem] text-[13px] font-medium leading-relaxed shadow-sm ${
-                                            m.is_admin 
-                                            ? 'bg-slate-900 text-white rounded-tr-none border border-white/5' 
-                                            : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'
+                                <div key={m.id} className={`flex flex-col ${m.is_admin ? 'items-start' : 'items-end'} animate-in fade-up duration-300`}>
+                                    <span className={`text-[9px] font-black uppercase tracking-wider mb-1 px-2 ${m.is_admin ? 'text-blue-600' : 'text-emerald-600'}`}>
+                                        {m.is_admin ? 'ADMIN (SUPPORT)' : `USER (${selectedUser?.full_name || 'Customer'})`}
+                                    </span>
+                                    <div className={`max-w-[88%] sm:max-w-[78%] md:max-w-[70%] p-5 rounded-[1.75rem] text-[13px] font-medium leading-relaxed shadow-sm ${m.is_admin
+                                            ? 'bg-blue-600 text-white rounded-tl-none border border-blue-500 shadow-blue-500/10'
+                                            : 'bg-white text-slate-900 border border-slate-200 rounded-tr-none shadow-slate-200/50'
                                         }`}>
-                                            {m.content}
-                                            <div className={`mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase opacity-40 ${m.is_admin ? 'justify-end' : 'justify-start'}`}>
-                                                {new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                                                {m.is_admin && <CheckCheck size={10} className="text-blue-400" />}
-                                            </div>
+                                        {m.content}
+                                        <div className={`mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase ${m.is_admin ? 'text-blue-100 justify-start' : 'text-slate-400 justify-end'}`}>
+                                            {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            {m.is_admin && <CheckCheck size={12} className="text-white" />}
                                         </div>
                                     </div>
                                 </div>
@@ -219,13 +215,13 @@ const ChatHub: React.FC<ChatHubProps> = ({ adminProfile }) => {
 
                         <footer className="p-3 sm:p-5 md:p-8 bg-white border-t border-slate-100">
                             <form onSubmit={handleSend} className="flex gap-4 items-center bg-slate-50 border border-slate-200 rounded-[2rem] p-2 focus-within:bg-white focus-within:border-blue-500 focus-within:shadow-xl transition-all">
-                                <input 
+                                <input
                                     value={inputValue}
                                     onChange={e => setInputValue(e.target.value)}
                                     placeholder="Deploy Response Protocol..."
                                     className="flex-1 bg-transparent px-6 py-3.5 text-sm font-bold text-slate-900 outline-none placeholder:text-slate-300"
                                 />
-                                <button 
+                                <button
                                     disabled={!inputValue.trim() || isSending}
                                     className="w-11 h-11 sm:w-14 sm:h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-blue-600 disabled:opacity-30 transition-all shadow-lg shadow-slate-900/10 active:scale-95"
                                 >

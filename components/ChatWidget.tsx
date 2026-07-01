@@ -260,9 +260,12 @@ const ChatWidget: React.FC = () => {
                           initial={{ opacity: 0, y: 15, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           key={m.id} 
-                          className={`flex ${m.isAdmin ? 'justify-start' : 'justify-end'}`}
+                          className={`flex flex-col ${m.isAdmin ? 'items-start' : 'items-end'}`}
                         >
-                            <div className={`max-w-[85%] relative group ${m.isAdmin ? 'pl-2' : 'pr-2'}`}>
+                            <span className={`text-[9px] font-black uppercase tracking-wider mb-1 px-2 ${m.isAdmin ? 'text-emerald-400' : 'text-blue-400'}`}>
+                                {m.isAdmin ? 'SUPPORT TEAM' : 'YOU'}
+                            </span>
+                            <div className={`max-w-[85%] relative group ${m.isAdmin ? 'pl-1' : 'pr-1'}`}>
                                 <div className={`p-5 text-[15px] leading-relaxed shadow-lg transition-all text-left ${
                                     m.isAdmin 
                                     ? 'bg-white/95 backdrop-blur-2xl text-slate-800 rounded-[2rem] rounded-tl-sm border border-white shadow-slate-200/50' 
@@ -270,9 +273,9 @@ const ChatWidget: React.FC = () => {
                                 }`}>
                                     {m.content}
                                 </div>
-                                <div className={`mt-2 flex items-center gap-1.5 opacity-40 transition-opacity ${m.isAdmin ? 'justify-start' : 'justify-end'}`}>
+                                <div className={`mt-1.5 flex items-center gap-1.5 opacity-60 transition-opacity ${m.isAdmin ? 'justify-start' : 'justify-end'}`}>
                                     <span className="text-[9px] font-black text-slate-400 uppercase">{new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
-                                    {!m.isAdmin && <CheckCheck size={12} className={m.id.toString().startsWith('temp-') ? 'text-slate-400' : 'text-blue-500'} />}
+                                    {!m.isAdmin && <CheckCheck size={12} className={m.id.toString().startsWith('temp-') ? 'text-slate-400' : 'text-emerald-400'} />}
                                 </div>
                             </div>
                         </motion.div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bitcoin, Copy, Check, ShieldCheck, Loader2, ArrowLeft, ExternalLink, QrCode, AlertCircle, Wallet } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import binanceLogo from '../../assets/images/bianncelogo.png';
+import binanceQrImg from '../../assets/images/image.png';
 
 interface Props {
   amount: number;
@@ -85,8 +86,6 @@ const CryptoGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
     }
   };
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(walletAddress)}&margin=10`;
-
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500 max-w-2xl mx-auto">
       {/* Header */}
@@ -138,8 +137,8 @@ const CryptoGateway: React.FC<Props> = ({ amount, onBack, onSuccess }) => {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               {/* QR Code */}
               <div className="md:col-span-5 bg-white rounded-2xl p-4 flex flex-col items-center justify-center text-slate-950 shadow-xl">
-                <div className="w-48 h-48 bg-slate-50 rounded-xl overflow-hidden border border-slate-200 p-2 flex items-center justify-center">
-                  <img src={qrUrl} alt="Binance QR Code" className="w-full h-full object-contain" />
+                <div className="w-full max-w-[240px] bg-slate-50 rounded-xl overflow-hidden border border-slate-200 p-2 flex items-center justify-center">
+                  <img src={binanceQrImg} alt="Binance QR Code" className="w-full h-auto max-h-[300px] object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 mt-3 text-[9px] font-black uppercase tracking-widest text-slate-600">
                   <QrCode size={13} className="text-amber-600" /> Scan via Binance App
