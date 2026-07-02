@@ -384,7 +384,13 @@ const Record = ({ tab, row, allRows, edit, duplicate, remove }: any) => {
 };
 
 const Drawer = ({ tab, value, setValue, allRows, close, save, saving }: any) => {
-  const update = (key: string, next: any) => setValue({ ...value, [key]: next });
+  const update = (keyOrObj: any, next?: any) => {
+    if (typeof keyOrObj === 'object' && keyOrObj !== null) {
+      setValue((prev: any) => ({ ...prev, ...keyOrObj }));
+    } else {
+      setValue((prev: any) => ({ ...prev, [keyOrObj]: next }));
+    }
+  };
   return (
     <div className="fixed inset-0 z-[3000] flex justify-end bg-slate-950/60 backdrop-blur-sm" onMouseDown={e => e.target === e.currentTarget && close()}>
       <div className="flex h-full w-full max-w-3xl flex-col bg-white shadow-2xl dark:bg-slate-950">
@@ -535,7 +541,7 @@ const ArticleForm = ({ v, set, allArticles }: any) => {
     </div>
 
     <Section title="Article identity & SEO Focus">
-      <Field label="Title" value={v.title} change={(x: string) => { set('title', x); if (!v.id) set('slug', slugify(x)); }} max={70} />
+      <Field label="Title" value={v.title} change={(x: string) => { if (!v.id) { set({ title: x, slug: slugify(x) }); } else { set('title', x); } }} max={70} />
       <Field label="Slug" value={v.slug} change={(x: string) => set('slug', slugify(x))} prefix="/blog/" />
       <Area label="Description" value={v.description} change={(x: string) => set('description', x)} max={160} />
       <div className="grid gap-4 sm:grid-cols-2">
