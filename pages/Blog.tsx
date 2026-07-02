@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import SEO from '../src/components/seo/SEO';
 import { organizationSchema, websiteSchema, webPageSchema } from '../src/utils/generateSchema';
-import { BLOG_CATEGORIES, KNOWLEDGE_ARTICLES, KnowledgeArticle, getDynamicArticles } from '../src/data/blog';
+import { BLOG_CATEGORIES, KNOWLEDGE_ARTICLES, KnowledgeArticle, getDynamicArticles, syncDynamicArticlesFromSupabase } from '../src/data/blog';
 
 const ArticleCard: React.FC<{ article: KnowledgeArticle; large?: boolean }> = ({ article, large }) => (
   <motion.article
@@ -60,17 +60,25 @@ const Blog: React.FC<{ initialCategory?: string; initialTag?: string }> = ({ ini
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(initialCategory || 'All');
   const [sort, setSort] = useState<'newest' | 'popular' | 'shortest'>('newest');
+  const [list, setList] = useState<KnowledgeArticle[]>(getDynamicArticles());
+
+  React.useEffect(() => {
+    syncDynamicArticlesFromSupabase().then(() => setList(getDynamicArticles()));
+    const handler = () => setList(getDynamicArticles());
+    window.addEventListener('blogmate_articles_updated', handler);
+    return () => window.removeEventListener('blogmate_articles_updated', handler);
+  }, []);
 
   const articles = useMemo(() => {
     const needle = (initialTag || query).toLowerCase();
-    const all = getDynamicArticles();
+    const all = list;
     return all
       .filter(article => category === 'All' || article.category.toLowerCase() === category.toLowerCase())
       .filter(article => !needle || `${article.title} ${article.description} ${article.tags.join(' ')}`.toLowerCase().includes(needle))
       .sort((a, b) => sort === 'popular' ? b.views - a.views : sort === 'shortest' ? a.readTime - b.readTime : b.updatedAt.localeCompare(a.updatedAt));
-  }, [category, initialTag, query, sort]);
+  }, [category, initialTag, list, query, sort]);
 
-  const featured = getDynamicArticles().find(article => article.featured) || getDynamicArticles()[0];
+  const featured = list.find(article => article.featured) || list[0];
   const pageTitle = initialTag ? `${initialTag} Articles` : initialCategory ? `${initialCategory} Articles` : 'SEO & Domain Knowledge Center';
   const path = initialTag ? `/tag/${initialTag.toLowerCase()}` : initialCategory ? `/category/${initialCategory.toLowerCase()}` : '/blog';
 

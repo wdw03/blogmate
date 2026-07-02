@@ -17,8 +17,11 @@ const FAQS = [
   { question: 'Which metric should I prioritize?', answer: 'No single metric is decisive. Use a balanced set of relevance, quality, risk, and business-outcome signals.' },
 ];
 
+import { supabase } from '../lib/supabase';
+import { syncDynamicArticlesFromSupabase } from '../src/data/blog';
+
 const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
-  const article = findArticle(slug);
+  const [article, setArticle] = useState<any>(() => findArticle(slug));
   const [progress, setProgress] = useState(0);
   const [fontSize, setFontSize] = useState(18);
   const [copied, setCopied] = useState(false);
@@ -27,7 +30,7 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
   // Article Likes
   const [likes, setLikes] = useState<number>(() => {
     const stored = localStorage.getItem(`blogmate_likes_${slug}`);
-    return stored ? Number(stored) : Math.floor(Math.random() * 40) + 25;
+    return stored ? Number(stored) : article?.likes || 0;
   });
   const [hasLiked, setHasLiked] = useState<boolean>(() => {
     return localStorage.getItem(`blogmate_liked_${slug}`) === 'true';
@@ -36,33 +39,21 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
   // Comments System
   const [comments, setComments] = useState<any[]>(() => {
     const allStored = JSON.parse(localStorage.getItem('blogmate_comments') || '[]');
-    const articleComments = allStored.filter((c: any) => c.article_slug === slug && c.status !== 'hidden');
-    if (articleComments.length > 0) return articleComments;
-    return [
-      {
-        id: 'com-1',
-        article_slug: slug,
-        user_name: 'Alex Rivera',
-        user_email: 'alex@seoauthority.io',
-        avatar: `https://picsum.photos/seed/${slug}alex/100/100`,
-        content: 'This SEO framework completely changed how our agency evaluates authority nodes. The anchor text velocity tips are spot on!',
-        likes: 14,
-        status: 'approved',
-        created_at: new Date(Date.now() - 3600000 * 24).toISOString()
-      },
-      {
-        id: 'com-2',
-        article_slug: slug,
-        user_name: 'Sarah Jenkins',
-        user_email: 's.jenkins@techflow.com',
-        avatar: `https://picsum.photos/seed/${slug}sarah/100/100`,
-        content: 'Incredible depth! I love the section breakdowns and interactive backlinks. Question: Do you prioritize DA over RD when acquiring expired assets?',
-        likes: 9,
-        status: 'approved',
-        created_at: new Date(Date.now() - 3600000 * 5).toISOString()
-      }
-    ];
+    return allStored.filter((c: any) => c.article_slug === slug && c.status !== 'hidden');
   });
+
+  useEffect(() => {
+    syncDynamicArticlesFromSupabase().then(() => {
+      const found = findArticle(slug);
+      if (found) setArticle(found);
+    });
+    // Fetch live comments from Supabase
+    supabase.from('article_comments').select('*').eq('article_slug', slug).then(({ data }) => {
+      if (data && data.length > 0) {
+        setComments(data.filter(c => c.status !== 'hidden'));
+      }
+    });
+  }, [slug]);
 
   const [commentName, setCommentName] = useState('');
   const [commentEmail, setCommentEmail] = useState('');

@@ -1,31 +1,37 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { BLOG_POSTS } from '../constants';
 import { ArrowRight, Calendar, User, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const BlogSection: React.FC = () => {
-  const [posts, setPosts] = useState<any[]>(BLOG_POSTS);
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    try {
-      const localArticles = JSON.parse(localStorage.getItem('blogmate_cms_articles') || '[]');
-      if (localArticles && localArticles.length > 0) {
-        const formatted = localArticles.filter((x: any) => x.status === 'published').map((art: any) => ({
-          id: art.id || art.slug,
-          title: art.title,
-          category: art.category || 'SEO',
-          excerpt: art.description || '',
-          image: art.cover_image || 'https://picsum.photos/seed/domain1/800/600',
-          author: art.author_name || 'Admin',
-          date: art.published_at ? new Date(art.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today',
-          content: art.content_sections?.[0]?.body || art.description
-        }));
-        if (formatted.length > 0) {
-          setPosts(formatted);
-          setDisplayIndex(formatted.length);
+    const fetchPosts = async () => {
+      try {
+        // Try fetching dynamically from Supabase database first
+        const { data, error } = await supabase.from('blog_articles').select('*').eq('status', 'published');
+        const list = (data && data.length > 0) ? data : JSON.parse(localStorage.getItem('blogmate_cms_articles') || '[]');
+        if (list && list.length > 0) {
+          const formatted = list.filter((x: any) => x.status === 'published').map((art: any) => ({
+            id: art.id || art.slug,
+            slug: art.slug || art.id,
+            title: art.title,
+            category: art.category || 'SEO',
+            excerpt: art.description || '',
+            image: art.cover_image || 'https://picsum.photos/seed/domain1/800/600',
+            author: art.author_name || 'Admin',
+            date: art.published_at ? new Date(art.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today',
+            content: art.content_sections?.[0]?.body || art.description
+          }));
+          if (formatted.length > 0) {
+            setPosts(formatted);
+            setDisplayIndex(formatted.length);
+          }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
+    };
+    fetchPosts();
   }, []);
 
   const N = posts.length;

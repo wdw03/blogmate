@@ -162,10 +162,24 @@ export const BLOG_CATEGORIES = [
   'Glossary', 'Resources', 'Free Tools', 'Templates', 'Whitepapers',
 ];
 
+import { supabase } from '../../lib/supabase';
+
+export const syncDynamicArticlesFromSupabase = async () => {
+  try {
+    const { data, error } = await supabase.from('blog_articles').select('*').eq('status', 'published');
+    if (data && data.length > 0) {
+      localStorage.setItem('blogmate_cms_articles', JSON.stringify(data));
+      window.dispatchEvent(new Event('blogmate_articles_updated'));
+      return data;
+    }
+  } catch (e) {}
+  return null;
+};
+
 export const getDynamicArticles = (): KnowledgeArticle[] => {
   try {
     const local = JSON.parse(localStorage.getItem('blogmate_cms_articles') || '[]');
-    if (Array.isArray(local) && local.length > 0) {
+    if (Array.isArray(local)) {
       const formatted: KnowledgeArticle[] = local
         .filter((x: any) => x.status === 'published')
         .map((x: any) => ({
@@ -181,9 +195,9 @@ export const getDynamicArticles = (): KnowledgeArticle[] => {
           publishedAt: x.published_at ? x.published_at.slice(0, 10) : '2026-07-02',
           updatedAt: '2026-07-02',
           readTime: x.read_time || 5,
-          views: 1250,
-          likes: 92,
-          comments: 8,
+          views: x.views || 1250,
+          likes: x.likes || 0,
+          comments: x.comments || 0,
           featured: x.featured,
           trending: x.trending,
           editorsChoice: x.editors_choice,
@@ -191,10 +205,10 @@ export const getDynamicArticles = (): KnowledgeArticle[] => {
             ? x.content_sections
             : [{ id: 'sec-1', heading: 'Overview', body: x.description || '' }]
         }));
-      if (formatted.length > 0) return formatted;
+      return formatted;
     }
   } catch (e) {}
-  return KNOWLEDGE_ARTICLES;
+  return [];
 };
 
 export const findArticle = (slug: string) =>

@@ -75,54 +75,7 @@ const SEOContentStudio: React.FC = () => {
     const finalRedirects = mergeData(localRedirects, supaRedirects);
     const finalComments = mergeData(localComments, supaComments);
 
-    if (finalArticles.length === 0) {
-      const allSeedArticles = [
-        ...KNOWLEDGE_ARTICLES.map((art, idx) => ({
-          id: art.id,
-          slug: art.slug,
-          title: art.title,
-          description: art.description,
-          category: art.category,
-          tags: art.tags,
-          author_name: art.author,
-          author_role: art.authorRole,
-          author_avatar: `https://picsum.photos/seed/${art.id}/100/100`,
-          cover_image: art.image,
-          content_sections: art.sections,
-          faq: [{ question: 'What is the core strategy?', answer: art.description }],
-          read_time: art.readTime,
-          featured: art.featured || idx === 0,
-          trending: art.trending || idx === 1,
-          editors_choice: art.editorsChoice || false,
-          status: 'published',
-          published_at: art.publishedAt ? new Date(art.publishedAt).toISOString() : new Date().toISOString()
-        })),
-        ...BLOG_POSTS.map((post, idx) => ({
-          id: `blog-${post.id}`,
-          slug: post.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-          title: post.title,
-          description: post.excerpt,
-          category: post.category,
-          tags: ['SEO', 'Domains', 'Investing'],
-          author_name: post.author,
-          author_role: 'Senior Domain Strategist',
-          author_avatar: 'https://picsum.photos/seed/author/100/100',
-          cover_image: post.image,
-          content_sections: [{ id: 'sec-1', heading: 'Overview & Analysis', body: post.content }],
-          faq: [{ question: 'Why is this important for SEO?', answer: 'It builds domain authority and organic rankings.' }],
-          read_time: 5,
-          featured: false,
-          trending: false,
-          editors_choice: false,
-          status: 'published',
-          published_at: new Date().toISOString()
-        }))
-      ];
-      localStorage.setItem('blogmate_cms_articles', JSON.stringify(allSeedArticles));
-      setData({ seo: finalSeo, articles: allSeedArticles, redirects: finalRedirects, comments: finalComments });
-    } else {
-      setData({ seo: finalSeo, articles: finalArticles, redirects: finalRedirects, comments: finalComments });
-    }
+    setData({ seo: finalSeo, articles: finalArticles, redirects: finalRedirects, comments: finalComments });
     setLoading(false);
   };
 
