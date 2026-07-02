@@ -8,7 +8,7 @@ import SEO from '../src/components/seo/SEO';
 import ArticleSchema from '../src/components/seo/ArticleSchema';
 import BreadcrumbSchema from '../src/components/seo/BreadcrumbSchema';
 import FAQSchema from '../src/components/seo/FAQSchema';
-import { findArticle, KNOWLEDGE_ARTICLES, getDynamicArticles } from '../src/data/blog';
+import { findArticle, KNOWLEDGE_ARTICLES, getDynamicArticles, syncDynamicArticlesFromSupabase } from '../src/data/blog';
 import { generateCanonical } from '../src/utils/generateCanonical';
 import { supabase } from '../lib/supabase';
 
@@ -16,9 +16,6 @@ const FAQS = [
   { question: 'How often should this process be reviewed?', answer: 'Review important inputs quarterly and after any major platform, market, or algorithm change.' },
   { question: 'Which metric should I prioritize?', answer: 'No single metric is decisive. Use a balanced set of relevance, quality, risk, and business-outcome signals.' },
 ];
-
-import { supabase } from '../lib/supabase';
-import { syncDynamicArticlesFromSupabase } from '../src/data/blog';
 
 const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
   const [article, setArticle] = useState<any>(() => findArticle(slug));
