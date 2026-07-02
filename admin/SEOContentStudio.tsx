@@ -338,7 +338,7 @@ const SEOContentStudio: React.FC = () => {
               <Record key={row.id} tab={tab} row={row} allRows={rows} edit={() => setEditor(structuredClone(row))} duplicate={() => duplicate(row)} remove={() => remove(row)} />)}</div>}
       </section>
 
-      {editor && <Drawer tab={tab} value={editor} setValue={setEditor} close={() => setEditor(null)} save={save} saving={saving} />}
+      {editor && <Drawer tab={tab} value={editor} setValue={setEditor} allRows={rows} close={() => setEditor(null)} save={save} saving={saving} />}
     </div>
   );
 };
@@ -383,13 +383,13 @@ const Record = ({ tab, row, allRows, edit, duplicate, remove }: any) => {
   );
 };
 
-const Drawer = ({ tab, value, setValue, close, save, saving }: any) => {
+const Drawer = ({ tab, value, setValue, allRows, close, save, saving }: any) => {
   const update = (key: string, next: any) => setValue({ ...value, [key]: next });
   return (
     <div className="fixed inset-0 z-[3000] flex justify-end bg-slate-950/60 backdrop-blur-sm" onMouseDown={e => e.target === e.currentTarget && close()}>
       <div className="flex h-full w-full max-w-3xl flex-col bg-white shadow-2xl dark:bg-slate-950">
         <header className="flex items-center justify-between border-b border-slate-200 p-4 sm:px-7 dark:border-slate-800"><div><p className="text-[9px] font-black uppercase tracking-wider text-blue-600">{value.id ? 'Edit record' : 'Create record'}</p><h2 className="text-xl font-black dark:text-white">{tab === 'seo' ? 'Page SEO' : tab === 'articles' ? 'Knowledge article' : tab === 'comments' ? 'Review & Comment Management' : 'URL redirect'}</h2></div><button onClick={close} className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 dark:bg-slate-800"><X size={18} /></button></header>
-        <div className="flex-1 overflow-y-auto p-4 sm:p-7">{tab === 'seo' ? <SEOForm v={value} set={update} /> : tab === 'articles' ? <ArticleForm v={value} set={update} /> : tab === 'comments' ? <CommentForm v={value} set={update} /> : <RedirectForm v={value} set={update} />}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-7">{tab === 'seo' ? <SEOForm v={value} set={update} /> : tab === 'articles' ? <ArticleForm v={value} set={update} allArticles={allRows} /> : tab === 'comments' ? <CommentForm v={value} set={update} /> : <RedirectForm v={value} set={update} />}</div>
         <footer className="flex justify-between border-t border-slate-200 p-4 sm:px-7 dark:border-slate-800"><button onClick={close} className="px-5 text-xs font-bold text-slate-500">Cancel</button><button onClick={save} disabled={saving} className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-wider text-white disabled:opacity-50">{saving ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}Save changes</button></footer>
       </div>
     </div>
@@ -437,15 +437,17 @@ const SEOForm = ({ v, set }: any) => {
       <Field label="OG title" value={v.og_title} change={(x: string) => set('og_title', x)} />
       <Area label="OG description" value={v.og_description} change={(x: string) => set('og_description', x)} />
       <MediaUploadField label="OG image (1200 × 630)" value={v.og_image} change={(x: string) => set('og_image', x)} />
+      {v.og_image && <Field label="OG Image Alt Tag" value={v.og_image_alt} change={(x: string) => set('og_image_alt', x)} placeholder="Social sharing banner alt text..." />}
       <Field label="Twitter title" value={v.twitter_title} change={(x: string) => set('twitter_title', x)} />
       <MediaUploadField label="Twitter image" value={v.twitter_image} change={(x: string) => set('twitter_image', x)} />
+      {v.twitter_image && <Field label="Twitter Image Alt Tag" value={v.twitter_image_alt} change={(x: string) => set('twitter_image_alt', x)} placeholder="Twitter card alt text..." />}
     </Section>
     <Section title="Structured data"><Area label="JSON-LD" value={schema} rows={10} mono change={(x: string) => { setSchema(x); try { set('schema_json', JSON.parse(x)); } catch {} }} /></Section>
     <Preview title={v.title} path={v.canonical_url || v.path} description={v.description} />
   </div>;
 };
 
-const ArticleForm = ({ v, set }: any) => {
+const ArticleForm = ({ v, set, allArticles }: any) => {
   const section = (index: number, key: string, next: any) => { const list = [...v.content_sections]; list[index] = { ...list[index], [key]: next }; set('content_sections', list); };
   const faq = (index: number, key: string, next: string) => { const list = [...v.faq]; list[index] = { ...list[index], [key]: next }; set('faq', list); };
 
@@ -454,25 +456,31 @@ const ArticleForm = ({ v, set }: any) => {
   const descLen = (v.description || '').length;
   const totalWords = (v.content_sections || []).reduce((acc: number, s: any) => acc + (s.body || '').split(/\s+/).filter(Boolean).length, 0);
   const hasImage = !!(v.cover_image || (v.content_sections || []).some((s: any) => s.image || (s.images && s.images.length > 0)));
+  const hasAltTags = !!(v.cover_image_alt || (v.content_sections || []).some((s: any) => s.image_alt));
   const hasBacklink = (v.content_sections || []).some((s: any) => s.button_url || s.anchor_url);
   const hasFaq = (v.faq || []).length > 0 && (v.faq || []).some((f: any) => f.question && f.answer);
+  const kw = (v.focus_keyword || '').toLowerCase().trim();
+  const kwInTitle = kw ? (v.title || '').toLowerCase().includes(kw) : true;
+  const kwInDesc = kw ? (v.description || '').toLowerCase().includes(kw) : true;
 
   const check1 = titleLen >= 20 && titleLen <= 70;
   const check2 = descLen >= 110 && descLen <= 165;
   const check3 = totalWords >= 250;
   const check4 = (v.content_sections || []).length >= 2;
-  const check5 = hasImage;
+  const check5 = hasImage && hasAltTags;
   const check6 = hasBacklink;
   const check7 = hasFaq;
+  const check8 = kwInTitle && kwInDesc;
 
   const score = [
     check1 ? 15 : titleLen > 0 ? 5 : 0,
-    check2 ? 20 : descLen > 0 ? 8 : 0,
-    check3 ? 20 : totalWords > 100 ? 10 : 0,
+    check2 ? 15 : descLen > 0 ? 8 : 0,
+    check3 ? 15 : totalWords > 100 ? 10 : 0,
     check4 ? 15 : (v.content_sections || []).length === 1 ? 7 : 0,
-    check5 ? 10 : 0,
+    check5 ? 10 : hasImage ? 5 : 0,
     check6 ? 10 : 0,
     check7 ? 10 : 0,
+    check8 ? 10 : 0,
   ].reduce((a, b) => a + b, 0);
 
   const badgeColor = score >= 80 ? 'bg-emerald-500 text-white' : score >= 50 ? 'bg-amber-500 text-white' : 'bg-red-500 text-white';
@@ -512,7 +520,7 @@ const ArticleForm = ({ v, set }: any) => {
           <span>{check4 ? '✔' : '✖'} Multi-Section Structure</span>
         </div>
         <div className={`flex items-center gap-2 ${check5 ? 'text-emerald-400' : 'text-slate-400'}`}>
-          <span>{check5 ? '✔' : '✖'} Cover or Section Image</span>
+          <span>{check5 ? '✔' : '✖'} Image & SEO Alt Tag</span>
         </div>
         <div className={`flex items-center gap-2 ${check6 ? 'text-emerald-400' : 'text-slate-400'}`}>
           <span>{check6 ? '✔' : '✖'} Outbound CTA / Backlink</span>
@@ -520,13 +528,20 @@ const ArticleForm = ({ v, set }: any) => {
         <div className={`flex items-center gap-2 ${check7 ? 'text-emerald-400' : 'text-slate-400'}`}>
           <span>{check7 ? '✔' : '✖'} Schema FAQ Block</span>
         </div>
+        <div className={`flex items-center gap-2 ${check8 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check8 ? '✔' : '✖'} Keyword in Title/Desc</span>
+        </div>
       </div>
     </div>
 
-    <Section title="Article identity">
+    <Section title="Article identity & SEO Focus">
       <Field label="Title" value={v.title} change={(x: string) => { set('title', x); if (!v.id) set('slug', slugify(x)); }} max={70} />
       <Field label="Slug" value={v.slug} change={(x: string) => set('slug', slugify(x))} prefix="/blog/" />
       <Area label="Description" value={v.description} change={(x: string) => set('description', x)} max={160} />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Focus Keyword (Yoast Analyzer)" value={v.focus_keyword} change={(x: string) => set('focus_keyword', x)} placeholder="e.g. guest post backlinks" />
+        <Field label="Canonical Override URL" value={v.canonical_url} change={(x: string) => set('canonical_url', x)} placeholder="Automatic when blank" />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2"><Field label="Category" value={v.category} change={(x: string) => set('category', x)} /><Field label="Read time" type="number" value={v.read_time} change={(x: string) => set('read_time', Number(x))} /></div>
       <Tags label="Tags" value={v.tags} change={(x: string[]) => set('tags', x)} />
       <MediaUploadField label="Cover image" value={v.cover_image} change={(x: string) => set('cover_image', x)} />
@@ -567,6 +582,31 @@ const ArticleForm = ({ v, set }: any) => {
           </div>
         </div>
       ))}
+
+      {allArticles && allArticles.length > 1 && (
+        <div className="rounded-2xl border border-blue-200/80 bg-blue-50/50 p-4 dark:border-blue-900/40 dark:bg-blue-950/20 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-black text-blue-900 dark:text-blue-300">
+            <span>💡 Smart Internal Link Suggestions Engine (WordPress SEO style)</span>
+          </div>
+          <p className="text-[11px] text-slate-600 dark:text-slate-400">Click any suggested article below to quickly copy its internal link or inject into your active sections:</p>
+          <div className="flex flex-wrap gap-2">
+            {allArticles.filter((a: any) => a.id !== v.id).slice(0, 6).map((other: any) => (
+              <button
+                key={other.id}
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(`[${other.title}](/blog/${other.slug})`);
+                  alert(`🔗 Copied Internal Link to Clipboard:\n\n[${other.title}](/blog/${other.slug})\n\nYou can paste this markdown link into any section body content above!`);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-300/80 bg-white px-3 py-1.5 text-[10px] font-bold text-blue-700 hover:bg-blue-600 hover:text-white dark:border-blue-800 dark:bg-slate-900 dark:text-blue-300 transition-all shadow-sm"
+              >
+                <span>🔗 {other.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <Add label="Add New Content Section / Heading" click={() => set('content_sections', [...v.content_sections, { id: `section-${v.content_sections.length + 1}`, heading: '', body: '', button_text: '', button_url: '', button_style: 'primary', is_dofollow: true }])} />
     </Section>
     <Section title="FAQs">
