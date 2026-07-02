@@ -35,8 +35,22 @@ const CartItemContent: React.FC<CartItemContentProps> = ({ config, onChange, onU
     };
 
     const handleUpdateLink = (index: number, updatedLink: any) => {
-        const currentLinks = [...(reqs.links || [])];
+        const currentLinks = [...(reqs.links || [{ anchorText: '', landingPageUrl: '' }])];
         currentLinks[index] = updatedLink;
+        onChange({ ...reqs, links: currentLinks });
+    };
+
+    const handleAddLink = () => {
+        const currentLinks = [...(reqs.links || [{ anchorText: '', landingPageUrl: '' }])];
+        if (currentLinks.length < 2) {
+            currentLinks.push({ anchorText: '', landingPageUrl: '' });
+            onChange({ ...reqs, links: currentLinks });
+        }
+    };
+
+    const handleRemoveLink = (index: number) => {
+        const currentLinks = [...(reqs.links || [])];
+        currentLinks.splice(index, 1);
         onChange({ ...reqs, links: currentLinks });
     };
 
@@ -61,14 +75,12 @@ const CartItemContent: React.FC<CartItemContentProps> = ({ config, onChange, onU
     return (
         <div className="space-y-10 bg-white p-6 lg:p-8 rounded-[2rem] border border-slate-200 shadow-inner">
             
-            {config.contentType !== 'provide' && (
-                <LinkRoutingManifest 
-                    links={reqs.links || [{ anchorText: '', landingPageUrl: '' }]}
-                    onUpdate={handleUpdateLink}
-                    onAdd={() => {}}
-                    onRemove={() => {}}
-                />
-            )}
+            <LinkRoutingManifest 
+                links={reqs.links || [{ anchorText: '', landingPageUrl: '' }]}
+                onUpdate={handleUpdateLink}
+                onAdd={handleAddLink}
+                onRemove={handleRemoveLink}
+            />
 
             <div className="space-y-10">
                 {config.contentType === 'insertion' && (

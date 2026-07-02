@@ -23,6 +23,8 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
   const [bulkData, setBulkData] = useState<any[]>([]);
   const [bulkError, setBulkError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Detailed form state for single add/edit
@@ -231,8 +233,37 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
     try {
       const { error } = await supabase.from('domains').delete().eq('id', id);
       if (error) throw error;
+      setSelectedIds(prev => prev.filter(item => item !== id));
       onRefresh();
     } catch (e: any) { alert("Error: " + e.message); }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedIds.length} selected website(s)? This cannot be undone.`)) return;
+    setIsDeletingBulk(true);
+    try {
+      const { error } = await supabase.from('domains').delete().in('id', selectedIds);
+      if (error) throw error;
+      setSelectedIds([]);
+      onRefresh();
+    } catch (e: any) {
+      alert("Bulk Delete Error: " + e.message);
+    } finally {
+      setIsDeletingBulk(false);
+    }
+  };
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const handleSelectAll = () => {
+    if (filteredDomains.length > 0 && selectedIds.length === filteredDomains.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredDomains.map((d: any) => d.id));
+    }
   };
 
   return (
@@ -277,21 +308,45 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">{filteredDomains.length} Websites Listed</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 xl:pb-0">
-            {['All', 'General', 'Grey Niche'].map((tab) => (
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 xl:pb-0">
+              {['All', 'General', 'Grey Niche'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all ${
+                    activeTab === tab
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {filteredDomains.length > 0 && (
               <button
-                key={tab}
                 type="button"
-                onClick={() => setActiveTab(tab)}
-                className={`px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all ${
-                  activeTab === tab
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
-                }`}
+                onClick={handleSelectAll}
+                className="px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all bg-slate-900 text-white hover:bg-slate-800 shadow-sm ml-1"
               >
-                {tab}
+                {selectedIds.length === filteredDomains.length ? 'Deselect All' : `Select All (${filteredDomains.length})`}
               </button>
-            ))}
+            )}
+
+            {selectedIds.length > 0 && (
+              <button
+                type="button"
+                onClick={handleBulkDelete}
+                disabled={isDeletingBulk}
+                className="bg-rose-600 text-white hover:bg-rose-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md transition-all animate-in zoom-in-95"
+              >
+                {isDeletingBulk ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
+                Delete Selected ({selectedIds.length})
+              </button>
+            )}
           </div>
         </div>
 
@@ -299,7 +354,16 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
           <table className="w-full text-left min-w-[650px]">
             <thead>
               <tr className="bg-white border-b border-slate-100">
-                <th className="px-5 sm:px-10 py-4 sm:py-6 text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset_Node</th>
+                <th className="pl-5 sm:pl-8 py-4 sm:py-6 w-12">
+                  <input
+                    type="checkbox"
+                    checked={filteredDomains.length > 0 && selectedIds.length === filteredDomains.length}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    title="Select all listed websites"
+                  />
+                </th>
+                <th className="px-4 sm:px-6 py-4 sm:py-6 text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset_Node</th>
                 <th className="px-5 sm:px-10 py-4 sm:py-6 text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">SEO_Forensics</th>
                 <th className="px-5 sm:px-10 py-4 sm:py-6 text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Pricing_Module</th>
                 <th className="px-5 sm:px-10 py-4 sm:py-6 text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -313,10 +377,19 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   const localMeta = metaMap[d.domain?.toLowerCase()] || {};
                   const isPinned = localMeta.is_pinned !== undefined ? localMeta.is_pinned : !!d.is_new;
                   if (isPinned) pinnedRank++;
+                  const isSelected = selectedIds.includes(d.id);
 
                   return (
-                  <tr key={d.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors group">
-                    <td className="px-5 sm:px-10 py-4 sm:py-6">
+                  <tr key={d.id} className={`border-b border-slate-50 hover:bg-slate-50 transition-colors group ${isSelected ? 'bg-blue-50/50' : ''}`}>
+                    <td className="pl-5 sm:pl-8 py-4 sm:py-6 w-12">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleToggleSelect(d.id)}
+                        className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      />
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 sm:py-6">
                       <div className="flex flex-col">
                         <div className="flex items-center gap-2">
                           <span className="font-black text-slate-950 text-sm sm:text-base group-hover:text-blue-600 transition-colors">{d.domain}</span>

@@ -405,11 +405,11 @@ const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orde
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-20 bg-[#F8FAFC] font-['Inter'] relative overflow-hidden">
+    <div className="min-h-screen pt-36 pb-20 bg-[#F8FAFC] font-['Inter'] relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
 
       <div className="container mx-auto px-6 max-w-[1400px] relative z-10">
-        <header className="flex flex-col md:flex-row items-end justify-between gap-10 mb-16">
+        <div className="flex flex-col md:flex-row items-end justify-between gap-10 mb-8">
             <div className="animate-in slide-in-from-left-4 duration-700">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="bg-slate-950 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg">Checkout Step 1</span>
@@ -420,20 +420,23 @@ const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orde
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black text-slate-950 uppercase tracking-tighter italic leading-none drop-shadow-sm">Review Order.</h1>
             </div>
-            
-            <div className="bg-[#020617] p-2 rounded-[2.5rem] shadow-2xl flex items-center gap-12 group animate-in slide-in-from-right-4 duration-700">
-                <div className="pl-10 pr-2 border-r border-white/5 py-4">
+        </div>
+
+        {/* Fixed Floating Pay Now Bar */}
+        <div className="fixed bottom-6 right-6 lg:bottom-auto lg:top-[140px] lg:right-12 z-[2000] animate-in slide-in-from-right-4 duration-700">
+            <div className="bg-[#020617] p-2 rounded-[2.5rem] shadow-2xl flex items-center gap-6 sm:gap-12 group border border-white/10 backdrop-blur-xl">
+                <div className="pl-6 sm:pl-10 pr-2 border-r border-white/5 py-4">
                     <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] block mb-1">Total Amount</span>
-                    <div className="text-4xl font-black text-blue-400 tracking-tighter tabular-nums">${pricingData.totalPrice.toLocaleString()}</div>
+                    <div className="text-3xl sm:text-4xl font-black text-blue-400 tracking-tighter tabular-nums">${pricingData.totalPrice.toLocaleString()}</div>
                 </div>
                 <button 
                   onClick={handleProceedToPayment}
-                  className="bg-blue-600 text-white px-14 py-8 rounded-[2rem] font-black text-[13px] uppercase tracking-[0.3em] flex items-center gap-4 hover:bg-white hover:text-slate-900 transition-all shadow-blue-500/20 active:scale-95 group/btn"
+                  className="bg-blue-600 text-white px-8 sm:px-14 py-6 sm:py-8 rounded-[2rem] font-black text-xs sm:text-[13px] uppercase tracking-[0.2em] sm:tracking-[0.3em] flex items-center gap-3 sm:gap-4 hover:bg-white hover:text-slate-900 transition-all shadow-blue-500/20 active:scale-95 group/btn"
                 >
                     Pay Now <ArrowRight size={20} strokeWidth={3} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
             </div>
-        </header>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             <aside className="lg:col-span-4 space-y-6">
