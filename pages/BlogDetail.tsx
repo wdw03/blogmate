@@ -39,7 +39,25 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
     return allStored.filter((c: any) => c.article_slug === slug && c.status !== 'hidden');
   });
 
+  const [session, setSession] = useState<any>(null);
+  const [authNotice, setAuthNotice] = useState<string | null>(null);
+
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session: sess } }) => {
+      setSession(sess);
+      if (sess?.user) {
+        setCommentName(sess.user.user_metadata?.full_name || sess.user.email?.split('@')[0] || '');
+        setCommentEmail(sess.user.email || '');
+      }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
+      setSession(sess);
+      if (sess?.user) {
+        setCommentName(sess.user.user_metadata?.full_name || sess.user.email?.split('@')[0] || '');
+        setCommentEmail(sess.user.email || '');
+      }
+    });
+
     syncDynamicArticlesFromSupabase().then(() => {
       const found = findArticle(slug);
       if (found) setArticle(found);
@@ -50,6 +68,8 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
         setComments(data.filter(c => c.status !== 'hidden'));
       }
     });
+
+    return () => subscription.unsubscribe();
   }, [slug]);
 
   const [commentName, setCommentName] = useState('');
@@ -68,6 +88,10 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
   }, []);
 
   const handleLikeArticle = () => {
+    if (!session) {
+      setAuthNotice("Please sign in or create an account to like articles.");
+      return;
+    }
     if (hasLiked) {
       const nextLikes = likes - 1;
       setLikes(nextLikes);
@@ -84,6 +108,10 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
   };
 
   const handleLikeComment = (commentId: string) => {
+    if (!session) {
+      setAuthNotice("Please sign in to upvote reviews and comments.");
+      return;
+    }
     const updated = comments.map(c => c.id === commentId ? { ...c, likes: (c.likes || 0) + 1 } : c);
     setComments(updated);
     const allStored = JSON.parse(localStorage.getItem('blogmate_comments') || '[]');
@@ -93,6 +121,10 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!session) {
+      setAuthNotice("Please sign in or register to post a comment.");
+      return;
+    }
     if (!commentName.trim() || !commentText.trim()) return;
     setSubmittingComment(true);
 
@@ -101,7 +133,7 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
       article_slug: slug,
       user_name: commentName.trim(),
       user_email: commentEmail.trim(),
-      avatar: `https://picsum.photos/seed/${encodeURIComponent(commentName.trim())}/100/100`,
+      avatar: session.user?.user_metadata?.avatar_url || `https://picsum.photos/seed/${encodeURIComponent(commentName.trim())}/100/100`,
       content: commentText.trim(),
       likes: 0,
       status: 'approved',
@@ -118,8 +150,6 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
       await supabase.from('article_comments').insert([newComment]);
     } catch (err) {}
 
-    setCommentName('');
-    setCommentEmail('');
     setCommentText('');
     setSubmittingComment(false);
   };
@@ -332,46 +362,65 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
             </div>
 
             {/* Write Comment Box */}
-            <form onSubmit={handleSubmitComment} className="rounded-3xl border border-slate-200 p-6 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50 space-y-4 mb-10">
-              <h3 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <MessageSquare size={16} className="text-blue-600" /> Leave a Comment
-              </h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <input
-                  type="text"
-                  placeholder="Your Name *"
+            {!session ? (
+              <div className="rounded-3xl border border-blue-200 bg-blue-50/70 p-8 text-center dark:border-blue-900/50 dark:bg-blue-950/30 mb-10 shadow-lg">
+                <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
+                  <UserRound size={26} />
+                </div>
+                <h3 className="text-lg font-black text-slate-900 dark:text-white">Join the SEO Discussion</h3>
+                <p className="mt-1.5 max-w-md mx-auto text-sm leading-6 text-slate-600 dark:text-slate-300">You must be logged in to share comments, leave feedback, or upvote reviews.</p>
+                <div className="mt-6 flex justify-center gap-3">
+                  <a href="/login" className="rounded-xl bg-blue-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-blue-700 transition-all">Sign In to Comment</a>
+                  <a href="/signup" className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white transition-all">Create Free Account</a>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmitComment} className="rounded-3xl border border-slate-200 p-6 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50 space-y-4 mb-10">
+                <div className="flex items-center justify-between border-b border-slate-200/60 pb-3 dark:border-slate-800/60">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                    <MessageSquare size={16} className="text-blue-600" /> Leave a Comment
+                  </h3>
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                    <CheckCircle2 size={14} /> Signed in as {session.user?.email}
+                  </span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <input
+                    type="text"
+                    placeholder="Your Name *"
+                    required
+                    value={commentName}
+                    onChange={e => setCommentName(e.target.value)}
+                    className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email / Role (Optional)"
+                    value={commentEmail}
+                    onChange={e => setCommentEmail(e.target.value)}
+                    className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+                  />
+                </div>
+                <textarea
+                  rows={4}
                   required
-                  value={commentName}
-                  onChange={e => setCommentName(e.target.value)}
-                  className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+                  placeholder="Share your thoughts, backlink tips, or feedback on this guide..."
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 p-4 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
                 />
-                <input
-                  type="email"
-                  placeholder="Email / Role (Optional)"
-                  value={commentEmail}
-                  onChange={e => setCommentEmail(e.target.value)}
-                  className="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
-                />
-              </div>
-              <textarea
-                rows={4}
-                required
-                placeholder="Share your thoughts, backlink tips, or feedback on this guide..."
-                value={commentText}
-                onChange={e => setCommentText(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 p-4 text-sm outline-none focus:border-blue-500 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-white"
-              />
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  disabled={submittingComment}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 font-black text-xs uppercase tracking-wider text-white transition-all shadow-md shadow-blue-500/20"
-                >
-                  <Send size={14} />
-                  <span>Post Comment</span>
-                </button>
-              </div>
-            </form>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={submittingComment}
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 font-black text-xs uppercase tracking-wider text-white transition-all shadow-md shadow-blue-500/20 disabled:opacity-50"
+                  >
+                    <Send size={14} />
+                    <span>{submittingComment ? 'Posting...' : 'Post Comment'}</span>
+                  </button>
+                </div>
+              </form>
+            )}
 
             {/* Comments List */}
             <div className="space-y-6">
@@ -430,6 +479,24 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
         <h2 className="mb-7 text-3xl font-black tracking-tight text-slate-950 dark:text-white">Recommended reading</h2>
         <div className="grid gap-5 md:grid-cols-3">{related.map(item => <a key={item.id} href={`/blog/${item.slug}`} className="group rounded-3xl border border-slate-200 p-5 dark:border-slate-800"><img src={item.image} alt="" width="400" height="225" loading="lazy" className="mb-5 aspect-video w-full rounded-2xl object-cover" /><p className="text-[10px] font-black uppercase tracking-wider text-blue-600">{item.category}</p><h3 className="mt-2 font-black leading-snug text-slate-950 group-hover:text-blue-600 dark:text-white">{item.title}</h3></a>)}</div>
       </section>
+
+      {/* Auth Notice Modal */}
+      {authNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl dark:border-slate-800 dark:bg-slate-900 text-center">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 shadow-inner">
+              <UserRound size={28} />
+            </div>
+            <h3 className="text-xl font-black text-slate-950 dark:text-white">Sign In Required</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{authNotice}</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <a href="/login" className="flex-1 rounded-xl bg-blue-600 py-3.5 text-center text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-blue-700 transition-all">Sign In</a>
+              <a href="/signup" className="flex-1 rounded-xl border border-slate-200 bg-slate-50 py-3.5 text-center text-xs font-black uppercase tracking-wider text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-white transition-all">Create Account</a>
+            </div>
+            <button onClick={() => setAuthNotice(null)} className="mt-5 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 block mx-auto">Cancel & continue browsing</button>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
