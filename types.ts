@@ -11,7 +11,7 @@ export interface ServiceCardProps {
 export interface BlogPost {
   id: string;
   title: string;
-  category: 'SEO' | 'Domains' | 'Buying Guide' | 'Security';
+  category: string;
   excerpt: string;
   image: string;
   author: string;

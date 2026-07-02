@@ -60,6 +60,36 @@ export const BLOG_POSTS: BlogPost[] = [
     author: 'Alex Rivera',
     date: 'Oct 18, 2024',
     content: 'In his igitur partibus duabus nihil erat, quod Zeno commutare gestiret. Ad eas enim res, quae quondam erant revera istae, nunc tantum.'
+  },
+  {
+    id: '4',
+    title: 'Maximizing ROI with Expired Domain Acquisitions',
+    category: 'Monetization',
+    excerpt: 'Unlock the hidden equity in aged domains with existing authority and natural backlink profiles.',
+    image: 'https://picsum.photos/seed/domaingrowth/800/600',
+    author: 'David Vance',
+    date: 'Oct 21, 2024',
+    content: 'Expired domains present a unique opportunity to bootstrap digital growth. By acquiring established authority nodes, businesses bypass the sandbox phase.'
+  },
+  {
+    id: '5',
+    title: 'AI Content vs. Human Authorship: What Google Wants',
+    category: 'Content Strategy',
+    excerpt: 'An empirical forensic breakdown of recent search core updates and algorithmic content evaluations.',
+    image: 'https://picsum.photos/seed/aicontent/800/600',
+    author: 'Elena Rostova',
+    date: 'Oct 25, 2024',
+    content: 'Search engines have evolved to value information gain and expert topical authority above raw content volume. Here is how our Elite Content Hub adapts.'
+  },
+  {
+    id: '6',
+    title: 'Niche Link Routing & Casino Outreach Protocols',
+    category: 'Grey Niche',
+    excerpt: 'Navigating compliance and building high-authority backlink networks in regulated sectors.',
+    image: 'https://picsum.photos/seed/greyniche/800/600',
+    author: 'Victor Sterling',
+    date: 'Oct 28, 2024',
+    content: 'Regulated verticals require specialized vetting protocols. Our node protocol ensures strict SSL synchronization and peer-reviewed anchor placement.'
   }
 ];
 
