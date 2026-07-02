@@ -357,7 +357,81 @@ const SEOForm = ({ v, set }: any) => {
 const ArticleForm = ({ v, set }: any) => {
   const section = (index: number, key: string, next: any) => { const list = [...v.content_sections]; list[index] = { ...list[index], [key]: next }; set('content_sections', list); };
   const faq = (index: number, key: string, next: string) => { const list = [...v.faq]; list[index] = { ...list[index], [key]: next }; set('faq', list); };
+
+  // Calculate Real-Time SEO Score
+  const titleLen = (v.title || '').length;
+  const descLen = (v.description || '').length;
+  const totalWords = (v.content_sections || []).reduce((acc: number, s: any) => acc + (s.body || '').split(/\s+/).filter(Boolean).length, 0);
+  const hasImage = !!(v.cover_image || (v.content_sections || []).some((s: any) => s.image || (s.images && s.images.length > 0)));
+  const hasBacklink = (v.content_sections || []).some((s: any) => s.button_url || s.anchor_url);
+  const hasFaq = (v.faq || []).length > 0 && (v.faq || []).some((f: any) => f.question && f.answer);
+
+  const check1 = titleLen >= 20 && titleLen <= 70;
+  const check2 = descLen >= 110 && descLen <= 165;
+  const check3 = totalWords >= 250;
+  const check4 = (v.content_sections || []).length >= 2;
+  const check5 = hasImage;
+  const check6 = hasBacklink;
+  const check7 = hasFaq;
+
+  const score = [
+    check1 ? 15 : titleLen > 0 ? 5 : 0,
+    check2 ? 20 : descLen > 0 ? 8 : 0,
+    check3 ? 20 : totalWords > 100 ? 10 : 0,
+    check4 ? 15 : (v.content_sections || []).length === 1 ? 7 : 0,
+    check5 ? 10 : 0,
+    check6 ? 10 : 0,
+    check7 ? 10 : 0,
+  ].reduce((a, b) => a + b, 0);
+
+  const badgeColor = score >= 80 ? 'bg-emerald-500 text-white' : score >= 50 ? 'bg-amber-500 text-white' : 'bg-red-500 text-white';
+  const scoreLabel = score >= 80 ? 'Excellent (Rank Ready)' : score >= 50 ? 'Good (Needs Polish)' : 'Needs Improvement';
+
   return <div className="space-y-7">
+    {/* Real-Time Live SEO Health Meter */}
+    <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950 p-6 text-white shadow-xl dark:border-slate-800">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <div className={`grid h-16 w-16 shrink-0 place-items-center rounded-2xl font-black text-xl shadow-lg ${badgeColor}`}>
+            {score}/100
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Live On-Page SEO Audit</span>
+            </div>
+            <h3 className="text-lg font-black">{scoreLabel}</h3>
+            <p className="text-xs text-slate-300">Instant feedback based on search ranking factors & content depth.</p>
+          </div>
+        </div>
+        <div className="w-full sm:w-48 bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+          <div className={`h-full transition-all duration-500 ${score >= 80 ? 'bg-emerald-400' : score >= 50 ? 'bg-amber-400' : 'bg-red-400'}`} style={{ width: `${score}%` }} />
+        </div>
+      </div>
+      <div className="mt-5 grid grid-cols-1 gap-2 border-t border-slate-800 pt-4 sm:grid-cols-2 lg:grid-cols-4 text-xs font-bold">
+        <div className={`flex items-center gap-2 ${check1 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check1 ? '✔' : '✖'} Title ({titleLen}/20-70 chars)</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check2 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check2 ? '✔' : '✖'} Meta Desc ({descLen}/110-165 chars)</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check3 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check3 ? '✔' : '✖'} Word Count ({totalWords}/250+ wds)</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check4 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check4 ? '✔' : '✖'} Multi-Section Structure</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check5 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check5 ? '✔' : '✖'} Cover or Section Image</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check6 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check6 ? '✔' : '✖'} Outbound CTA / Backlink</span>
+        </div>
+        <div className={`flex items-center gap-2 ${check7 ? 'text-emerald-400' : 'text-slate-400'}`}>
+          <span>{check7 ? '✔' : '✖'} Schema FAQ Block</span>
+        </div>
+      </div>
+    </div>
+
     <Section title="Article identity">
       <Field label="Title" value={v.title} change={(x: string) => { set('title', x); if (!v.id) set('slug', slugify(x)); }} max={70} />
       <Field label="Slug" value={v.slug} change={(x: string) => set('slug', slugify(x))} prefix="/blog/" />

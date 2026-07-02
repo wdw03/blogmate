@@ -245,11 +245,13 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
           <div className="sticky top-28 space-y-6">
             <nav aria-label="Table of contents" className="space-y-3 rounded-3xl border border-slate-200 p-6 dark:border-slate-800">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Section outline</p>
-              {article.sections.map((section: any, index: number) => (
-                <a key={section.id} href={`#${section.id}`} className="block text-sm font-bold text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-white">
+              {article.sections.map((section: any, index: number) => {
+                const secId = section.id || `section-${index}`;
+                return (
+                <a key={secId} href={`#${secId}`} className="block text-sm font-bold text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-white">
                   0{index + 1}. {section.heading}
                 </a>
-              ))}
+              )})}
               <a href="#faq" className="block text-xs font-bold text-slate-500 hover:text-blue-600">Frequently asked questions</a>
               <a href="#comments" className="block text-xs font-bold text-slate-500 hover:text-blue-600">Discussion ({comments.length})</a>
             </nav>
@@ -261,12 +263,43 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
             This guide is built for practitioners who need a clear, defensible way to make decisions—not another pile of disconnected tips. Use it as a starting point, then adapt the framework to your own evidence and constraints.
           </p>
 
+          {/* Interactive Table of Contents (TOC) - Rank Math & Yoast Style */}
+          {article.sections && article.sections.length > 0 && (
+            <div className="mb-12 rounded-3xl border border-blue-200/80 bg-blue-50/40 p-6 sm:p-8 dark:border-blue-900/50 dark:bg-blue-950/20 shadow-sm">
+              <div className="flex items-center justify-between pb-4 border-b border-blue-200/60 dark:border-blue-900/40 mb-4">
+                <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="grid h-7 w-7 place-items-center rounded-lg bg-blue-600 text-white text-xs">📖</span> Table of Contents
+                </h3>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100/80 dark:bg-blue-900/60 px-2.5 py-1 rounded-full">SEO Jump Links</span>
+              </div>
+              <ul className="grid gap-2.5 sm:grid-cols-2">
+                {article.sections.map((section: any, index: number) => {
+                  const secId = section.id || `section-${index}`;
+                  return (
+                    <li key={secId}>
+                      <a
+                        href={`#${secId}`}
+                        className="flex items-start gap-2.5 rounded-xl p-2.5 text-xs font-bold text-slate-700 hover:bg-blue-100/70 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-blue-900/40 dark:hover:text-blue-300 transition-all"
+                      >
+                        <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded bg-blue-600/10 text-[10px] font-black text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+                          {index + 1}
+                        </span>
+                        <span className="line-clamp-2">{section.heading || `Section ${index + 1}`}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
           {article.sections.map((section: any, index: number) => {
             const HeadingTag = (section.heading_tag || 'h2').toLowerCase() as any;
             const sectionImages = section.images && section.images.length ? section.images : (section.image ? [section.image] : []);
+            const secId = section.id || `section-${index}`;
 
             return (
-              <section id={section.id} key={section.id} className="scroll-mt-28 border-t border-slate-100 py-9 dark:border-slate-800">
+              <section id={secId} key={secId} className="scroll-mt-28 border-t border-slate-100 py-9 dark:border-slate-800">
                 <p className="mb-3 text-[.55em] font-black uppercase tracking-[.2em] text-blue-600">0{index + 1} / Field note</p>
                 
                 {HeadingTag === 'h1' ? (
