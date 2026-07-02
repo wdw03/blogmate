@@ -16,7 +16,7 @@ const mockData = [
 const DashboardHome = ({ stats }: any) => (
   <div className="space-y-5 sm:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <div className="mb-1 sm:mb-2"><p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.25em] mb-2">Live overview</p><h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tracking-tight">Good to see you, operator.</h2><p className="text-sm text-slate-500 mt-1">Your marketplace pulse, all in one place.</p></div>
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
        <StatCard label="Live Inventory" value={stats.domains} icon={<Globe className="text-blue-500" />} change="+12% weekly" />
        <StatCard label="Operator Nodes" value={stats.users} icon={<Users className="text-emerald-500" />} change="+4 nodes" />
        <StatCard label="Gross Valuation" value="$2.4M" icon={<DollarSign className="text-amber-500" />} change="Institutional" />

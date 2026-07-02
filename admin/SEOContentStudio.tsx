@@ -303,14 +303,16 @@ const SEOContentStudio: React.FC = () => {
             <TabButton active={tab === 'redirects'} onClick={() => { setTab('redirects'); setEditor(null); }} icon={<Link2 size={15} />} label="Redirects" />
             <TabButton active={tab === 'comments'} onClick={() => { setTab('comments'); setEditor(null); }} icon={<MessageSquare size={15} />} label="Comments / Reviews" />
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <label className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 dark:border-slate-700">
-              <Search size={16} className="text-slate-400" />
-              <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search…" className="min-w-0 flex-1 bg-transparent text-sm outline-none dark:text-white sm:w-52" />
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap items-stretch sm:items-center">
+            <label className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 dark:border-slate-700 flex-1">
+              <Search size={16} className="text-slate-400 shrink-0" />
+              <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search…" className="min-w-0 flex-1 bg-transparent text-sm outline-none dark:text-white sm:w-44" />
             </label>
-            <button onClick={seedWordPressDefaults} title="Seed WordPress Default Blog Articles & SEO" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 text-[10px] font-black uppercase tracking-wider text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"><Zap size={14} />Seed WordPress Data</button>
-            <button onClick={load} className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 dark:border-slate-700"><RefreshCw size={16} /></button>
-            <button onClick={() => setEditor(structuredClone(defaults[tab]))} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-[10px] font-black uppercase tracking-wider text-white"><Plus size={15} />New {tab === 'seo' ? 'page' : tab === 'articles' ? 'article' : tab === 'comments' ? 'comment' : 'redirect'}</button>
+            <button onClick={seedWordPressDefaults} title="Seed WordPress Default Blog Articles & SEO" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 text-[10px] font-black uppercase tracking-wider text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"><Zap size={14} className="shrink-0" />Seed WordPress Data</button>
+            <div className="flex gap-2">
+              <button onClick={load} className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 dark:border-slate-700"><RefreshCw size={16} /></button>
+              <button onClick={() => setEditor(structuredClone(defaults[tab]))} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-[10px] font-black uppercase tracking-wider text-white"><Plus size={15} />New {tab === 'seo' ? 'page' : tab === 'articles' ? 'article' : tab === 'comments' ? 'comment' : 'redirect'}</button>
+            </div>
           </div>
         </div>
 

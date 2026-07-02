@@ -635,7 +635,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
 
                     <div className="flex-1 bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-xl flex flex-col">
                       <div className="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left min-w-[500px]">
                           <thead>
                             <tr className="bg-slate-900 text-white/40 border-b border-white/5">
                               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest">Domain</th>
