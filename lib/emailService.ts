@@ -178,7 +178,7 @@ export const dispatchOrderEmails = async (order: any, userProfile: any) => {
     order_id: orderId,
     total_price: total,
     items_summary: order.items?.map((i: any) => i.domain_name).join(', ') || 'Domain Services',
-    dashboard_url: `${window.location.origin}/#/profile`
+    dashboard_url: `${window.location.origin}//profile`
   };
 
   // 1. Send Order Confirmation to Customer (Account 2)

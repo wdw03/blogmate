@@ -8,25 +8,25 @@ export const SERVICES: ServiceCardProps[] = [
     title: 'Domain Intelligence',
     description: 'Deep dive into historical ownership, DNS changes, and risk assessments.',
     icon: <Globe className="w-6 h-6 text-blue-600" />,
-    link: '#/services/intel'
+    link: '/services/intel'
   },
   {
     title: 'SEO Analysis',
     description: 'Comprehensive backlink profiles, domain authority, and trust flow metrics.',
     icon: <BarChart3 className="w-6 h-6 text-emerald-600" />,
-    link: '#/services/seo'
+    link: '/services/seo'
   },
   {
     title: 'Link Insertion',
     description: 'Secure sponsored posts and natural link placements on high-authority domains.',
     icon: <Link className="w-6 h-6 text-indigo-600" />,
-    link: '#/services/links'
+    link: '/services/links'
   },
   {
     title: 'Website Audit',
     description: 'Technical SEO audits and content performance evaluations for digital assets.',
     icon: <FileSearch className="w-6 h-6 text-amber-600" />,
-    link: '#/services/audit'
+    link: '/services/audit'
   }
 ];
 

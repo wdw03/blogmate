@@ -7,6 +7,9 @@ import {
   Loader2, AlertCircle, Percent
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import SEO from '../src/components/seo/SEO';
+import ProductSchema from '../src/components/seo/ProductSchema';
+import BreadcrumbSchema from '../src/components/seo/BreadcrumbSchema';
 
 interface DomainDetailProps {
   domainName: string;
@@ -61,7 +64,7 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
     };
   }, [domainName]);
 
-  const goBack = () => window.location.hash = '#/domains';
+  const goBack = () => window.location.hash = '/domains';
 
   const getPricingInfo = (basePrice: number) => {
     const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
@@ -97,7 +100,7 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
   const handleTransaction = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.hash = '#/login';
+      window.location.hash = '/login';
       return;
     }
     
@@ -136,6 +139,9 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
 
   return (
     <div className="pt-24 pb-20 bg-[#f8fafc] min-h-screen relative overflow-hidden text-slate-700">
+      <SEO title={`${domainData.domain} Guest Post & Link Placement`} description={`Review verified SEO metrics, pricing, and placement options for ${domainData.domain}. Compare DA, DR, traffic, and available editorial services.`} path={`/domain/${domainData.domain}`} keywords={[domainData.domain, "guest post", "link insertion", domainData.category || niche]} ogType="product" />
+      <ProductSchema name={`${domainData.domain} editorial placement`} description={`Verified guest post and link placement opportunity on ${domainData.domain}.`} path={`/domain/${domainData.domain}`} category={domainData.category || niche} price={currentPricing().discounted} />
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Marketplace", path: "/domains" }, { name: domainData.domain, path: `/domain/${domainData.domain}` }]} />
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:40px_40px]"></div>
         <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-blue-50/50 to-transparent"></div>

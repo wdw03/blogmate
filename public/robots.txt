@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+
+Sitemap: https://blogmate.com/sitemap.xml
+Host: https://blogmate.com
+

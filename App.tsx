@@ -17,11 +17,31 @@ import AdminPanel from './admin/AdminPanel';
 import CartDrawer from './components/marketplace/CartDrawer';
 import ChatWidget from './components/ChatWidget';
 import Toast from './components/ui/Toast';
+import SEO from './src/components/seo/SEO';
+import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
+import { KNOWLEDGE_ARTICLES } from './src/data/blog';
+import { organizationSchema, websiteSchema } from './src/utils/generateSchema';
 import { supabase } from './lib/supabase';
 import { sendEmailDirect } from './lib/emailService';
+const ROUTE_META: Record<string, { title: string; description: string; noIndex?: boolean }> = {
+  "/": { title: "Domain Intelligence & SEO Knowledge", description: "Research verified domains, compare SEO metrics, and learn practical search strategies with BlogMate." },
+  "/domains": { title: "Verified Domain Marketplace", description: "Compare verified guest-post and link-placement opportunities using transparent SEO metrics and pricing." },
+  "/pricing": { title: "Pricing", description: "Explore BlogMate marketplace and content service pricing." },
+  "/services": { title: "SEO & Domain Services", description: "Technical SEO, domain intelligence, website audits, and editorial link-placement services." },
+  "/contact": { title: "Contact BlogMate", description: "Contact the BlogMate team for marketplace, account, or SEO service support." },
+  "/login": { title: "Sign In", description: "Sign in to your BlogMate account.", noIndex: true },
+  "/signup": { title: "Create Account", description: "Create your BlogMate account.", noIndex: true },
+  "/profile": { title: "Account", description: "Manage your BlogMate account.", noIndex: true },
+  "/checkout": { title: "Checkout", description: "Complete your BlogMate order securely.", noIndex: true },
+  "/admin": { title: "Administration", description: "BlogMate administration.", noIndex: true },
+};
 
 const App: React.FC = () => {
-  const [currentPath, setCurrentPath] = useState(window.location.hash || '#/');
+  if (window.location.hash.startsWith("#/")) {
+    window.history.replaceState({}, "", window.location.hash.slice(1));
+  }
+  const [currentPath, setCurrentPath] = useState(`${window.location.pathname}${window.location.search}`);
   const [session, setSession] = useState<any>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
@@ -118,16 +138,35 @@ const App: React.FC = () => {
       else if (event === 'SIGNED_OUT') setCartItems([]);
     });
 
-    const handleHashChange = () => {
-      setCurrentPath(window.location.hash || '#/');
+    const handleRouteChange = () => {
+      if (window.location.hash.startsWith("#/")) {
+        window.history.replaceState({}, "", window.location.hash.slice(1));
+      }
+      setCurrentPath(`${window.location.pathname}${window.location.search}`);
       window.scrollTo(0, 0);
     };
 
-    window.addEventListener('hashchange', handleHashChange);
+    const handleInternalLink = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const anchor = (event.target as Element).closest("a");
+      if (!anchor || anchor.target || anchor.hasAttribute("download") || anchor.getAttribute("href")?.startsWith("#")) return;
+      const url = new URL(anchor.href, window.location.href);
+      if (url.origin !== window.location.origin || !url.pathname.startsWith("/")) return;
+      event.preventDefault();
+      window.history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    };
+
+    window.addEventListener("popstate", handleRouteChange);
+    window.addEventListener("hashchange", handleRouteChange);
+    document.addEventListener("click", handleInternalLink);
+
     window.addEventListener('chat-state-change', ((e: CustomEvent) => setIsChatOpen(e.detail.isOpen)) as EventListener);
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('hashchange', handleRouteChange);
+      document.removeEventListener('click', handleInternalLink);
       window.removeEventListener('chat-state-change', ((e: CustomEvent) => setIsChatOpen(e.detail.isOpen)) as EventListener);
       subscription.unsubscribe();
       clearTimeout(fallbackTimer);
@@ -257,14 +296,14 @@ const App: React.FC = () => {
   }
 
   const renderContent = () => {
-    const hash = currentPath;
-    if (hash === '#/login') return <Login />;
-    if (hash === '#/signup') return <Signup />;
-    if (hash === '#/admin') return <AdminPanel />;
-    if (hash === '#/profile') return <Profile />;
+    const hash = currentPath.split("?")[0].replace(/\/$/, "") || "/";
+    if (hash === '/login') return <Login />;
+    if (hash === '/signup') return <Signup />;
+    if (hash === '/admin') return <AdminPanel />;
+    if (hash === '/profile') return <Profile />;
 
-    if (hash.startsWith('#/checkout')) {
-      const urlParams = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
+    if (hash.startsWith('/checkout')) {
+      const urlParams = new URLSearchParams(window.location.search);
       const orderIdParam = urlParams.get('order_id');
       return (
         <Checkout 
@@ -280,9 +319,28 @@ const App: React.FC = () => {
       );
     }
 
-    if (hash.toLowerCase().startsWith('#/domains/') && hash.split('/').length > 2) {
+    if ((hash.toLowerCase().startsWith('/domains/') || hash.toLowerCase().startsWith('/domain/')) && hash.split('/').length > 2) {
       return <DomainDetail domainName={hash.split('/')[2]} addToCart={addToCart} niche={niche} />;
     }
+
+    if (hash.toLowerCase().startsWith('/blog/')) {
+      return <BlogDetail slug={decodeURIComponent(hash.split('/')[2]?.split('?')[0] || '')} />;
+    }
+    if (hash.toLowerCase().startsWith('/post/')) {
+      const legacyId = hash.split('/')[2]?.split('?')[0];
+      const article = KNOWLEDGE_ARTICLES[Number(legacyId) - 1] || KNOWLEDGE_ARTICLES[0];
+      window.history.replaceState({}, "", `/blog/${article.slug}`);
+      return <BlogDetail slug={article.slug} />;
+    }
+    if (hash.toLowerCase().startsWith('/category/')) {
+      const category = decodeURIComponent(hash.split('/')[2] || '').replaceAll('-', ' ');
+      return <Blog initialCategory={category} />;
+    }
+    if (hash.toLowerCase().startsWith('/tag/')) {
+      const tag = decodeURIComponent(hash.split('/')[2] || '').replaceAll('-', ' ');
+      return <Blog initialTag={tag} />;
+    }
+    if (hash.toLowerCase().startsWith('/blog')) return <Blog />;
 
     if (hash.toLowerCase().includes('domains'))
       return <Marketplace niche={niche} setNiche={setNiche} onAddToCart={addToCart} />;
@@ -291,19 +349,23 @@ const App: React.FC = () => {
     if (hash.toLowerCase().includes('pricing')) return <Pricing />;
     if (hash.toLowerCase().includes('contact')) return <Contact />;
 
-    if (hash === '#/' || hash === '' || hash === '#') {
+    if (hash === '/' || hash === '' || hash === '#') {
       return <main><Hero /><div id="home-marketplace"><Marketplace isSection={true} niche={niche} setNiche={setNiche} onAddToCart={addToCart} /></div><Services /><BlogSection /></main>;
     }
     return <main className="pt-56 pb-20 text-center min-h-screen text-slate-900 font-bold uppercase italic tracking-widest">Protocol_Unknown: Page Not Found</main>;
   };
 
+  const seoPath = currentPath.split("?")[0] || "/";
+  const routeSEO = ROUTE_META[seoPath] || ROUTE_META[seoPath.startsWith("/services/") ? "/services" : "/"];
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fffcfd] dark:bg-[#020617] text-slate-900 dark:text-slate-100 transition-colors duration-300">
-      {!['#/login', '#/signup', '#/admin'].includes(currentPath.split('?')[0]) && (
+      <SEO title={routeSEO.title} description={routeSEO.description} path={seoPath} noIndex={routeSEO.noIndex} schema={seoPath === "/" ? [organizationSchema, websiteSchema] : undefined} />
+      {!['/login', '/signup', '/admin'].includes(currentPath.split('?')[0]) && (
         <Header cartCount={cartItems.length} onOpenCart={() => setIsCartOpen(true)} />
       )}
       <div className="flex-1">{renderContent()}</div>
-      {!['#/login', '#/signup', '#/admin'].includes(currentPath.split('?')[0]) && <Footer />}
+      {!['/login', '/signup', '/admin'].includes(currentPath.split('?')[0]) && <Footer />}
       <CartDrawer 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 

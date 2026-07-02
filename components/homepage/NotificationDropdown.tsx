@@ -31,7 +31,7 @@ const NotificationDropdown: React.FC<Props> = ({ userId, onClose }) => {
   const handlePayNow = (orderId: string) => {
     onClose();
     // Use order_id parameter to load existing order in checkout
-    window.location.hash = `#/checkout?order_id=${orderId}`;
+    window.location.hash = `/checkout?order_id=${orderId}`;
   };
 
   return (
@@ -89,7 +89,7 @@ const NotificationDropdown: React.FC<Props> = ({ userId, onClose }) => {
       </div>
 
       <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-        <button onClick={() => window.location.hash = '#/profile'} className="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] hover:underline">View All Alerts</button>
+        <button onClick={() => window.location.hash = '/profile'} className="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] hover:underline">View All Alerts</button>
       </div>
     </div>
   );

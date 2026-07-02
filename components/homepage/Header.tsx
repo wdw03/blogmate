@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.hash = '#/login';
+    window.location.hash = '/login';
     setIsMobileMenuOpen(false);
   };
 
@@ -86,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
   const handleGoToSearch = () => {
     setIsSearchOpen(false);
     setIsMobileMenuOpen(false);
-    window.location.hash = '#/domains';
+    window.location.hash = '/domains';
     setTimeout(() => {
       const searchInput = document.querySelector('input[placeholder="Search Guest Post Sites..."]') as HTMLInputElement;
       if (searchInput) {
@@ -98,9 +98,9 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
   };
 
   const navLinks = [
-    { label: 'Domains', href: '#/domains', icon: <img src="/assets/images/dmoainsicons.png" alt="Domains" className="w-6 h-6 object-contain" /> },
-    { label: 'Pricing', href: '#/pricing', icon: <img src="/assets/images/pricing.png" alt="Pricing" className="w-6 h-6 object-contain" /> },
-    { label: 'Contact', href: '#/contact', icon: <img src="/assets/images/concact.png" alt="Contact" className="w-6 h-6 object-contain" /> },
+    { label: 'Domains', href: '/domains', icon: <img src="/assets/images/dmoainsicons.png" alt="Domains" className="w-6 h-6 object-contain" /> },
+    { label: 'Pricing', href: '/pricing', icon: <img src="/assets/images/pricing.png" alt="Pricing" className="w-6 h-6 object-contain" /> },
+    { label: 'Contact', href: '/contact', icon: <img src="/assets/images/concact.png" alt="Contact" className="w-6 h-6 object-contain" /> },
   ];
 
   return (
@@ -115,8 +115,8 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
             
             <div className="flex items-center space-x-8">
               <a 
-                href="#/" 
-                onClick={(e) => navigateTo(e, '#/')}
+                href="/" 
+                onClick={(e) => navigateTo(e, '/')}
                 className="flex items-center space-x-3 group cursor-pointer shrink-0"
               >
                 <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl italic shadow-2xl transition-all group-hover:scale-105 group-hover:rotate-6">
@@ -135,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                     href={link.href}
                     onClick={(e) => navigateTo(e, link.href)}
                     className={`relative flex items-center space-x-3 px-5 py-2.5 text-[13px] font-bold transition-all rounded-xl hover:scale-105 hover:shadow-lg ${
-                      window.location.hash.includes(link.label.toLowerCase())
+                      window.location.pathname.includes(link.label.toLowerCase())
                         ? 'text-slate-900 bg-white shadow-xl' 
                         : 'text-slate-400 hover:text-white hover:bg-white/10'
                     }`}
@@ -225,8 +225,8 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
               <div className="flex items-center space-x-2">
                 {session ? (
                   <a 
-                    href="#/profile"
-                    onClick={(e) => navigateTo(e, '#/profile')}
+                    href="/profile"
+                    onClick={(e) => navigateTo(e, '/profile')}
                     className="flex items-center mr-2 px-3 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-xl cursor-pointer hover:bg-blue-600/20 transition-all max-w-[200px]"
                   >
                     <div className="w-6 h-6 bg-blue-600 rounded-lg flex items-center justify-center text-white mr-2 shrink-0">
@@ -239,13 +239,13 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 ) : (
                   <div className="hidden md:flex items-center space-x-5 lg:space-x-7 ml-4">
                     <button 
-                      onClick={(e) => navigateTo(e, '#/login')}
+                      onClick={(e) => navigateTo(e, '/login')}
                       className="transition-all hover:scale-105 active:scale-95 rounded-xl hover:shadow-2xl hover:shadow-blue-500/30 p-1"
                     >
                       <img src="/assets/images/loginbutn.png" alt="Login" className="h-11 md:h-13 lg:h-14 w-auto object-contain" />
                     </button>
                     <button 
-                      onClick={(e) => navigateTo(e, '#/signup')}
+                      onClick={(e) => navigateTo(e, '/signup')}
                       className="transition-all hover:scale-105 active:scale-95 rounded-xl hover:shadow-2xl hover:shadow-blue-500/30 p-1"
                     >
                       <img src="/assets/images/signup.png" alt="Sign Up" className="h-11 md:h-13 lg:h-14 w-auto object-contain" />
@@ -340,8 +340,8 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 {session ? (
                   <>
                     <a 
-                      href="#/profile"
-                      onClick={(e) => navigateTo(e, '#/profile')}
+                      href="/profile"
+                      onClick={(e) => navigateTo(e, '/profile')}
                       className="text-lg md:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3 hover:text-blue-400 transition-colors"
                     >
                       <User size={20} className="text-slate-500" />
@@ -358,15 +358,15 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                 ) : (
                   <div className="flex flex-col gap-3 mt-4">
                     <a 
-                      href="#/login"
-                      onClick={(e) => navigateTo(e, '#/login')}
+                      href="/login"
+                      onClick={(e) => navigateTo(e, '/login')}
                       className="transition-all hover:scale-102 active:scale-95 rounded-xl hover:shadow-xl p-1 flex justify-center"
                     >
                       <img src="/assets/images/loginbutn.png" alt="Login" className="h-11 w-auto object-contain" />
                     </a>
                     <a 
-                      href="#/signup"
-                      onClick={(e) => navigateTo(e, '#/signup')}
+                      href="/signup"
+                      onClick={(e) => navigateTo(e, '/signup')}
                       className="transition-all hover:scale-102 active:scale-95 rounded-xl hover:shadow-xl p-1 flex justify-center"
                     >
                       <img src="/assets/images/signup.png" alt="Sign Up" className="h-11 w-auto object-contain" />

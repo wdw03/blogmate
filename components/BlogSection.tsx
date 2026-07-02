@@ -4,9 +4,34 @@ import { BLOG_POSTS } from '../constants';
 import { ArrowRight, Calendar, User, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 
 const BlogSection: React.FC = () => {
-  const N = BLOG_POSTS.length;
+  const [posts, setPosts] = useState<any[]>(BLOG_POSTS);
+
+  useEffect(() => {
+    try {
+      const localArticles = JSON.parse(localStorage.getItem('blogmate_cms_articles') || '[]');
+      if (localArticles && localArticles.length > 0) {
+        const formatted = localArticles.filter((x: any) => x.status === 'published').map((art: any) => ({
+          id: art.id || art.slug,
+          title: art.title,
+          category: art.category || 'SEO',
+          excerpt: art.description || '',
+          image: art.cover_image || 'https://picsum.photos/seed/domain1/800/600',
+          author: art.author_name || 'Admin',
+          date: art.published_at ? new Date(art.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today',
+          content: art.content_sections?.[0]?.body || art.description
+        }));
+        if (formatted.length > 0) {
+          setPosts(formatted);
+          setDisplayIndex(formatted.length);
+        }
+      }
+    } catch (e) {}
+  }, []);
+
+  const N = posts.length;
+  const blogSlugs = ["react-seo-guide", "domain-investing-guide", "high-da-backlinks", "expired-domain-audit", "ai-search-content", "seo-reporting-template"];
   // Extended array with 3 copies for seamless infinite sliding in both directions
-  const extendedPosts = [...BLOG_POSTS, ...BLOG_POSTS, ...BLOG_POSTS];
+  const extendedPosts = [...posts, ...posts, ...posts];
 
   const [displayIndex, setDisplayIndex] = useState(N); // Start at middle block
   const [cardsToShow, setCardsToShow] = useState(3);
@@ -123,7 +148,7 @@ const BlogSection: React.FC = () => {
           </div>
           <div className="flex items-center gap-4 self-end md:self-auto">
             <a 
-              href="#/blog" 
+              href="/blog" 
               className="inline-flex items-center px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all shadow-sm"
             >
               Explore the Blog
@@ -209,7 +234,7 @@ const BlogSection: React.FC = () => {
                       
                       <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
                         <a 
-                          href={`#/post/${post.id}`} 
+                          href={`/blog/${post.slug || blogSlugs[Number(post.id) - 1] || "react-seo-guide"}`}
                           className="inline-flex items-center font-black text-xs uppercase tracking-widest text-slate-900 dark:text-white group/link hover:text-blue-600 transition-colors"
                         >
                           <span>Read Article</span>

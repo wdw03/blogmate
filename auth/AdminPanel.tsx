@@ -25,7 +25,7 @@ const AdminPanel: React.FC = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        window.location.hash = '#/login';
+        window.location.hash = '/login';
         return;
       }
 
@@ -36,7 +36,7 @@ const AdminPanel: React.FC = () => {
         .single();
 
       if (!prof || (prof.role !== 'admin' && prof.role !== 'superadmin')) {
-        window.location.hash = '#/';
+        window.location.hash = '/';
         return;
       }
 
@@ -149,7 +149,7 @@ const AdminPanel: React.FC = () => {
                   <span className="text-[10px] font-black uppercase tracking-widest">Sys_Health: 100%</span>
                </div>
                <button 
-                  onClick={() => window.location.hash = '#/'} 
+                  onClick={() => window.location.hash = '/'} 
                   className="px-6 py-2.5 bg-white border border-slate-200 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-slate-900 transition-all flex items-center gap-2"
                 >
                   <Command size={14} /> Hub_Portal

@@ -247,7 +247,7 @@ const ChatWidget: React.FC = () => {
                       <Bot size={56} className="text-blue-500 mb-6 opacity-20" />
                       <h4 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Auth Gateway Only</h4>
                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-4 leading-relaxed">Sign in to initialize secure support protocols.</p>
-                      <button onClick={() => window.location.hash = '#/login'} className="mt-10 px-12 py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all">Connect Hub</button>
+                      <button onClick={() => window.location.hash = '/login'} className="mt-10 px-12 py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all">Connect Hub</button>
                     </div>
                   ) : messages.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center opacity-40">

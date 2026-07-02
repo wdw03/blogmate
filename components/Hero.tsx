@@ -34,7 +34,7 @@ const Hero: React.FC = () => {
 
 
           <div className="mt-3 flex flex-col items-center gap-3 min-[400px]:flex-row lg:justify-start">
-            <a href="#/services" onClick={(e) => handleNav(e, "#/services")} className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-2.5 text-[9px] font-black uppercase tracking-[.14em] text-blue-700 shadow-sm transition hover:border-blue-600 hover:bg-blue-600 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300 min-[400px]:w-auto">
+            <a href="/services" onClick={(e) => handleNav(e, "/services")} className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-2.5 text-[9px] font-black uppercase tracking-[.14em] text-blue-700 shadow-sm transition hover:border-blue-600 hover:bg-blue-600 hover:text-white dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300 min-[400px]:w-auto">
               Explore services <Sparkles size={14} className="transition-transform group-hover:rotate-12" />
             </a>
           </div>

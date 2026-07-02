@@ -70,7 +70,7 @@ const Pricing: React.FC = () => {
   const handlePlanClick = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.hash = '#/login';
+      window.location.hash = '/login';
       return;
     }
     // Proceed with upgrade/scouting logic

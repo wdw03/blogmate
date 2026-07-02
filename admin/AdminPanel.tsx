@@ -12,7 +12,7 @@ import DashboardHome from './DashboardHome';
 import InventoryControl from './InventoryControl';
 import UserManagement from './UserManagement';
 import OrdersHub from './OrdersHub';
-import ContentEngine from './ContentEngine';
+import SEOContentStudio from './SEOContentStudio';
 import AnalyticsTerminal from './AnalyticsTerminal';
 import SystemProtocols from './SystemProtocols';
 import ChatHub from './ChatHub';
@@ -37,7 +37,7 @@ const AdminPanel: React.FC = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        window.location.hash = '#/login';
+        window.location.hash = '/login';
         return;
       }
 
@@ -48,7 +48,7 @@ const AdminPanel: React.FC = () => {
         .single();
 
       if (!prof || (prof.role !== 'admin' && prof.role !== 'superadmin')) {
-        window.location.hash = '#/';
+        window.location.hash = '/';
         return;
       }
 
@@ -67,8 +67,29 @@ const AdminPanel: React.FC = () => {
         supabase.from('wallet_transactions').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
         supabase.from('payment_transactions').select('*', { count: 'exact', head: true }).in('status', ['pending', 'processing'])
       ]);
+
+      let domData = doms.data || [];
+      if (domData.length === 0) {
+        const seedDomains = [
+          { domain: 'techcrunch-insider.com', category: 'Technology', da: 72, dr: 68, traffic: '120K', price_guest_post: 250, price_insertion: 200, price_mention: 120, language: 'English', tat: '2 Days', backlinks: 'Dofollow', ref_domains: 3500, total_backlinks: 18000, total_keywords: 4200, auth_score: 45, spam_score: '2%', trust_flow: 32, citation_flow: 48 },
+          { domain: 'health-digest-pro.com', category: 'Health', da: 55, dr: 50, traffic: '45K', price_guest_post: 150, price_insertion: 120, price_mention: 70, language: 'English', tat: '3 Days', backlinks: 'Dofollow', ref_domains: 1800, total_backlinks: 8500, total_keywords: 2100, auth_score: 38, spam_score: '1%', trust_flow: 25, citation_flow: 35 },
+          { domain: 'financeworld-hub.com', category: 'Finance', da: 63, dr: 60, traffic: '80K', price_guest_post: 200, price_insertion: 170, price_mention: 100, language: 'English', tat: '2 Days', backlinks: 'Dofollow', ref_domains: 2800, total_backlinks: 14000, total_keywords: 3500, auth_score: 42, spam_score: '1%', trust_flow: 28, citation_flow: 40 },
+          { domain: 'lifestyle-beacon.net', category: 'Lifestyle', da: 48, dr: 42, traffic: '30K', price_guest_post: 100, price_insertion: 80, price_mention: 50, language: 'English', tat: '4 Days', backlinks: 'Dofollow', ref_domains: 1200, total_backlinks: 5500, total_keywords: 1500, auth_score: 30, spam_score: '3%', trust_flow: 18, citation_flow: 28 },
+          { domain: 'crypto-sentinel.io', category: 'Crypto', da: 60, dr: 55, traffic: '65K', price_guest_post: 300, price_insertion: 250, price_mention: 150, language: 'English', tat: '1 Day', backlinks: 'Dofollow', ref_domains: 2200, total_backlinks: 11000, total_keywords: 2800, auth_score: 40, spam_score: '2%', trust_flow: 22, citation_flow: 38 },
+          { domain: 'saas-weekly.com', category: 'SaaS', da: 58, dr: 52, traffic: '55K', price_guest_post: 180, price_insertion: 150, price_mention: 90, language: 'English', tat: '3 Days', backlinks: 'Dofollow', ref_domains: 2000, total_backlinks: 9500, total_keywords: 2400, auth_score: 36, spam_score: '1%', trust_flow: 24, citation_flow: 36 },
+          { domain: 'realestate-insider.com', category: 'Real Estate', da: 50, dr: 45, traffic: '35K', price_guest_post: 130, price_insertion: 100, price_mention: 65, language: 'English', tat: '3 Days', backlinks: 'Dofollow', ref_domains: 1500, total_backlinks: 7000, total_keywords: 1800, auth_score: 32, spam_score: '2%', trust_flow: 20, citation_flow: 30 },
+          { domain: 'business-daily-news.com', category: 'Business', da: 65, dr: 62, traffic: '95K', price_guest_post: 220, price_insertion: 180, price_mention: 110, language: 'English', tat: '2 Days', backlinks: 'Dofollow', ref_domains: 3000, total_backlinks: 15000, total_keywords: 3800, auth_score: 44, spam_score: '1%', trust_flow: 30, citation_flow: 42 }
+        ];
+        try {
+          const { data: inserted } = await supabase.from('domains').insert(seedDomains).select('*');
+          domData = inserted || seedDomains;
+        } catch (e) {
+          domData = seedDomains;
+        }
+      }
+
       setData({
-        domains: doms.data || [],
+        domains: domData,
         users: usrs.data || [],
         orders: ords.data || [],
         txCount: txs.count || 0,
@@ -84,7 +105,7 @@ const AdminPanel: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.hash = '#/';
+    window.location.hash = '/';
   };
 
   if (loading) {
@@ -107,7 +128,7 @@ const AdminPanel: React.FC = () => {
       case 'Payments': return <PaymentOperations adminProfile={profile} />;
       case 'Coupons': return <AdminCoupons />;
       case 'Pricing': return <AdminPricing />;
-      case 'Content': return <ContentEngine />;
+      case 'Content': return <SEOContentStudio />;
       case 'Analytics': return isSuperAdmin ? <AnalyticsTerminal /> : <AccessDenied />;
       case 'Protocols': return isSuperAdmin ? <SystemProtocols /> : <AccessDenied />;
       case 'Chat': return <ChatHub adminProfile={profile} />;
@@ -178,7 +199,7 @@ const AdminPanel: React.FC = () => {
             <div className="py-4 px-5 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Platform Core</div>
             {isSuperAdmin && <NavBtn active={activeTab === 'Users'} onClick={() => { setActiveTab('Users'); setIsMobileMenuOpen(false); }} icon={<Users size={18} />} label="User Registry" />}
             <NavBtn active={activeTab === 'Chat'} onClick={() => { setActiveTab('Chat'); setIsMobileMenuOpen(false); }} icon={<MessageSquare size={18} />} label="Support Chat" />
-            <NavBtn active={activeTab === 'Content'} onClick={() => { setActiveTab('Content'); setIsMobileMenuOpen(false); }} icon={<FileText size={18} />} label="Content Engine" />
+            <NavBtn active={activeTab === 'Content'} onClick={() => { setActiveTab('Content'); setIsMobileMenuOpen(false); }} icon={<FileText size={18} />} label="SEO & Blog CMS" />
             {isSuperAdmin && <NavBtn active={activeTab === 'Analytics'} onClick={() => { setActiveTab('Analytics'); setIsMobileMenuOpen(false); }} icon={<BarChart2 size={18} />} label="System Analytics" />}
             {isSuperAdmin && <NavBtn active={activeTab === 'Protocols'} onClick={() => { setActiveTab('Protocols'); setIsMobileMenuOpen(false); }} icon={<Terminal size={18} />} label="Core Protocols" />}
           </nav>
@@ -246,7 +267,7 @@ const AdminPanel: React.FC = () => {
                 )}
               </div>
             </div>
-            <button onClick={() => window.location.hash = '#/'} className="px-3.5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 dark:bg-blue-600 text-white rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 dark:hover:bg-blue-500 transition-all flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-slate-900/20 dark:shadow-blue-500/20 hover:-translate-y-1">
+            <button onClick={() => window.location.hash = '/'} className="px-3.5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 dark:bg-blue-600 text-white rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 dark:hover:bg-blue-500 transition-all flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-slate-900/20 dark:shadow-blue-500/20 hover:-translate-y-1">
               <Command size={14} /> <span className="hidden xs:inline">Hub_</span>Portal
             </button>
           </div>

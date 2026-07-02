@@ -24,10 +24,10 @@ const Header: React.FC = () => {
   }, [isDarkMode]);
 
   const navLinks = [
-    { label: 'Domains', href: '#/domains' },
-    { label: 'Pricing', href: '#/pricing' },
-    { label: 'Blog', href: '#/blog' },
-    { label: 'Contact', href: '#/contact' },
+    { label: 'Domains', href: '/domains' },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -74,13 +74,13 @@ const Header: React.FC = () => {
           </button>
 
           {isLoggedIn ? (
-            <a href="#/profile" className="flex items-center space-x-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <a href="/profile" className="flex items-center space-x-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
                 <User size={16} className="text-slate-500 dark:text-slate-400" />
               </div>
             </a>
           ) : (
-            <a href="#/login" className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm shadow-blue-200 dark:shadow-none">
+            <a href="/login" className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm shadow-blue-200 dark:shadow-none">
               Sign In
             </a>
           )}
@@ -122,7 +122,7 @@ const Header: React.FC = () => {
             </button>
           </div>
           <a
-            href="#/domains"
+            href="/domains"
             className="block w-full bg-blue-600 text-white text-center py-4 rounded-xl font-bold"
           >
             Explore Domains

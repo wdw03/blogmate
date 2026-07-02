@@ -48,14 +48,14 @@ const Profile: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.hash = '#/login';
+    window.location.hash = '/login';
   };
 
   const fetchData = async (isManualRefresh = false) => {
     if (isManualRefresh) setRefreshing(true);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.hash = '#/login';
+      window.location.hash = '/login';
       return;
     }
     
@@ -153,7 +153,7 @@ const Profile: React.FC = () => {
             to_email: "dilkashr690@gmail.com",
             subject: `URGENT: Withdrawal Request from ${formData.fullName}`,
             message_snippet: `User ${formData.fullName} (${user.email}) ne $${amountNum} ka withdrawal request kiya hai. Details: ${withdrawalDetails}`,
-            chat_url: `${window.location.origin}/#/admin`
+            chat_url: `${window.location.origin}//admin`
         });
 
         alert("Request dispatched to Admin. Email sent.");
@@ -355,7 +355,7 @@ const Profile: React.FC = () => {
                 />
               )))}
               <div 
-                onClick={() => window.location.hash = '#/domains'}
+                onClick={() => window.location.hash = '/domains'}
                 className="group lg:col-span-3 py-24 flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-[4rem] border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50/20 transition-all cursor-pointer"
               >
                 <Plus size={40} className="text-slate-300 group-hover:text-blue-500 mb-6" />

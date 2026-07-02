@@ -102,7 +102,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
             order_id: orderId.slice(0, 8).toUpperCase(),
             item_name: selectedOrder.items?.[0]?.domain || 'Domain Service',
             admin_note: `Your order status has been updated to ${newStatus}.`,
-            order_url: `${window.location.origin}/#/profile`
+            order_url: `${window.location.origin}//profile`
         });
 
         setSelectedOrder((prev: any) => prev ? ({ ...prev, status: newStatus }) : null);
@@ -124,7 +124,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
             to_email: order.profiles?.email || 'user@system',
             subject: 'Payment Reminder - Order #' + order.id.slice(0,8).toUpperCase(),
             message_snippet: `Hi, payment for your order #${order.id.slice(0,8).toUpperCase()} is currently pending ($${finalPrice.toLocaleString()}). Please complete the settlement on your portal.`,
-            chat_url: `${window.location.origin}/#/profile`
+            chat_url: `${window.location.origin}//profile`
         });
 
         const { error } = await supabase.from('messages').insert([{

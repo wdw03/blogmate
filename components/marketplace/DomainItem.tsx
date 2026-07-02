@@ -53,7 +53,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { window.location.hash = '#/login'; return; }
+    if (!session) { window.location.hash = '/login'; return; }
     const price = getPrice(prices.guestPost).discounted;
     onAddToCart?.({ domain, category, da, dr: metrics.dr, price, serviceType: 'Guest Post' });
   };
@@ -77,7 +77,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
       <div className="p-4 sm:p-5 lg:p-6">
         <div className="flex flex-col gap-4">
           <div className="flex min-w-0 items-start justify-between gap-3">
-            <button onClick={() => window.location.hash = `#/domains/${domain}`} className="min-w-0 text-left">
+            <button onClick={() => window.location.hash = `/domain/${domain}`} className="min-w-0 text-left">
               <span className="flex items-center gap-2 flex-wrap">
                 <strong className="truncate text-base font-black text-slate-950 transition hover:text-blue-600 dark:text-white sm:text-lg">{domain}</strong>
                 <CheckCircle2 size={15} className="shrink-0 text-blue-500" />

@@ -55,7 +55,7 @@ const Signup: React.FC = () => {
       await sendEmailViaEmailJS(env.VITE_EMAILJS_TEMPLATE_WELCOME, {
         name: fullName,
         to_email: email,
-        login_url: `${window.location.origin}/#/login`
+        login_url: `${window.location.origin}//login`
       });
 
       setSuccess(true);
@@ -100,7 +100,7 @@ const Signup: React.FC = () => {
             </p>
 
             <button 
-              onClick={() => navigateTo('#/login')}
+              onClick={() => navigateTo('/login')}
               className="w-full bg-slate-950 text-white py-6 rounded-3xl font-black text-[12px] uppercase tracking-[0.4em] shadow-xl hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all group"
             >
               <div className="flex items-center justify-center gap-4">
@@ -125,7 +125,7 @@ const Signup: React.FC = () => {
         <div className="w-full lg:w-[50%] p-5 sm:p-8 md:p-10 flex flex-col justify-between relative bg-white border-r border-slate-100 overflow-y-auto custom-scrollbar">
           <div className="flex items-center justify-between shrink-0 mb-8">
             <button 
-              onClick={() => navigateTo('#/')} 
+              onClick={() => navigateTo('/')} 
               className="group flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all"
             >
               <ArrowLeft size={14} />
@@ -134,7 +134,7 @@ const Signup: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Already a member?</span>
               <button 
-                onClick={() => navigateTo('#/login')}
+                onClick={() => navigateTo('/login')}
                 className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline px-3 py-1 bg-blue-50 rounded-lg"
               >
                 Login

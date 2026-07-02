@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#020617"/><stop offset="1" stop-color="#172554"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#3b82f6" stop-opacity=".55"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="900" cy="160" r="420" fill="url(#glow)"/>
+  <text x="90" y="270" fill="#60a5fa" font-family="Arial,sans-serif" font-size="28" font-weight="700" letter-spacing="6">DOMAIN INTELLIGENCE</text>
+  <text x="90" y="370" fill="white" font-family="Arial,sans-serif" font-size="92" font-weight="800">BlogMate</text>
+  <text x="94" y="430" fill="#cbd5e1" font-family="Arial,sans-serif" font-size="30">Research. Compare. Grow with confidence.</text>
+</svg>
+

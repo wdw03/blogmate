@@ -25,7 +25,7 @@ const Contact: React.FC = () => {
     e.preventDefault();
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.hash = '#/login';
+      window.location.hash = '/login';
       return;
     }
 

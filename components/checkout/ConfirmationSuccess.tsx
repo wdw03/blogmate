@@ -234,7 +234,7 @@ const ConfirmationSuccess: React.FC<Props> = ({ orderId, totalPrice }) => {
                 </div>
 
                 <button 
-                    onClick={() => window.location.hash = '#/profile'} 
+                    onClick={() => window.location.hash = '/profile'} 
                     className="w-full py-7 bg-slate-950 text-white rounded-[2rem] font-black uppercase text-[13px] tracking-[0.4em] shadow-3xl hover:bg-blue-600 hover:-translate-y-1 transition-all flex items-center justify-center gap-5 active:scale-95 group"
                 >
                     ENTER OPERATOR HUB <ArrowRight size={22} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />

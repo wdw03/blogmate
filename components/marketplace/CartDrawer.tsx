@@ -123,7 +123,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, items, niche, 
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Total Bill</span>
                     <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">${totalPrice.toFixed(0)}</span>
                 </div>
-                <button onClick={() => { onClose(); window.location.hash = '#/checkout'; }} className="w-full bg-slate-900 dark:bg-blue-600 text-white py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-xl">Complete Order <ArrowRight size={18} /></button>
+                <button onClick={() => { onClose(); window.location.hash = '/checkout'; }} className="w-full bg-slate-900 dark:bg-blue-600 text-white py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-xl">Complete Order <ArrowRight size={18} /></button>
               </div>
             )}
           </motion.div>

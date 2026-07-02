@@ -34,7 +34,7 @@ const Login: React.FC = () => {
     setSuccess(null);
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/#/profile`,
+        redirectTo: `${window.location.origin}//profile`,
       });
       if (resetError) throw resetError;
 
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
       const env = import.meta.env;
       await sendEmailViaEmailJS(env.VITE_EMAILJS_TEMPLATE_PASSWORD_RESET, {
         to_email: email,
-        reset_url: `${window.location.origin}/#/profile` // In a real app, this would be a specific reset link
+        reset_url: `${window.location.origin}//profile` // In a real app, this would be a specific reset link
       });
 
       setSuccess("Password reset link sent to your email.");
@@ -74,9 +74,9 @@ const Login: React.FC = () => {
         if (profError) throw profError;
 
         if (profile?.role === 'admin' || profile?.role === 'superadmin') {
-          window.location.hash = '#/admin';
+          window.location.hash = '/admin';
         } else {
-          window.location.hash = '#/';
+          window.location.hash = '/';
         }
       }
     } catch (err: any) {
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
         <div className="w-full lg:w-[50%] p-5 sm:p-8 md:p-10 flex flex-col justify-between relative bg-white border-r overflow-y-auto border-slate-100">
           <div className="flex items-center justify-between">
             <button 
-              onClick={() => navigateTo('#/')} 
+              onClick={() => navigateTo('/')} 
               className="group flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all hover:bg-white hover:shadow-lg"
             >
               <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
@@ -217,7 +217,7 @@ const Login: React.FC = () => {
             <div className="mt-10 pt-10 border-t border-slate-100 flex items-center justify-center gap-3">
               <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">New user?</span>
               <button 
-                onClick={() => navigateTo('#/signup')} 
+                onClick={() => navigateTo('/signup')} 
                 className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline px-4 py-2 bg-blue-50 rounded-xl"
               >
                 Create Account

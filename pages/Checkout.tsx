@@ -180,7 +180,7 @@ const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orde
     setIsFinalizing(true);
     try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) { window.location.hash = '#/login'; return; }
+        if (!session) { window.location.hash = '/login'; return; }
 
         // Wallet Logic
         if (selectedGateway === 'Wallet') {
@@ -380,7 +380,7 @@ const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orde
         discountAmount={pricingData.discount}
         surcharge={pricingData.surcharge}
         totalPrice={pricingData.totalPrice}
-        onBack={() => orderId ? (window.location.hash = '#/profile') : setStep('config')}
+        onBack={() => orderId ? (window.location.hash = '/profile') : setStep('config')}
         onFinalize={handleFinalSubmission}
         processing={isFinalizing}
         coupon={coupon}
@@ -399,7 +399,7 @@ const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orde
           <div className="min-h-screen pt-44 flex flex-col items-center justify-center bg-white">
               <Layout size={64} className="text-slate-200 mb-6" />
               <h2 className="text-xl font-black text-slate-400 uppercase italic">Your Cart is Empty</h2>
-              <button onClick={() => window.location.hash = '#/domains'} className="mt-8 px-10 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Browse Domains</button>
+              <button onClick={() => window.location.hash = '/domains'} className="mt-8 px-10 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Browse Domains</button>
           </div>
       );
   }
