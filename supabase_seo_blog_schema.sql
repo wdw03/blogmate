@@ -84,12 +84,7 @@ ALTER TABLE public.blog_articles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.seo_redirects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.article_comments ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Allow public read access on seo_entries" ON public.seo_entries FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow public read access on blog_articles" ON public.blog_articles FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow public read access on seo_redirects" ON public.seo_redirects FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow public read access on article_comments" ON public.article_comments FOR SELECT USING (true);
-
-CREATE POLICY IF NOT EXISTS "Allow all access for authenticated users on seo_entries" ON public.seo_entries FOR ALL USING (true);
-CREATE POLICY IF NOT EXISTS "Allow all access for authenticated users on blog_articles" ON public.blog_articles FOR ALL USING (true);
-CREATE POLICY IF NOT EXISTS "Allow all access for authenticated users on seo_redirects" ON public.seo_redirects FOR ALL USING (true);
-CREATE POLICY IF NOT EXISTS "Allow all access on article_comments" ON public.article_comments FOR ALL USING (true);
+CREATE POLICY IF NOT EXISTS "Allow public all access on seo_entries" ON public.seo_entries FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY IF NOT EXISTS "Allow public all access on blog_articles" ON public.blog_articles FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY IF NOT EXISTS "Allow public all access on seo_redirects" ON public.seo_redirects FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY IF NOT EXISTS "Allow public all access on article_comments" ON public.article_comments FOR ALL USING (true) WITH CHECK (true);
