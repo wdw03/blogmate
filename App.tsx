@@ -20,6 +20,8 @@ import Toast from './components/ui/Toast';
 import SEO from './src/components/seo/SEO';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
+import SitemapXml from './pages/SitemapXml';
+import RobotsTxt from './pages/RobotsTxt';
 import { KNOWLEDGE_ARTICLES } from './src/data/blog';
 import { organizationSchema, websiteSchema } from './src/utils/generateSchema';
 import { supabase } from './lib/supabase';
@@ -301,6 +303,8 @@ const App: React.FC = () => {
     if (hash === '/signup') return <Signup />;
     if (hash === '/admin') return <AdminPanel />;
     if (hash === '/profile') return <Profile />;
+    if (hash === '/sitemap.xml' || hash === '/sitemap') return <SitemapXml />;
+    if (hash === '/robots.txt' || hash === '/robots') return <RobotsTxt />;
 
     if (hash.startsWith('/checkout')) {
       const urlParams = new URLSearchParams(window.location.search);

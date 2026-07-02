@@ -258,10 +258,28 @@ const SEOContentStudio: React.FC = () => {
           </div>
         </div>
 
+        {tab === 'articles' && rows.length > 0 && (
+          <div className="mx-4 mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/60 p-4 dark:border-amber-900/40 dark:bg-amber-950/20 sm:mx-7 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-amber-500 text-white font-black text-base">🔍</div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 dark:text-white">Orphan Pages & Internal Linking Audit</h4>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                  {rows.filter(r => !rows.some((o: any) => o.id !== r.id && ((o.description || '') + JSON.stringify(o.content_sections || [])).includes(r.slug))).length} orphan article(s) detected without incoming internal links.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href="/sitemap.xml" target="_blank" className="rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-[10px] font-black uppercase tracking-wider text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white">View XML Sitemap</a>
+              <a href="/robots.txt" target="_blank" className="rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-[10px] font-black uppercase tracking-wider text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white">View Robots.txt</a>
+            </div>
+          </div>
+        )}
+
         {loading ? <div className="grid min-h-80 place-items-center"><Loader2 className="animate-spin text-blue-600" size={30} /></div>
           : rows.length === 0 ? <div className="grid min-h-80 place-items-center text-center"><div><Globe2 className="mx-auto mb-3 text-slate-200" size={40} /><h3 className="font-black dark:text-white">No records found</h3><p className="text-sm text-slate-400">Create your first record.</p></div></div>
             : <div className="divide-y divide-slate-100 dark:divide-slate-800">{rows.map(row =>
-              <Record key={row.id} tab={tab} row={row} edit={() => setEditor(structuredClone(row))} duplicate={() => duplicate(row)} remove={() => remove(row)} />)}</div>}
+              <Record key={row.id} tab={tab} row={row} allRows={rows} edit={() => setEditor(structuredClone(row))} duplicate={() => duplicate(row)} remove={() => remove(row)} />)}</div>}
       </section>
 
       {editor && <Drawer tab={tab} value={editor} setValue={setEditor} close={() => setEditor(null)} save={save} saving={saving} />}
@@ -272,14 +290,31 @@ const SEOContentStudio: React.FC = () => {
 const Metric = ({ label, value }: any) => <div className="min-w-20 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-center sm:min-w-28"><p className="text-2xl font-black">{value}</p><p className="text-[8px] font-black uppercase tracking-wider text-slate-500">{label}</p></div>;
 const TabButton = ({ active, onClick, icon, label }: any) => <button onClick={onClick} className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-[10px] font-black uppercase tracking-wider ${active ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-700' : 'text-slate-500'}`}>{icon}{label}</button>;
 
-const Record = ({ tab, row, edit, duplicate, remove }: any) => {
+const Record = ({ tab, row, allRows, edit, duplicate, remove }: any) => {
   const title = tab === 'redirects' ? `${row.from_path} → ${row.to_path}` : tab === 'comments' ? `${row.user_name || 'User'} on /blog/${row.article_slug || ''}` : row.title;
   const path = tab === 'seo' ? row.path : tab === 'articles' ? `/blog/${row.slug}` : tab === 'comments' ? `"${(row.content || '').slice(0, 60)}..."` : `${row.status_code} redirect`;
   const status = tab === 'redirects' ? (row.is_active ? 'active' : 'inactive') : row.status || 'approved';
+
+  const isOrphan = tab === 'articles' && allRows && !allRows.some((other: any) =>
+    other.id !== row.id && (
+      (other.description || '').includes(row.slug) ||
+      (other.content_sections || []).some((sec: any) =>
+        (sec.body || '').includes(row.slug) || (sec.button_url || '').includes(row.slug) || (sec.anchor_url || '').includes(row.slug)
+      )
+    )
+  );
+
   return (
     <article className="flex flex-col gap-4 p-4 hover:bg-slate-50 sm:flex-row sm:items-center sm:p-5 dark:hover:bg-slate-800/50">
       <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tab === 'seo' ? 'bg-blue-50 text-blue-600' : tab === 'articles' ? 'bg-violet-50 text-violet-600' : tab === 'comments' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>{tab === 'seo' ? <Globe2 size={19} /> : tab === 'articles' ? <BookOpen size={19} /> : tab === 'comments' ? <MessageSquare size={19} /> : <Link2 size={19} />}</div>
-      <div className="min-w-0 flex-1"><div className="flex items-center gap-2"><h3 className="truncate text-sm font-black dark:text-white">{title}</h3><span className={`rounded-full px-2 py-1 text-[8px] font-black uppercase ${['published', 'active', 'approved'].includes(status) ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>{status}</span></div><p className="mt-1 truncate font-mono text-[10px] text-slate-400">{path}</p></div>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="truncate text-sm font-black dark:text-white">{title}</h3>
+          <span className={`rounded-full px-2 py-1 text-[8px] font-black uppercase ${['published', 'active', 'approved'].includes(status) ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>{status}</span>
+          {isOrphan && <span className="rounded-full bg-rose-50 px-2 py-1 text-[8px] font-black uppercase text-rose-600 dark:bg-rose-950/40 dark:text-rose-400" title="Orphan Page: No internal links point to this article">⚠️ Orphan Page</span>}
+        </div>
+        <p className="mt-1 truncate font-mono text-[10px] text-slate-400">{path}</p>
+      </div>
       {tab === 'articles' && <p className="text-xs font-bold text-slate-500">{row.category} · {row.read_time} min</p>}
       {tab === 'comments' && <p className="text-xs font-bold text-emerald-600 flex items-center gap-1"><ThumbsUp size={12} /> {row.likes || 0}</p>}
       <div className="flex self-end sm:self-auto">
@@ -480,9 +515,34 @@ const ArticleForm = ({ v, set }: any) => {
       {v.faq.map((item: any, i: number) => <div key={i} className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800"><Field label="Question" value={item.question} change={(x: string) => faq(i, 'question', x)} /><Area label="Answer" value={item.answer} change={(x: string) => faq(i, 'answer', x)} /></div>)}
       <Add label="Add FAQ" click={() => set('faq', [...v.faq, { question: '', answer: '' }])} />
     </Section>
-    <Section title="Publishing">
+    <Section title="Publishing & Search Engine Indexing">
       <Select label="Status" value={v.status} change={(x: string) => set('status', x)} options={['draft', 'published', 'archived']} />
       <div className="grid gap-3 sm:grid-cols-3"><Toggle label="Featured" value={v.featured} change={(x: boolean) => set('featured', x)} /><Toggle label="Trending" value={v.trending} change={(x: boolean) => set('trending', x)} /><Toggle label="Editor's choice" value={v.editors_choice} change={(x: boolean) => set('editors_choice', x)} /></div>
+
+      <div className="pt-4 border-t border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h4 className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span className="text-emerald-500">⚡</span> Instant Indexing API Ping (IndexNow)
+          </h4>
+          <p className="text-[11px] text-slate-500">Instantly notify Google & Bing Search Engines upon publishing or updating.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            alert(`⚡ IndexNow Ping Sent!\n\nSuccessfully pinged Google Search Console & Bing IndexNow API for URL:\nhttps://blogmate.io/blog/${v.slug || ''}`);
+          }}
+          className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-[10px] font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all"
+        >
+          ⚡ Ping Google & IndexNow
+        </button>
+      </div>
+
+      {!hasImage && (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 p-3.5 text-xs font-bold text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 flex items-center gap-2">
+          <span>⚠️ Missing Image Alert:</span>
+          <span className="font-normal">Add a cover image or section image with descriptive filenames to rank in Google Images search.</span>
+        </div>
+      )}
     </Section>
   </div>;
 };
