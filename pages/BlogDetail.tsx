@@ -236,7 +236,7 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
 
       <div className="mx-auto mt-12 max-w-5xl px-5">
         <div className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
-          <img src={article.image} alt={article.title} width="1200" height="630" className="aspect-[16/9] w-full object-cover" />
+          <img src={article.image} alt={article.cover_image_alt || article.title} width="1200" height="630" className="aspect-[16/9] w-full object-cover" />
         </div>
       </div>
 
@@ -314,7 +314,7 @@ const BlogDetail: React.FC<{ slug: string }> = ({ slug }) => {
                   <div className={`my-6 grid gap-4 ${sectionImages.length > 1 ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
                     {sectionImages.map((imgUrl: string, imgIdx: number) => (
                       <div key={imgIdx} className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 max-h-96">
-                        <img src={imgUrl} alt={`${section.heading} ${imgIdx + 1}`} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                        <img src={imgUrl} alt={section.image_alt || `${section.heading} ${imgIdx + 1}`} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
                       </div>
                     ))}
                   </div>
