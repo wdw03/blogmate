@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, ArrowRight, Loader2, Layout, ShieldCheck, Zap, Database, Lock, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { ArrowLeft, ArrowRight, Loader2, Layout, ShieldCheck, Zap, Database, Lock, AlertCircle, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CartItemConfig from '../components/checkout/CartItemConfig';
 import ConfigurationModal from '../components/checkout/ConfigurationModal';
@@ -8,8 +8,22 @@ import FinalPaymentView from '../components/payment/FinalPaymentView';
 import ConfirmationSuccess from '../components/checkout/ConfirmationSuccess';
 import { dispatchOrderEmails } from '../lib/emailService';
 
-const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null; onOrderSuccess?: () => void }> = ({ items = [], niche = 'General', orderId, onOrderSuccess }) => {
+interface CheckoutProps {
+  items: any[];
+  niche: string;
+  orderId?: string | null;
+  onOrderSuccess?: () => void;
+  onRemoveItem?: (idOrDomain: string) => void;
+  onAddItem?: (item: any) => void;
+  onUpdateNiche?: (newNiche: string) => void;
+  onClearCart?: () => void;
+}
+
+const Checkout: React.FC<CheckoutProps> = ({ items = [], niche = 'General', orderId, onOrderSuccess, onRemoveItem, onAddItem, onUpdateNiche, onClearCart }) => {
   const [step, setStep] = useState<'config' | 'payment'>(orderId ? 'payment' : 'config');
+  const [showUpgradePopup, setShowUpgradePopup] = useState(false);
+  const [pendingContentSelection, setPendingContentSelection] = useState<{ itemId: string; type: any } | null>(null);
+  const [hasPromptedInSession, setHasPromptedInSession] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [configs, setConfigs] = useState<Record<string, any>>({});
   const [showConfigModal, setShowConfigModal] = useState(false);
@@ -23,6 +37,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
   const [selectedGateway, setSelectedGateway] = useState('PayPal');
   const [loadingOrder, setLoadingOrder] = useState(!!orderId);
   const [existingOrderData, setExistingOrderData] = useState<any>(null);
+  const [shakingItems, setShakingItems] = useState<Record<string, boolean>>({});
 
   const WRITER_FEE = 15;
 
@@ -45,31 +60,53 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
 
   useEffect(() => {
     if (items.length > 0 && !activeItem && !orderId) {
-      setActiveItem(items[0].domain);
+      const firstId = items[0].id || items[0].db_id || `${items[0].domain}-0`;
+      setActiveItem(firstId);
     }
   }, [items, orderId]);
 
   useEffect(() => {
     if (!orderId) {
-        const initial: Record<string, any> = {};
-        items.forEach(it => {
-            initial[it.domain] = it.configuration || {
-                contentType: 'provide',
-                contentRequirements: { 
-                    links: [{ anchorText: '', landingPageUrl: '' }],
-                    topic: '',
-                    htmlCode: '',
-                    imagePath: '',
-                    fileUrl: '',
-                    specialInstructions: ''
-                }
-            };
+        setConfigs(prev => {
+            const updated: Record<string, any> = {};
+            items.forEach((it, idx) => {
+                const itemId = it.id || it.db_id || `${it.domain}-${idx}`;
+                updated[itemId] = prev[itemId] || it.configuration || {
+                    contentType: 'provide',
+                    contentRequirements: { 
+                        links: [{ anchorText: '', landingPageUrl: '' }],
+                        topic: '',
+                        htmlCode: '',
+                        imagePath: '',
+                        fileUrl: '',
+                        specialInstructions: ''
+                    }
+                };
+            });
+            return updated;
         });
-        setConfigs(initial);
     }
   }, [items, orderId]);
 
   const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
+
+  const getItemPrice = useCallback((it: any, idx?: number) => {
+    const itemId = it.id || it.db_id || (idx !== undefined ? `${it.domain}-${idx}` : it.domain);
+    const itemConfig = configs[itemId] || {};
+    const isUpgraded = itemConfig.isCasinoUpgraded || niche === 'Casino' || niche === 'Grey Niche';
+
+    if (isUpgraded) {
+      const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+      const localMeta = metaMap[it.domain?.toLowerCase()] || {};
+      if (localMeta.price_casino && Number(localMeta.price_casino) > 0) {
+        return Number(localMeta.price_casino);
+      }
+      if (it.admin_discount && Number(it.admin_discount) > 0) {
+        return Number(it.admin_discount);
+      }
+    }
+    return (it.price || 0) * (isUpgraded ? 3 : 1);
+  }, [niche, multiplier, configs]);
 
   const pricingData = useMemo(() => {
     if (existingOrderData) {
@@ -83,9 +120,10 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
         };
     }
 
-    const baseAmount = items.reduce((sum, it) => sum + ((it.price || 0) * multiplier), 0);
-    const totalFees = items.reduce((sum, it) => {
-        const config = configs[it.domain];
+    const baseAmount = items.reduce((sum, it) => sum + getItemPrice(it), 0);
+    const totalFees = items.reduce((sum, it, idx) => {
+        const itemId = it.id || it.db_id || `${it.domain}-${idx}`;
+        const config = configs[itemId] || configs[it.domain];
         return sum + (config?.contentType === 'hire' ? WRITER_FEE : 0);
     }, 0);
     
@@ -128,9 +166,9 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
     }
   };
 
-  const handleUpdateConfig = async (domain: string, newConfig: any) => {
-    setConfigs(prev => ({ ...prev, [domain]: newConfig }));
-    const targetItem = items.find(i => i.domain === domain);
+  const handleUpdateConfig = async (itemIdOrDomain: string, newConfig: any) => {
+    setConfigs(prev => ({ ...prev, [itemIdOrDomain]: newConfig }));
+    const targetItem = items.find((i, idx) => (i.id || i.db_id || `${i.domain}-${idx}`) === itemIdOrDomain || i.domain === itemIdOrDomain);
     if (targetItem?.db_id) {
         await supabase.from('cart').update({ configuration: newConfig }).eq('id', targetItem.db_id);
     }
@@ -175,8 +213,9 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
                 dueDate.setDate(dueDate.getDate() + 30);
             }
 
-            const manifestPayload = items.map(it => {
-                const config = configs[it.domain] || {};
+            const manifestPayload = items.map((it, idx) => {
+                const itemId = it.id || it.db_id || `${it.domain}-${idx}`;
+                const config = configs[itemId] || configs[it.domain] || {};
                 const itemBasePrice = it.price * multiplier;
                 const itemWriterFee = config.contentType === 'hire' ? WRITER_FEE : 0;
                 
@@ -268,7 +307,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
 
         await supabase.from('messages').insert([{
             user_id: session.user.id,
-            content: `Aapka Order #${finalOrderId?.slice(0,8).toUpperCase()} successfully submit ho gaya hai. Digital receipt aapki email par bhej di gayi hai.`,
+            content: `Your Order #${finalOrderId?.slice(0,8).toUpperCase()} has been submitted successfully. A digital receipt has been sent to your email.`,
             is_admin: true,
             metadata: { order_id: finalOrderId, type: 'order_confirmation' }
         }]);
@@ -296,6 +335,42 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
   if (successOrderId) {
       return <ConfirmationSuccess orderId={successOrderId} totalPrice={confirmedPrice} />;
   }
+
+  const handleProceedToPayment = () => {
+    const unconfiguredIds: Record<string, boolean> = {};
+    let firstUnconfiguredId: string | null = null;
+
+    items.forEach((it, idx) => {
+      const itemId = it.id || it.db_id || `${it.domain}-${idx}`;
+      const config = configs[itemId] || configs[it.domain] || {};
+      const reqs = config.contentRequirements || {};
+
+      let isComplete = false;
+      if (config.contentType === 'hire') {
+        isComplete = !!reqs.topic && reqs.topic.trim() !== '';
+      } else if (config.contentType === 'injection') {
+        isComplete = !!reqs.existingPostUrl && reqs.existingPostUrl.trim() !== '';
+      } else {
+        isComplete = !!reqs.fileUrl && reqs.fileUrl.trim() !== '';
+      }
+
+      if (!isComplete) {
+        unconfiguredIds[itemId] = true;
+        if (!firstUnconfiguredId) firstUnconfiguredId = itemId;
+      }
+    });
+
+    if (Object.keys(unconfiguredIds).length > 0) {
+      setShakingItems(unconfiguredIds);
+      if (firstUnconfiguredId) setActiveItem(firstUnconfiguredId);
+      setTimeout(() => {
+        setShakingItems({});
+      }, 800);
+      return;
+    }
+
+    setStep('payment');
+  };
 
   if (step === 'payment') {
     return (
@@ -352,7 +427,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
                     <div className="text-4xl font-black text-blue-400 tracking-tighter tabular-nums">${pricingData.totalPrice.toLocaleString()}</div>
                 </div>
                 <button 
-                  onClick={() => setStep('payment')}
+                  onClick={handleProceedToPayment}
                   className="bg-blue-600 text-white px-14 py-8 rounded-[2rem] font-black text-[13px] uppercase tracking-[0.3em] flex items-center gap-4 hover:bg-white hover:text-slate-900 transition-all shadow-blue-500/20 active:scale-95 group/btn"
                 >
                     Pay Now <ArrowRight size={20} strokeWidth={3} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -363,46 +438,112 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             <aside className="lg:col-span-4 space-y-6">
                 <div className="bg-white rounded-[3rem] border border-slate-200 p-10 shadow-sm transition-all hover:shadow-xl group">
-                    <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center justify-between mb-8">
                         <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] flex items-center gap-3">
                             <Database size={18} className="text-blue-600" /> Selected Items ({items.length})
                         </h3>
+                        {items.length > 0 && onClearCart && (
+                            <button
+                                type="button"
+                                onClick={onClearCart}
+                                className="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-1 shadow-sm"
+                            >
+                                <Trash2 size={12} /> Clear All
+                            </button>
+                        )}
                     </div>
                     <div className="space-y-4">
-                        {items.map((it) => {
-                            const isActive = activeItem === it.domain;
-                            const config = configs[it.domain] || {};
-                            const isSynced = !!(config.contentRequirements?.fileUrl || config.contentRequirements?.topic || config.contentRequirements?.existingPostUrl);
-                            
-                            return (
-                                <div 
-                                    key={it.domain}
-                                    onClick={() => setActiveItem(it.domain)}
-                                    className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer group/item relative overflow-hidden ${
-                                        isActive 
-                                        ? 'bg-[#020617] border-[#020617] shadow-2xl scale-[1.05] z-10' 
-                                        : 'bg-slate-50/50 border-transparent hover:bg-white hover:border-slate-200'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-4 mb-5 relative z-10">
-                                        <div className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.5)] animate-pulse' : 'bg-slate-300'}`}></div>
-                                        <h4 className={`text-[15px] font-black uppercase tracking-tight truncate ${isActive ? 'text-white' : 'text-slate-900'}`}>{it.domain}</h4>
-                                    </div>
-                                    <div className="flex items-end justify-between relative z-10">
-                                        <div className={`text-xl font-black tabular-nums ${isActive ? 'text-white' : 'text-slate-900'}`}>
-                                            ${((it.price * multiplier) + (config.contentType === 'hire' ? WRITER_FEE : 0)).toLocaleString()}
-                                        </div>
-                                        <div className={`px-3 py-1 rounded-xl text-[8px] font-black uppercase tracking-widest border transition-colors ${
+                        {(() => {
+                            const domainCounters: Record<string, number> = {};
+                            const domainTotalCounts: Record<string, number> = {};
+                            items.forEach(it => { domainTotalCounts[it.domain] = (domainTotalCounts[it.domain] || 0) + 1; });
+
+                            return items.map((it, idx) => {
+                                const itemId = it.id || it.db_id || `${it.domain}-${idx}`;
+                                const isActive = activeItem === itemId;
+                                const isShaking = !!shakingItems[itemId];
+                                const config = configs[itemId] || configs[it.domain] || {};
+                                const reqs = config.contentRequirements || {};
+                                const isSynced = config.contentType === 'hire'
+                                    ? (!!reqs.topic && reqs.topic.trim() !== '')
+                                    : (config.contentType === 'injection'
+                                        ? (!!reqs.existingPostUrl && reqs.existingPostUrl.trim() !== '')
+                                        : (!!reqs.fileUrl && reqs.fileUrl.trim() !== ''));
+                                
+                                domainCounters[it.domain] = (domainCounters[it.domain] || 0) + 1;
+                                const instanceNum = domainCounters[it.domain];
+                                const displayName = domainTotalCounts[it.domain] > 1 ? `${it.domain} #${instanceNum}` : it.domain;
+
+                                return (
+                                    <div 
+                                        key={itemId}
+                                        onClick={() => setActiveItem(itemId)}
+                                        className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer group/item relative overflow-hidden ${
+                                            isShaking ? 'animate-shake ' : ''
+                                        }${
                                             isActive 
-                                              ? (isSynced ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-orange-500/20 border-orange-500/30 text-orange-400') 
-                                              : (isSynced ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-white text-slate-400 border-slate-100')
-                                        }`}>
-                                            {isSynced ? 'Synced' : 'Need Setup'}
+                                            ? 'bg-[#020617] border-[#020617] shadow-2xl z-10' 
+                                            : 'bg-slate-50/50 border-transparent hover:bg-white hover:border-slate-200'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-4 mb-5 relative z-10">
+                                            <div className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.5)] animate-pulse' : 'bg-slate-300'}`}></div>
+                                            <h4 className={`text-[15px] font-black uppercase tracking-tight truncate ${isActive ? 'text-white' : 'text-slate-900'}`}>{displayName}</h4>
+                                        </div>
+                                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200/20 relative z-10">
+                                            <div className="flex items-center gap-1.5">
+                                                {onAddItem && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onAddItem(it);
+                                                        }}
+                                                        title="Add another instance"
+                                                        className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider flex items-center gap-1 transition-all ${
+                                                            isActive
+                                                            ? 'bg-blue-600/40 text-blue-200 hover:bg-blue-600 hover:text-white'
+                                                            : 'bg-slate-200 text-slate-700 hover:bg-blue-600 hover:text-white'
+                                                        }`}
+                                                    >
+                                                        <Plus size={11} /> Add
+                                                    </button>
+                                                )}
+                                                {onRemoveItem && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onRemoveItem(itemId);
+                                                        }}
+                                                        title="Remove item"
+                                                        className={`p-1.5 rounded-lg transition-all ${
+                                                            isActive
+                                                            ? 'text-slate-400 hover:bg-rose-500/30 hover:text-rose-300'
+                                                            : 'text-slate-400 hover:bg-rose-100 hover:text-rose-600'
+                                                        }`}
+                                                    >
+                                                        <Trash2 size={13} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`text-lg font-black tabular-nums ${isActive ? 'text-white' : 'text-slate-900'}`}>
+                                                    ${(getItemPrice(it) + (config.contentType === 'hire' ? WRITER_FEE : 0)).toLocaleString()}
+                                                </div>
+                                                <div className={`px-2.5 py-1 rounded-xl text-[8px] font-black uppercase tracking-widest border transition-colors ${
+                                                    isActive 
+                                                      ? (isSynced ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-orange-500/20 border-orange-500/30 text-orange-400') 
+                                                      : (isSynced ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-white text-slate-400 border-slate-100')
+                                                }`}>
+                                                    {isSynced ? 'Synced' : 'Need Setup'}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            });
+                        })()}
                     </div>
                 </div>
 
@@ -413,7 +554,7 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
                             <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">Secure Protocol</span>
                         </div>
                         <p className="text-xs text-slate-500 leading-relaxed font-medium uppercase tracking-tight mb-8">
-                            Aapka data 256-bit encryption ke saath secure hai. Sabhi payments instant verify ki jati hain.
+                            Your data is secured with 256-bit encryption. All transactions are verified instantly.
                         </p>
                     </div>
                 </div>
@@ -422,19 +563,27 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
             <main className="lg:col-span-8 animate-in fade-in zoom-in-95 duration-700">
                 {activeItem ? (
                     <CartItemConfig 
-                        listing={items.find(i => i.domain === activeItem) || {} as any} 
-                        config={configs[activeItem]}
+                        listing={items.find((i, idx) => (i.id || i.db_id || `${i.domain}-${idx}`) === activeItem) || {} as any} 
+                        config={configs[activeItem] || {}}
                         onSelectContentType={(type) => {
-                            handleUpdateConfig(activeItem, { ...configs[activeItem], contentType: type });
-                            setShowConfigModal(true);
+                            const activeListing = items.find((i, idx) => (i.id || i.db_id || `${i.domain}-${idx}`) === activeItem);
+                            const itemConf = configs[activeItem] || {};
+                            const isGeneralWebsite = activeListing?.category === 'General' || (!activeListing?.category && niche === 'General');
+                            if (isGeneralWebsite && !itemConf.hasAnsweredCasinoPopup) {
+                                setPendingContentSelection({ itemId: activeItem, type });
+                                setShowUpgradePopup(true);
+                            } else {
+                                handleUpdateConfig(activeItem, { ...(configs[activeItem] || {}), contentType: type });
+                                setShowConfigModal(true);
+                            }
                         }}
                         writerFee={WRITER_FEE}
                     />
                 ) : (
                     <div className="h-96 bg-white border-2 border-dashed border-slate-200 rounded-[4rem] flex flex-col items-center justify-center text-center p-10">
                         <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mb-6 shadow-sm"><Database size={40} /></div>
-                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic mb-2">Item Select Karein</h3>
-                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Left list se kisi website ko select karke uski detail bharain.</p>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic mb-2">Select an Item</h3>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Select a website from the left panel to configure its publication details.</p>
                     </div>
                 )}
             </main>
@@ -445,10 +594,69 @@ const Checkout: React.FC<{ items: any[]; niche: string; orderId?: string | null;
         <ConfigurationModal 
             isOpen={showConfigModal}
             onClose={() => setShowConfigModal(false)}
-            listing={items.find(i => i.domain === activeItem)}
-            config={configs[activeItem || '']}
+            listing={items.find((i, idx) => (i.id || i.db_id || `${i.domain}-${idx}`) === activeItem)}
+            config={configs[activeItem || ''] || {}}
             onUpdateConfig={(newConf) => handleUpdateConfig(activeItem!, newConf)}
         />
+      )}
+
+      {showUpgradePopup && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[3000] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[3rem] p-8 sm:p-10 max-w-lg w-full shadow-2xl relative overflow-hidden text-center">
+            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <Zap size={32} />
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-3">
+              Do You Want Casino Service?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8">
+              You currently have <strong className="text-slate-900 dark:text-white">General Niche ($10 base)</strong> selected. If your website involves <strong className="text-blue-600 dark:text-blue-400">Casino, CBD, or Grey Niche</strong> topics, please upgrade to prevent publisher rejection.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (pendingContentSelection && pendingContentSelection.itemId) {
+                    const updatedConf = {
+                      ...(configs[pendingContentSelection.itemId] || {}),
+                      isCasinoUpgraded: true,
+                      hasAnsweredCasinoPopup: true,
+                      contentType: pendingContentSelection.type
+                    };
+                    handleUpdateConfig(pendingContentSelection.itemId, updatedConf);
+                    setShowConfigModal(true);
+                    setPendingContentSelection(null);
+                  }
+                  setShowUpgradePopup(false);
+                }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black text-[11px] uppercase tracking-widest py-4 px-6 rounded-2xl shadow-lg shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2"
+              >
+                <Zap size={14} /> Yes, Upgrade to Casino / Grey
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (pendingContentSelection && pendingContentSelection.itemId) {
+                    const updatedConf = {
+                      ...(configs[pendingContentSelection.itemId] || {}),
+                      isCasinoUpgraded: false,
+                      hasAnsweredCasinoPopup: true,
+                      contentType: pendingContentSelection.type
+                    };
+                    handleUpdateConfig(pendingContentSelection.itemId, updatedConf);
+                    setShowConfigModal(true);
+                    setPendingContentSelection(null);
+                  }
+                  setShowUpgradePopup(false);
+                }}
+                className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-black text-[11px] uppercase tracking-widest py-4 px-6 rounded-2xl transition active:scale-95"
+              >
+                No, Keep General ($10)
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

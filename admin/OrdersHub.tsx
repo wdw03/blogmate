@@ -26,13 +26,11 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
   const isSuperAdmin = adminProfile?.role === 'superadmin';
 
   const maskEmail = (email: string) => {
-    if (!email || isSuperAdmin) return email;
-    return '[ACCESS_RESTRICTED]';
+    return email || '';
   };
 
   const maskName = (name: string, id: string) => {
-    if (!name || isSuperAdmin || name === 'GUEST USER') return name;
-    return `NODE_${id.slice(-4).toUpperCase()}`;
+    return name || `User (${id.slice(-4).toUpperCase()})`;
   };
 
   const fetchOrders = async (silent = false) => {
@@ -91,7 +89,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
         
         await supabase.from('messages').insert([{
             user_id: selectedOrder.user_id,
-            content: `Aapka Order #${orderId.slice(0,8).toUpperCase()} status ab ${newStatus.toUpperCase()} ho gaya hai. Check karein.`,
+            content: `Your Order #${orderId.slice(0,8).toUpperCase()} status is now ${newStatus.toUpperCase()}. Please check your profile.`,
             is_admin: true,
             metadata: { order_id: orderId, type: 'status_change', status: newStatus }
         }]);
@@ -125,13 +123,13 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
         await sendEmailViaEmailJS(env.VITE_EMAILJS_TEMPLATE_NEW_MESSAGE, {
             to_email: order.profiles?.email || 'user@system',
             subject: 'Payment Reminder - Order #' + order.id.slice(0,8).toUpperCase(),
-            message_snippet: `Hi, aapke order #${order.id.slice(0,8).toUpperCase()} ki payment pending hai ($${finalPrice.toLocaleString()}). Kripya portal par settlement karein.`,
+            message_snippet: `Hi, payment for your order #${order.id.slice(0,8).toUpperCase()} is currently pending ($${finalPrice.toLocaleString()}). Please complete the settlement on your portal.`,
             chat_url: `${window.location.origin}/#/profile`
         });
 
         const { error } = await supabase.from('messages').insert([{
             user_id: order.user_id,
-            content: `Friendly Reminder: Order #${order.id.slice(0,8).toUpperCase()} ($${finalPrice.toLocaleString()}) ki payment pending hai. Detail email par bhej di gayi hai.`,
+            content: `Friendly Reminder: Payment for Order #${order.id.slice(0,8).toUpperCase()} ($${finalPrice.toLocaleString()}) is pending. Details have been sent to your email.`,
             is_admin: true,
             metadata: { type: 'payment_reminder', order_id: order.id }
         }]);
@@ -143,7 +141,7 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
   };
 
   const filteredOrders = orders.filter(o => {
-    const ident = isSuperAdmin ? (o.profiles?.full_name + o.profiles?.email) : `NODE_${o.user_id.slice(-4)}`;
+    const ident = (o.profiles?.full_name || '') + ' ' + (o.profiles?.email || '');
     return ident.toLowerCase().includes(searchTerm.toLowerCase()) || o.id.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -363,29 +361,49 @@ const OrdersHub: React.FC<OrdersHubProps> = ({ adminProfile }) => {
                                             <div className="space-y-3">
                                                 <div className="flex items-center gap-2">
                                                     <FileText size={12} className="text-blue-600" />
-                                                    <span className="text-[9px] font-black text-slate-950 uppercase tracking-widest">Payload Package</span>
+                                                    <span className="text-[9px] font-black text-slate-950 uppercase tracking-widest">Uploaded File / Document</span>
                                                 </div>
                                                 {reqs.fileUrl ? (
-                                                    <a href={`https://icvwmecfewsogrbkijjh.supabase.co/storage/v1/object/public/articles/${reqs.fileUrl}`} target="_blank" className="flex items-center justify-between p-4 bg-slate-950 rounded-xl group/file hover:bg-blue-600 transition-all shadow-md">
-                                                        <div className="flex items-center gap-3">
-                                                            <FileOutput size={16} className="text-blue-400 group-hover/file:text-white" />
-                                                            <span className="text-[10px] font-black text-white uppercase tracking-tight truncate max-w-[120px]">Node_Draft.docx</span>
-                                                        </div>
-                                                        <Download size={14} className="text-slate-500 group-hover/file:text-white" />
-                                                    </a>
+                                                    <div className="flex flex-col gap-2">
+                                                        <a 
+                                                            href={reqs.fileUrl?.startsWith('http') ? reqs.fileUrl : `${import.meta.env.VITE_SUPABASE_URL || 'https://xnloveaollypxurdschq.supabase.co'}/storage/v1/object/public/articles/${reqs.fileUrl}`} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-between p-3.5 bg-slate-900 text-white rounded-xl hover:bg-blue-600 transition-all shadow-md group/file"
+                                                        >
+                                                            <div className="flex items-center gap-2.5 truncate">
+                                                                <Eye size={16} className="text-blue-400 group-hover/file:text-white shrink-0" />
+                                                                <span className="text-[10px] font-black uppercase tracking-tight truncate">View File</span>
+                                                            </div>
+                                                            <ExternalLink size={14} className="text-slate-400 group-hover/file:text-white shrink-0" />
+                                                        </a>
+                                                        <a 
+                                                            href={reqs.fileUrl?.startsWith('http') ? reqs.fileUrl : `${import.meta.env.VITE_SUPABASE_URL || 'https://xnloveaollypxurdschq.supabase.co'}/storage/v1/object/public/articles/${reqs.fileUrl}`} 
+                                                            download
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-between p-3.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-md group/file"
+                                                        >
+                                                            <div className="flex items-center gap-2.5 truncate">
+                                                                <Download size={16} className="text-white shrink-0" />
+                                                                <span className="text-[10px] font-black uppercase tracking-tight truncate">Download File</span>
+                                                            </div>
+                                                            <span className="text-[8px] font-black bg-emerald-800 text-emerald-100 px-2 py-0.5 rounded">SAVE</span>
+                                                        </a>
+                                                    </div>
                                                 ) : (
-                                                    <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-[8px] font-black text-slate-400 uppercase tracking-widest italic text-center">NO_NODE_PAYLOAD</div>
+                                                    <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-[8px] font-black text-slate-400 uppercase tracking-widest italic text-center">NO_FILE_UPLOADED</div>
                                                 )}
 
                                                 {reqs.imagePath && (
                                                     <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm group/img relative overflow-hidden">
                                                         <div className="flex items-center gap-2">
                                                             <ImageIcon size={14} className="text-orange-500" />
-                                                            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Multimedia Manifest</span>
+                                                            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Uploaded Image</span>
                                                         </div>
-                                                        <a href={`https://icvwmecfewsogrbkijjh.supabase.co/storage/v1/object/public/articles/${reqs.imagePath}`} target="_blank" className="block relative h-32 overflow-hidden rounded-lg border border-slate-100">
+                                                        <a href={reqs.imagePath?.startsWith('http') ? reqs.imagePath : `${import.meta.env.VITE_SUPABASE_URL || 'https://xnloveaollypxurdschq.supabase.co'}/storage/v1/object/public/articles/${reqs.imagePath}`} target="_blank" className="block relative h-32 overflow-hidden rounded-lg border border-slate-100">
                                                             <img 
-                                                                src={`https://icvwmecfewsogrbkijjh.supabase.co/storage/v1/object/public/articles/${reqs.imagePath}`} 
+                                                                src={reqs.imagePath?.startsWith('http') ? reqs.imagePath : `${import.meta.env.VITE_SUPABASE_URL || 'https://xnloveaollypxurdschq.supabase.co'}/storage/v1/object/public/articles/${reqs.imagePath}`} 
                                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105" 
                                                                 onError={(e) => {
                                                                     (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=IMG_NOT_FOUND';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Activity, CheckCircle2, ChevronDown, Globe2, Heart, Plus,
   ShieldCheck, Sparkles, Tag, Timer, Users, Zap
@@ -15,16 +15,32 @@ interface DomainItemProps {
   backlinks: string;
   prices: any;
   isNew?: boolean;
+  isPinned?: boolean;
   metrics: any;
   niche?: string;
   onAddToCart?: (item: any) => void;
+  isLoggedIn?: boolean;
 }
 
 const DomainItem: React.FC<DomainItemProps> = ({
-  domain, category, da, traffic, tat, backlinks, prices, isNew,
-  metrics, niche = 'General', onAddToCart
+  domain, category, da, traffic, tat, backlinks, prices, isNew, isPinned,
+  metrics, niche = 'General', onAddToCart, isLoggedIn: propIsLoggedIn
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [localLoggedIn, setLocalLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (propIsLoggedIn !== undefined) return;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setLocalLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLocalLoggedIn(!!session);
+    });
+    return () => subscription?.unsubscribe();
+  }, [propIsLoggedIn]);
+
+  const isLoggedIn = propIsLoggedIn !== undefined ? propIsLoggedIn : localLoggedIn;
   const multiplier = niche === 'Casino' ? 3 : (niche === 'Grey Niche' ? 2 : (niche === 'CBD' ? 1.5 : 1));
 
   const getPrice = (priceObj: any) => {
@@ -62,7 +78,7 @@ const DomainItem: React.FC<DomainItemProps> = ({
         <div className="flex flex-col gap-4">
           <div className="flex min-w-0 items-start justify-between gap-3">
             <button onClick={() => window.location.hash = `#/domains/${domain}`} className="min-w-0 text-left">
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 flex-wrap">
                 <strong className="truncate text-base font-black text-slate-950 transition hover:text-blue-600 dark:text-white sm:text-lg">{domain}</strong>
                 <CheckCircle2 size={15} className="shrink-0 text-blue-500" />
                 {isNew && <span className="rounded bg-blue-600 px-1.5 py-0.5 text-[7px] font-black uppercase text-white">New</span>}
@@ -79,11 +95,13 @@ const DomainItem: React.FC<DomainItemProps> = ({
             <Summary icon={<Zap size={14} />} label="Type" value={backlinks} />
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
-            <Price label="Post Cost" price={getPrice(prices.guestPost)} />
-            <Price label="Link Cost" price={getPrice(prices.insertion)} />
-            <Price label="Mention" price={getPrice(prices.mention)} />
-          </div>
+          {isLoggedIn && (
+            <div className="grid grid-cols-3 gap-2">
+              <Price label="Post Cost" price={getPrice(prices.guestPost)} />
+              <Price label="Link Cost" price={getPrice(prices.insertion)} />
+              <Price label="Mention" price={getPrice(prices.mention)} />
+            </div>
+          )}
 
           <div className="flex flex-col gap-2 min-[420px]:flex-row">
             <button onClick={handleAddToCart} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-blue-600 dark:bg-blue-600"><Plus size={16} strokeWidth={3} /> Add to cart</button>

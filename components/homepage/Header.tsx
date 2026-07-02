@@ -83,6 +83,20 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
     setIsNotificationsOpen(false);
   };
 
+  const handleGoToSearch = () => {
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
+    window.location.hash = '#/domains';
+    setTimeout(() => {
+      const searchInput = document.querySelector('input[placeholder="Search Guest Post Sites..."]') as HTMLInputElement;
+      if (searchInput) {
+        searchInput.focus();
+        const y = searchInput.getBoundingClientRect().top + window.scrollY - 140;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 150);
+  };
+
   const navLinks = [
     { label: 'Domains', href: '#/domains', icon: <img src="/assets/images/dmoainsicons.png" alt="Domains" className="w-6 h-6 object-contain" /> },
     { label: 'Pricing', href: '#/pricing', icon: <img src="/assets/images/pricing.png" alt="Pricing" className="w-6 h-6 object-contain" /> },
@@ -147,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
                   />
                 </button>
                 <button 
-                  onClick={() => setIsSearchOpen(true)}
+                  onClick={handleGoToSearch}
                   className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-lg" 
                 >
                   <img src="/assets/images/searchicons.png" alt="Search" className="w-7 h-7 object-contain" />
@@ -174,7 +188,14 @@ const Header: React.FC<HeaderProps> = ({ cartCount = 0, onOpenCart }) => {
 
               </div>
 
-              {/* Cart is now outside the hidden block so it shows on mobile */}
+              {/* Mobile Search and Cart outside hidden block */}
+              <button 
+                onClick={handleGoToSearch}
+                className="flex lg:hidden p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all relative" 
+              >
+                <img src="/assets/images/searchicons.png" alt="Search" className="w-5 h-5 object-contain" />
+              </button>
+
               <button 
                 onClick={onOpenCart}
                 className="flex lg:hidden p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all relative" 

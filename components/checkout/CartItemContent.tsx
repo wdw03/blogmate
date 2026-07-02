@@ -106,10 +106,10 @@ const CartItemContent: React.FC<CartItemContentProps> = ({ config, onChange, onU
             <div className="pt-8 border-t border-slate-100">
                 <div className="flex items-center gap-2.5 mb-6 ml-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                    <h4 className="text-[10px] font-black text-slate-950 uppercase tracking-[0.2em]">Multimedia Manifest</h4>
+                    <h4 className="text-[10px] font-black text-slate-950 uppercase tracking-[0.2em]">Custom Embed Code</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                     <div className="space-y-3">
                         <Label optional>Custom HTML Code</Label>
                         <div className="relative group">
@@ -121,30 +121,6 @@ const CartItemContent: React.FC<CartItemContentProps> = ({ config, onChange, onU
                                 placeholder="<iframe>...</iframe>"
                                 className="w-full pl-12 pr-4 py-4 bg-slate-950 border border-slate-800 rounded-2xl text-[10px] font-mono text-emerald-400 focus:outline-none focus:border-blue-500 transition-all resize-none"
                             />
-                        </div>
-                    </div>
-
-                    <div className="space-y-3">
-                        <Label optional>Asset Image Node</Label>
-                        <div className={`relative border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col items-center justify-center text-center ${
-                            reqs.imagePath ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200 hover:border-blue-600'
-                        }`}>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 opacity-0 cursor-pointer z-20" />
-                            
-                            {uploadingImg ? (
-                                <Loader2 className="animate-spin text-blue-600" size={24} />
-                            ) : reqs.imagePath ? (
-                                <div className="flex items-center gap-3">
-                                    <Check size={20} className="text-emerald-500" />
-                                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Locked</span>
-                                    <button onClick={(e) => { e.stopPropagation(); updateField('imagePath', ''); }} className="text-rose-400 hover:text-rose-600 underline text-[8px] font-bold ml-2 uppercase">Remove</button>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center gap-2 text-slate-300">
-                                    <ImageIcon size={32} />
-                                    <span className="text-[9px] font-black uppercase tracking-widest">PNG / JPG</span>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>

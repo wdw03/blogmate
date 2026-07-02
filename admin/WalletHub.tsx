@@ -101,14 +101,14 @@ const WalletHub: React.FC<WalletHubProps> = ({ adminProfile, onRefresh }) => {
                 await supabase.from('messages').insert({
                     user_id: tx.user_id,
                     is_admin: true,
-                    content: `WALLET_AUTH: Aapka ${tx.type.toUpperCase()} request for $${txAmount.toLocaleString()} authorize ho gaya hai. New Balance: $${newBalance.toLocaleString()}`,
+                    content: `WALLET_AUTH: Your ${tx.type.toUpperCase()} request for $${txAmount.toLocaleString()} has been authorized. New Balance: $${newBalance.toLocaleString()}`,
                     metadata: { type: 'wallet_sync', tx_id: tx.id }
                 });
             } else {
                  await supabase.from('messages').insert({
                     user_id: tx.user_id,
                     is_admin: true,
-                    content: `WALLET_REJECTION: Aapka ${tx.type.toUpperCase()} request reject kar diya gaya hai. Contact support.`,
+                    content: `WALLET_REJECTION: Your ${tx.type.toUpperCase()} request has been declined. Please contact support.`,
                     metadata: { type: 'wallet_error', tx_id: tx.id }
                 });
             }

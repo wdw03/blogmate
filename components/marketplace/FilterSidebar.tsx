@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { 
-  Filter, ChevronDown, Search, Zap, 
+  Filter, ChevronDown, Search, 
   Globe, Shield, Activity, 
   Clock, DollarSign, Link2, Languages,
   ChevronUp, CheckCircle2, LayoutGrid, X
@@ -61,7 +61,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
           <div className="w-8 h-8 bg-slate-950 rounded-xl flex items-center justify-center text-white">
             <Filter size={14} strokeWidth={3} />
           </div>
-          <h2 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.1em]">Asset Filters</h2>
+          <h2 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.1em]">GP Filters</h2>
         </div>
         <div className="flex items-center gap-3">
         <button 
@@ -78,27 +78,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
 
       <div className="flex-1 overflow-y-auto custom-sidebar-scroll divide-y divide-slate-50 pb-10">
         
-        {/* 1. OFFERING TYPE - PRIORITY */}
-        <FilterSection 
-          title="Offering Protocol" 
-          icon={<Zap size={14} className="text-orange-500" />}
-          isOpen={expandedSections['Offering']} 
-          onToggle={() => toggleSection('Offering')}
-        >
-          <div className="space-y-4">
-            {['Brand Mention', 'Guest Post', 'Link Insertion'].map((label) => (
-              <FilterCheckbox 
-                key={label} 
-                label={label} 
-                checked={filters.offerings.includes(label)} 
-                onChange={() => handleCheckbox('offerings', label)}
-                isNew={label === 'Brand Mention'}
-              />
-            ))}
-          </div>
-        </FilterSection>
-
-        {/* 2. AUTHORITY METRICS */}
+        {/* 1. AUTHORITY METRICS */}
         <FilterSection 
           title="Authority Metrics" 
           icon={<Shield size={14} className="text-blue-500" />}
@@ -121,9 +101,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
           </div>
         </FilterSection>
 
-        {/* 3. ORGANIC TRAFFIC */}
+        {/* 2. ORGANIC TRAFFIC */}
         <FilterSection 
-          title="Traffic Velocity" 
+          title="Traffic" 
           icon={<Activity size={14} className="text-emerald-500" />}
           isOpen={expandedSections['Traffic']} 
           onToggle={() => toggleSection('Traffic')}
@@ -151,9 +131,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
           </div>
         </FilterSection>
 
-        {/* 4. PRICING */}
+        {/* 3. PRICING */}
         <FilterSection 
-          title="Liquidity Range" 
+          title="Price Range" 
           icon={<DollarSign size={14} className="text-amber-500" />}
           isOpen={expandedSections['Price']} 
           onToggle={() => toggleSection('Price')}
@@ -213,7 +193,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, onCl
 
         {/* 6. DEPLOYMENT TAT */}
         <FilterSection 
-          title="Deployment TAT" 
+          title="TAT" 
           icon={<Clock size={14} className="text-rose-500" />}
           isOpen={expandedSections['TAT']} 
           onToggle={() => toggleSection('TAT')}

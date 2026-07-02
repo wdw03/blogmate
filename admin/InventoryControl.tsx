@@ -18,6 +18,7 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('All');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bulkData, setBulkData] = useState<any[]>([]);
   const [bulkError, setBulkError] = useState<string | null>(null);
@@ -26,36 +27,64 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
 
   // Detailed form state for single add/edit
   const [formData, setFormData] = useState({
-    domain: '', category: 'Technology', da: 20, dr: 20, traffic: '10K',
-    price_guest_post: 50, price_insertion: 40, price_mention: 25,
+    domain: '', category: 'General', da: 20, dr: 20, traffic: '10K',
+    price_guest_post: 10, price_insertion: 10, price_mention: 10,
     language: 'English', tat: '3 Days', backlinks: 'Dofollow',
     ref_domains: 500, total_backlinks: 2000, total_keywords: 1000,
-    auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: true
+    auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: false,
+    is_pinned: false, price_casino: 30
   });
+
+  const handleTogglePin = async (d: any) => {
+    const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+    const localMeta = metaMap[d.domain?.toLowerCase()] || {};
+    const currentPinned = localMeta.is_pinned !== undefined ? localMeta.is_pinned : !!d.is_new;
+    const nextPinned = !currentPinned;
+    
+    metaMap[d.domain?.toLowerCase()] = {
+      ...localMeta,
+      is_pinned: nextPinned
+    };
+    localStorage.setItem('blogmate_domain_meta', JSON.stringify(metaMap));
+
+    try {
+      await supabase.from('domains').update({ is_new: nextPinned }).eq('id', d.id);
+    } catch (e) {
+      console.error(e);
+    }
+    onRefresh();
+  };
 
   const handleOpenAdd = () => {
     setEditingId(null);
     setFormData({
-      domain: '', category: 'Technology', da: 20, dr: 20, traffic: '10K',
-      price_guest_post: 50, price_insertion: 40, price_mention: 25,
+      domain: '', category: 'General', da: 20, dr: 20, traffic: '10K',
+      price_guest_post: 10, price_insertion: 10, price_mention: 10,
       language: 'English', tat: '3 Days', backlinks: 'Dofollow',
       ref_domains: 500, total_backlinks: 2000, total_keywords: 1000,
-      auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: true
+      auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: false,
+      is_pinned: false, price_casino: 30
     });
     setShowAddModal(true);
   };
 
+
   const handleEditDomain = (d: any) => {
+    const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+    const localMeta = metaMap[d.domain?.toLowerCase()] || {};
+    const isPinned = localMeta.is_pinned !== undefined ? localMeta.is_pinned : !!d.is_new;
+    const priceCasino = localMeta.price_casino !== undefined ? localMeta.price_casino : (Number(d.admin_discount) || Number(d.price_guest_post) * 3 || 30);
+
     setEditingId(d.id);
     setFormData({
       domain: d.domain || '',
-      category: d.category || 'Technology',
+      category: d.category || 'General',
       da: d.da || 20,
       dr: d.dr || 20,
       traffic: d.traffic || '10K',
-      price_guest_post: d.price_guest_post || 50,
-      price_insertion: d.price_insertion || 40,
-      price_mention: d.price_mention || 25,
+      price_guest_post: d.price_guest_post || 10,
+      price_insertion: d.price_insertion || 10,
+      price_mention: d.price_mention || 10,
       language: d.language || 'English',
       tat: d.tat || '3 Days',
       backlinks: d.backlinks || 'Dofollow',
@@ -66,26 +95,51 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
       spam_score: d.spam_score || '1%',
       trust_flow: d.trust_flow || 15,
       citation_flow: d.citation_flow || 25,
-      is_new: d.is_new !== undefined ? d.is_new : true
+      is_new: !!d.is_new,
+      is_pinned: isPinned,
+      price_casino: priceCasino
     });
     setShowAddModal(true);
   };
 
-  const filteredDomains = domains.filter((d: any) =>
-    d.domain.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredDomains = domains.filter((d: any) => {
+    const matchesSearch = d.domain.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTab = activeTab === 'All' || 
+      (activeTab === 'General' ? d.category === 'General' : (activeTab === 'Grey Niche' ? d.category !== 'General' : true));
+    return matchesSearch && matchesTab;
+  }).sort((a: any, b: any) => {
+    const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+    const isPinnedA = metaMap[a.domain?.toLowerCase()]?.is_pinned !== undefined ? metaMap[a.domain?.toLowerCase()]?.is_pinned : !!a.is_new;
+    const isPinnedB = metaMap[b.domain?.toLowerCase()]?.is_pinned !== undefined ? metaMap[b.domain?.toLowerCase()]?.is_pinned : !!b.is_new;
+    if (isPinnedA && !isPinnedB) return -1;
+    if (!isPinnedA && isPinnedB) return 1;
+    return 0;
+  });
 
   const handleSaveDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.domain) return alert("Domain required!");
     setIsSubmitting(true);
     try {
+      const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+      metaMap[formData.domain.toLowerCase()] = {
+        is_pinned: formData.is_pinned,
+        price_casino: formData.category === 'General' ? Number(formData.price_casino || 0) : 0
+      };
+      localStorage.setItem('blogmate_domain_meta', JSON.stringify(metaMap));
+
+      const dbPayload: any = { ...formData };
+      dbPayload.is_new = formData.is_pinned;
+      dbPayload.admin_discount = formData.category === 'General' ? Number(formData.price_casino || 0) : 0;
+      delete dbPayload.is_pinned;
+      delete dbPayload.price_casino;
+
       if (editingId) {
-        const { error } = await supabase.from('domains').update(formData).eq('id', editingId);
+        const { error } = await supabase.from('domains').update(dbPayload).eq('id', editingId);
         if (error) throw error;
         alert("Asset Node Updated Successfully!");
       } else {
-        const { error } = await supabase.from('domains').insert([formData]);
+        const { error } = await supabase.from('domains').insert([dbPayload]);
         if (error) throw error;
         alert("Asset Node Deployed Successfully!");
       }
@@ -93,11 +147,12 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
       setEditingId(null);
       onRefresh();
       setFormData({
-        domain: '', category: 'Technology', da: 20, dr: 20, traffic: '10K',
-        price_guest_post: 50, price_insertion: 40, price_mention: 25,
+        domain: '', category: 'General', da: 20, dr: 20, traffic: '10K',
+        price_guest_post: 10, price_insertion: 10, price_mention: 10,
         language: 'English', tat: '3 Days', backlinks: 'Dofollow',
         ref_domains: 500, total_backlinks: 2000, total_keywords: 1000,
-        auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: true
+        auth_score: 30, spam_score: '1%', trust_flow: 15, citation_flow: 25, is_new: false,
+        is_pinned: false, price_casino: 30
       });
     } catch (err: any) { alert("Deployment Error: " + err.message); } finally { setIsSubmitting(false); }
   };
@@ -214,13 +269,29 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
 
       {/* Manifest Table */}
       <div className="bg-white border border-slate-200 rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-sm min-w-0">
-        <div className="p-5 sm:p-8 md:p-10 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
+        <div className="p-5 sm:p-8 md:p-10 border-b border-slate-100 bg-slate-50/30 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg sm:text-xl font-black text-slate-900 uppercase tracking-tight italic">Inventory_Manifest</h3>
             <div className="flex items-center gap-2 mt-1">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">{filteredDomains.length} Nodes Synchronized</span>
+              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">{filteredDomains.length} Websites Listed</span>
             </div>
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 xl:pb-0">
+            {['All', 'General', 'Grey Niche'].map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                className={`px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all ${
+                  activeTab === tab
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -235,11 +306,26 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
               </tr>
             </thead>
             <tbody>
-              {filteredDomains.map((d: any) => (
-                <tr key={d.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors group">
-                  <td className="px-5 sm:px-10 py-4 sm:py-6">
-                    <div className="flex flex-col">
-                      <span className="font-black text-slate-950 text-sm sm:text-base group-hover:text-blue-600 transition-colors">{d.domain}</span>
+              {(() => {
+                let pinnedRank = 0;
+                return filteredDomains.map((d: any) => {
+                  const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+                  const localMeta = metaMap[d.domain?.toLowerCase()] || {};
+                  const isPinned = localMeta.is_pinned !== undefined ? localMeta.is_pinned : !!d.is_new;
+                  if (isPinned) pinnedRank++;
+
+                  return (
+                  <tr key={d.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors group">
+                    <td className="px-5 sm:px-10 py-4 sm:py-6">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-slate-950 text-sm sm:text-base group-hover:text-blue-600 transition-colors">{d.domain}</span>
+                          {isPinned && (
+                            <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 rounded-md text-[8px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                              <Zap size={10} fill="currentColor" /> PINNED #{pinnedRank}
+                            </span>
+                          )}
+                        </div>
                       <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
                         <span className="text-[8px] font-black bg-slate-900 text-white px-2 py-0.5 rounded uppercase tracking-widest">{d.category}</span>
                         <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">{d.language}</span>
@@ -267,12 +353,24 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   </td>
                   <td className="px-5 sm:px-10 py-4 sm:py-6 text-right">
                     <div className="flex justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePin(d)}
+                        title={isPinned ? "Unpin Website" : "Pin Website to Top"}
+                        className={`p-2 sm:p-2.5 bg-white border rounded-xl transition-all shadow-sm ${
+                          isPinned ? "border-amber-400 text-amber-500 bg-amber-50" : "border-slate-200 text-slate-400 hover:text-amber-500"
+                        }`}
+                      >
+                        <Zap size={16} fill={isPinned ? "currentColor" : "none"} />
+                      </button>
                       <button onClick={() => handleEditDomain(d)} className="p-2 sm:p-2.5 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-blue-600 transition-all shadow-sm"><Edit3 size={16} /></button>
                       <button onClick={() => handleDelete(d.id, d.domain)} className="p-2 sm:p-2.5 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-rose-500 transition-all shadow-sm"><Trash2 size={16} /></button>
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+            });
+          })()}
             </tbody>
           </table>
         </div>
@@ -304,17 +402,28 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   <Globe size={18} className="text-blue-500" />
                   <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Identity_Protocol</h4>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                   <FormGroup label="Primary Domain Node" required>
                     <input type="text" placeholder="ex: tech-nexus.ai" value={formData.domain} onChange={e => setFormData({ ...formData, domain: e.target.value })} className="w-full bg-white border border-slate-200 rounded-2xl py-4.5 px-6 text-sm font-black text-slate-950 focus:border-blue-600 outline-none" />
                   </FormGroup>
                   <FormGroup label="Asset Niche Sector">
                     <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full bg-white border border-slate-200 rounded-2xl py-4.5 px-6 text-sm font-black text-slate-950 outline-none">
-                      {['Technology', 'Business', 'Health', 'Finance', 'Lifestyle', 'Real Estate', 'Crypto', 'SaaS'].map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
+                      {['General', 'Grey Niche', 'Casino', 'CBD', 'Technology', 'Business', 'Health', 'Finance', 'Lifestyle', 'Real Estate', 'Crypto', 'SaaS'].map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
                     </select>
                   </FormGroup>
                   <FormGroup label="Linguistic Gateway">
                     <input type="text" value={formData.language} onChange={e => setFormData({ ...formData, language: e.target.value })} className="w-full bg-white border border-slate-200 rounded-2xl py-4.5 px-6 text-sm font-black text-slate-950 outline-none" />
+                  </FormGroup>
+                  <FormGroup label="Top Portal Display">
+                    <label className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl py-4.5 px-6 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_pinned}
+                        onChange={e => setFormData({ ...formData, is_pinned: e.target.checked })}
+                        className="w-5 h-5 accent-blue-600 rounded"
+                      />
+                      <span className="text-sm font-black text-slate-900">Pin to Top</span>
+                    </label>
                   </FormGroup>
                 </div>
               </section>
@@ -341,10 +450,13 @@ const InventoryControl: React.FC<InventoryControlProps> = ({ domains, onRefresh 
                   <DollarSign size={18} className="text-amber-500" />
                   <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Pricing_Protocols</h4>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                   <PriceCard label="Guest Post Value" icon={<Zap size={20} />} value={formData.price_guest_post} onChange={v => setFormData({ ...formData, price_guest_post: Number(v) })} />
                   <PriceCard label="Link Insertion Fee" icon={<Link2 size={20} />} value={formData.price_insertion} onChange={v => setFormData({ ...formData, price_insertion: Number(v) })} />
                   <PriceCard label="Brand Mention Unit" icon={<Hash size={20} />} value={formData.price_mention} onChange={v => setFormData({ ...formData, price_mention: Number(v) })} />
+                  {formData.category === 'General' && (
+                    <PriceCard label="Casino Upgrade Price" icon={<DollarSign size={20} />} value={formData.price_casino} onChange={v => setFormData({ ...formData, price_casino: Number(v) })} />
+                  )}
                 </div>
               </section>
             </div>

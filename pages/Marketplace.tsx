@@ -36,6 +36,7 @@ const Marketplace: React.FC<{
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<'newest' | 'top' | null>(null);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const itemsPerPage = 6;
 
   const [filters, setFilters] = useState<FilterState>({
@@ -73,7 +74,16 @@ const Marketplace: React.FC<{
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => subscription?.unsubscribe();
+  }, []);
 
   const getPricingInfo = (basePrice: number) => {
     const rule = pricingRules.find(r => basePrice >= r.min_price && basePrice <= r.max_price);
@@ -114,8 +124,19 @@ const Marketplace: React.FC<{
         (filters.offerings.includes('Brand Mention') && d.price_mention > 0)
       );
 
+      let matchesNicheRule = true;
+      if (niche === 'General') {
+        matchesNicheRule = (d.price_guest_post === 10 || d.price_guest_post <= 10);
+      } else if (niche === 'Grey Niche') {
+        matchesNicheRule = (['Casino', 'CBD', 'Crypto', 'Grey Niche', 'Betting', 'Gambling'].includes(d.category) || d.price_guest_post > 10);
+      } else if (niche === 'Casino') {
+        matchesNicheRule = (d.category?.toLowerCase().includes('casino') || d.category?.toLowerCase().includes('bet') || d.price_guest_post > 10);
+      } else if (niche === 'CBD') {
+        matchesNicheRule = (d.category?.toLowerCase().includes('cbd') || d.category?.toLowerCase().includes('health') || d.price_guest_post > 10);
+      }
+
       return matchesSearch && matchesDA && matchesDR && matchesTraffic && matchesCategory && 
-             matchesPrice && matchesTAT && matchesLinks && matchesLanguage && matchesOffering;
+             matchesPrice && matchesTAT && matchesLinks && matchesLanguage && matchesOffering && matchesNicheRule;
     });
 
     if (sortBy === 'newest') {
@@ -127,6 +148,15 @@ const Marketplace: React.FC<{
         return (trfB + b.da) - (trfA + a.da);
       });
     }
+
+    const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+    result = [...result].sort((a, b) => {
+      const isPinnedA = metaMap[a.domain?.toLowerCase()]?.is_pinned !== undefined ? metaMap[a.domain?.toLowerCase()]?.is_pinned : !!a.is_new;
+      const isPinnedB = metaMap[b.domain?.toLowerCase()]?.is_pinned !== undefined ? metaMap[b.domain?.toLowerCase()]?.is_pinned : !!b.is_new;
+      if (isPinnedA && !isPinnedB) return -1;
+      if (!isPinnedA && isPinnedB) return 1;
+      return 0;
+    });
 
     return result;
   }, [domains, filters, niche, sortBy, pricingRules]);
@@ -171,7 +201,7 @@ const Marketplace: React.FC<{
             className="lg:hidden w-full bg-slate-900 text-white rounded-2xl py-4 font-black flex items-center justify-center gap-2 shadow-xl hover:bg-blue-600 transition-colors"
           >
             <Filter size={18} />
-            {isMobileFiltersOpen ? 'Hide Filters' : 'Show Asset Filters'}
+            {isMobileFiltersOpen ? 'Hide Filters' : 'Show GP Filters'}
           </button>
 
 {isMobileFiltersOpen && (
@@ -190,7 +220,7 @@ const Marketplace: React.FC<{
               onSearch={(val) => setFilters(prev => ({...prev, search: val}))} 
             />
             
-            <div className="mt-0">
+            <div id="inventory-list" className="mt-0 scroll-mt-28">
               {loading ? (
                 <div className="space-y-4">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -226,7 +256,11 @@ const Marketplace: React.FC<{
               ) : (
                 <>
                   <div className="flex flex-col gap-3 sm:gap-4">
-                    {currentDomains.map((d) => (
+                    {currentDomains.map((d) => {
+                      const metaMap = JSON.parse(localStorage.getItem('blogmate_domain_meta') || '{}');
+                      const localMeta = metaMap[d.domain?.toLowerCase()] || {};
+                      const isPinned = localMeta.is_pinned !== undefined ? localMeta.is_pinned : !!d.is_new;
+                      return (
                       <DomainItem 
                         key={d.id}
                         domain={d.domain}
@@ -241,6 +275,8 @@ const Marketplace: React.FC<{
                             insertion: getPricingInfo(d.price_insertion), 
                             mention: getPricingInfo(d.price_mention) 
                         }}
+                        isNew={d.is_new}
+                        isPinned={isPinned}
                         metrics={{ 
                           dr: d.dr, 
                           refDomains: d.ref_domains, 
@@ -253,9 +289,10 @@ const Marketplace: React.FC<{
                           language: d.language || 'English' 
                         }}
                         niche={niche}
+                        isLoggedIn={isLoggedIn}
                         onAddToCart={onAddToCart}
                       />
-                    ))}
+                    );})}
                   </div>
                   
                   {totalPages > 1 && (

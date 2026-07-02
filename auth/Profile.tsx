@@ -126,11 +126,11 @@ const Profile: React.FC = () => {
   const handleWithdrawRequest = async () => {
     const amountNum = parseFloat(actionAmount);
     if (amountNum > walletBalance) {
-        alert("Funds kam hain.");
+        alert("Insufficient balance.");
         return;
     }
     if (!withdrawalDetails) {
-        alert("Kripya withdrawal details (UPI/Bank/PayPal) bharein.");
+        alert("Please provide your withdrawal details (UPI / Bank / PayPal).");
         return;
     }
     setSaving(true);

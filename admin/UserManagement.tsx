@@ -7,19 +7,11 @@ const UserManagement = ({ users, currentUser, onRefresh }: any) => {
 
   // Privacy Masking Logic
   const maskEmail = (email: string) => {
-    if (!email || isSuperAdmin) return email;
-    const [local, domain] = email.split('@');
-    if (local.length <= 4) return `${local[0]}****@${domain}`;
-    return `${local.substring(0, 3)}****${local.substring(local.length - 2)}@${domain}`;
+    return email || 'No Email';
   };
 
   const maskName = (name: string) => {
-    if (!name || isSuperAdmin || name === 'GUEST USER') return name;
-    const parts = name.split(' ');
-    return parts.map(part => {
-        if (part.length <= 3) return part[0] + '**';
-        return part.substring(0, 3) + '**' + part.substring(part.length - 2);
-    }).join(' ');
+    return name || 'User';
   };
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
@@ -51,7 +43,7 @@ const UserManagement = ({ users, currentUser, onRefresh }: any) => {
                 {users.map((u: any) => (
                   <tr key={u.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                      <td className="px-4 sm:px-10 py-4 sm:py-6">
-                        <span className="font-black text-slate-900 tracking-tight uppercase text-xs sm:text-sm">{maskName(u.full_name) || 'Unnamed Node'}</span>
+                        <span className="font-black text-slate-900 tracking-tight uppercase text-xs sm:text-sm">{maskName(u.full_name) || 'User'}</span>
                      </td>
                      <td className="px-4 sm:px-10 py-4 sm:py-6 text-slate-500 font-mono text-xs sm:text-[13px]">{maskEmail(u.email)}</td>
                      <td className="px-4 sm:px-10 py-4 sm:py-6">

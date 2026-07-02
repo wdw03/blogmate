@@ -78,6 +78,7 @@ const App: React.FC = () => {
       const { data, error } = await supabase.from('cart').select('*').eq('user_id', userId);
       if (!error && data) {
         setCartItems(data.map(item => ({
+          id: item.id || crypto.randomUUID(),
           db_id: item.id,
           domain: item.domain_name,
           price: item.price,
@@ -168,14 +169,6 @@ const App: React.FC = () => {
   };
 
   const addToCart = async (item: any) => {
-    const existing = cartItems.find(i => i.domain === item.domain);
-    if (existing) {
-      if (session?.user && existing.db_id) {
-        await supabase.from('cart').delete().eq('id', existing.db_id);
-      }
-      setCartItems(prev => prev.filter(i => i.domain !== item.domain));
-    }
-
     const serviceType = item.serviceType || 'Guest Post';
     const finalPrice = item.price;
 
@@ -185,8 +178,9 @@ const App: React.FC = () => {
       contentRequirements: { links: [{ anchorText: '', landingPageUrl: '' }] }
     };
 
-    const newItem = {
+    const newItem: any = {
       ...item,
+      id: crypto.randomUUID(),
       price: finalPrice,
       serviceType: serviceType,
       configuration: initialConfig
@@ -203,22 +197,57 @@ const App: React.FC = () => {
           dr: item.dr,
           configuration: initialConfig
         }]).select().single();
-        if (data) newItem.db_id = data.id;
+        if (data) {
+          newItem.db_id = data.id;
+          newItem.id = data.id;
+        }
       } catch (e) {
         console.error("Cart save error");
       }
     }
 
     setCartItems(prev => [...prev, newItem]);
-    setIsCartOpen(true);
+    setToast({
+      show: true,
+      title: "Item Added",
+      message: `${item.domain} has been added to your cart!`
+    });
   };
 
-  const removeFromCart = async (domain: string) => {
-    const item = cartItems.find(i => i.domain === domain);
+  const removeFromCart = async (idOrDomain: string) => {
+    const itemIndex = cartItems.findIndex(i => i.id === idOrDomain || i.db_id === idOrDomain || i.domain === idOrDomain);
+    if (itemIndex === -1) return;
+    const item = cartItems[itemIndex];
     if (session?.user && item?.db_id) {
       try { await supabase.from('cart').delete().eq('id', item.db_id); } catch (e) { }
     }
-    setCartItems(cartItems.filter(i => i.domain !== domain));
+    setCartItems(prev => prev.filter((_, idx) => idx !== itemIndex));
+  };
+
+  const removeAllFromCart = async (domain: string) => {
+    const itemsToRemove = cartItems.filter(i => i.domain === domain);
+    if (session?.user) {
+      const dbIds = itemsToRemove.map(i => i.db_id).filter(Boolean);
+      if (dbIds.length > 0) {
+        try { await supabase.from('cart').delete().in('id', dbIds); } catch (e) { }
+      }
+    }
+    setCartItems(prev => prev.filter(i => i.domain !== domain));
+  };
+
+  const clearCart = async () => {
+    if (session?.user && cartItems.length > 0) {
+      const dbIds = cartItems.map(i => i.db_id).filter(Boolean);
+      if (dbIds.length > 0) {
+        try { await supabase.from('cart').delete().in('id', dbIds); } catch (e) { }
+      }
+    }
+    setCartItems([]);
+    setToast({
+      show: true,
+      title: "Cart Cleared",
+      message: "All items have been removed from your cart."
+    });
   };
 
   if (isInitializing) {
@@ -237,7 +266,18 @@ const App: React.FC = () => {
     if (hash.startsWith('#/checkout')) {
       const urlParams = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
       const orderIdParam = urlParams.get('order_id');
-      return <Checkout items={cartItems} niche={niche} orderId={orderIdParam} onOrderSuccess={() => setCartItems([])} />;
+      return (
+        <Checkout 
+          items={cartItems} 
+          niche={niche} 
+          orderId={orderIdParam} 
+          onOrderSuccess={() => setCartItems([])}
+          onRemoveItem={removeFromCart}
+          onAddItem={addToCart}
+          onUpdateNiche={setNiche}
+          onClearCart={clearCart}
+        />
+      );
     }
 
     if (hash.toLowerCase().startsWith('#/domains/') && hash.split('/').length > 2) {
@@ -264,7 +304,16 @@ const App: React.FC = () => {
       )}
       <div className="flex-1">{renderContent()}</div>
       {!['#/login', '#/signup', '#/admin'].includes(currentPath.split('?')[0]) && <Footer />}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} items={cartItems} niche={niche} onRemove={removeFromCart} />
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        items={cartItems} 
+        niche={niche} 
+        onRemove={removeFromCart} 
+        onRemoveAll={removeAllFromCart}
+        onAdd={addToCart}
+        onClearCart={clearCart}
+      />
 
       {/* Real-time Support Layer */}
       <ChatWidget />

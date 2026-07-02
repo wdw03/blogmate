@@ -20,8 +20,16 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
   const [pricingRules, setPricingRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOption, setSelectedOption] = useState<'guestPost' | 'insertion' | 'mention'>('guestPost');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -47,7 +55,10 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
     const interval = setInterval(() => {
       setLatency(22 + Math.floor(Math.random() * 8));
     }, 3000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      subscription?.unsubscribe();
+    };
   }, [domainName]);
 
   const goBack = () => window.location.hash = '#/domains';
@@ -179,49 +190,53 @@ const DomainDetail: React.FC<DomainDetailProps> = ({ domainName, addToCart, nich
 
           <div className="lg:col-span-4">
             <div className="bg-white border-2 border-slate-200 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
-              {pInfo.isDiscounted && (
-                <div className="absolute -right-12 top-6 bg-emerald-500 text-white py-1.5 px-14 rotate-45 text-[9px] font-black uppercase tracking-widest shadow-lg">
-                  DEAL_ACTIVE
-                </div>
-              )}
-              
-              <div className="flex justify-between items-start mb-8">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Institutional Pricing</span>
-                  <div className="flex flex-col">
-                    {pInfo.isDiscounted && (
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg text-slate-300 line-through font-bold decoration-rose-400 decoration-2">${pInfo.original}</span>
-                        <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-100">SAVE {pInfo.percent}%</span>
+              {isLoggedIn && (
+                <>
+                  {pInfo.isDiscounted && (
+                    <div className="absolute -right-12 top-6 bg-emerald-500 text-white py-1.5 px-14 rotate-45 text-[9px] font-black uppercase tracking-widest shadow-lg">
+                      DEAL_ACTIVE
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-start mb-8">
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Institutional Pricing</span>
+                      <div className="flex flex-col">
+                        {pInfo.isDiscounted && (
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg text-slate-300 line-through font-bold decoration-rose-400 decoration-2">${pInfo.original}</span>
+                            <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-100">SAVE {pInfo.percent}%</span>
+                          </div>
+                        )}
+                        <div className="flex items-baseline gap-2">
+                          <span className={`text-6xl font-black tracking-tighter ${pInfo.isDiscounted ? 'text-blue-600' : 'text-slate-900'}`}>${pInfo.discounted}</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">/ POST NODE</span>
+                        </div>
                       </div>
-                    )}
-                    <div className="flex items-baseline gap-2">
-                      <span className={`text-6xl font-black tracking-tighter ${pInfo.isDiscounted ? 'text-blue-600' : 'text-slate-900'}`}>${pInfo.discounted}</span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">/ POST NODE</span>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="space-y-3 mb-8">
-                 <PriceOption 
-                  label="Guest Post" 
-                  pricing={getPricingInfo(domainData.price_guest_post || 0)}
-                  selected={selectedOption === 'guestPost'} 
-                  onClick={() => setSelectedOption('guestPost')}
-                 />
-                 <PriceOption 
-                  label="Link Insertion" 
-                  pricing={getPricingInfo(domainData.price_insertion || 0)}
-                  selected={selectedOption === 'insertion'} 
-                  onClick={() => setSelectedOption('insertion')}
-                 />
-                 <PriceOption 
-                  label="Brand Mention" 
-                  pricing={getPricingInfo(domainData.price_mention || 0)}
-                  selected={selectedOption === 'mention'} 
-                  onClick={() => setSelectedOption('mention')}
-                 />
-              </div>
+                  <div className="space-y-3 mb-8">
+                     <PriceOption 
+                      label="Guest Post" 
+                      pricing={getPricingInfo(domainData.price_guest_post || 0)}
+                      selected={selectedOption === 'guestPost'} 
+                      onClick={() => setSelectedOption('guestPost')}
+                     />
+                     <PriceOption 
+                      label="Link Insertion" 
+                      pricing={getPricingInfo(domainData.price_insertion || 0)}
+                      selected={selectedOption === 'insertion'} 
+                      onClick={() => setSelectedOption('insertion')}
+                     />
+                     <PriceOption 
+                      label="Brand Mention" 
+                      pricing={getPricingInfo(domainData.price_mention || 0)}
+                      selected={selectedOption === 'mention'} 
+                      onClick={() => setSelectedOption('mention')}
+                     />
+                  </div>
+                </>
+              )}
               <button 
                 onClick={handleTransaction}
                 className="w-full bg-slate-950 text-white py-6 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] shadow-2xl hover:bg-blue-600 transition-all flex items-center justify-center gap-4 active:scale-95 group/btn"
